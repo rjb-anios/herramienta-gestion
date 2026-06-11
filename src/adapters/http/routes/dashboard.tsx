@@ -24,7 +24,12 @@ dashboard.use(
 )
 
 dashboard.get('/', async c => {
-	return await c.render(<p>Hola</p>)
+	return await c.render(
+		<p class='text-center'>
+			Utilidad para facilitar la gestión de visitas técnicas, clientes y
+			equipos.
+		</p>
+	)
 })
 
 dashboard.get('/service', async c => {
