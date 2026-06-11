@@ -1,0 +1,254 @@
+import {
+	editUserValidator,
+	regUserValidator
+} from '@adapters/http/middlewares/userFormsValidator'
+import EditUserForm from '@presentation/components/users/EditUserForm'
+import RegUser from '@presentation/components/users/RegUser'
+import UsersTable from '@presentation/components/users/UsersTable'
+import { Hono } from 'hono'
+import type { Env } from 'src/env'
+
+const users = new Hono<Env>()
+
+// Find all system users
+
+users.get('/all', async c => {
+	const {
+		queries: { findAllUsers }
+	} = c.get('userCases')
+
+	const res = await findAllUsers.execute()
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+		)
+	}
+
+	return await c.render(<UsersTable arrUser={res.users} />)
+})
+
+// Reg user form
+
+users.get('/register', async c => {
+	if (c.get('jwtPayload').role !== 'A') {
+		return c.redirect('/dashboard', 303)
+	}
+
+	return await c.render(<RegUser hideRole={false} />)
+})
+
+// Reg user endpoint
+
+users.post('/register', regUserValidator, async c => {
+	if (c.get('jwtPayload').role !== 'A') {
+		return c.redirect('/dashboard', 303)
+	}
+
+	const { username, name, password, confirmPassword, role } =
+		c.req.valid('form')
+
+	const {
+		commands: { register }
+	} = c.get('userCases')
+
+	const res = await register.execute({
+		confirmPassword,
+		name,
+		password,
+		role,
+		username
+	})
+
+	if (res.type === 'UserAlreadyExists') {
+		return await c.render(
+			<RegUser hideRole={false}>
+				<p class='w-fit text-3xl mx-auto block'>El usuario ya existe</p>
+			</RegUser>
+		)
+	}
+
+	if (res.type === 'PasswordsDoNotMatch') {
+		return await c.render(
+			<RegUser hideRole={false}>
+				<p class='w-fit text-3xl mx-auto block'>
+					Las contraseñas deben coincidir
+				</p>
+			</RegUser>
+		)
+	}
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<RegUser hideRole={false}>
+				<p class='w-fit text-3xl mx-auto block'>{res.message}</p>
+			</RegUser>
+		)
+	}
+
+	return await c.render(
+		<RegUser hideRole={false}>
+			<p class='w-fit text-3xl mx-auto block text-green-900'>
+				Se registró al usuario correctamente
+			</p>
+		</RegUser>
+	)
+})
+
+// Obtain edition forms
+
+users.get('/edit/:id', async c => {
+	const { id } = c.req.param()
+
+	const {
+		queries: { findUser }
+	} = c.get('userCases')
+
+	const res = await findUser.execute(id)
+
+	if (res.type === 'NotExist') {
+		return await c.render(
+			<>
+				<div class='flex flex-col gap-4'>
+					<a href='/dashboard/users/all'>🡨 Volver</a>
+					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
+				</div>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					El usuario no existe
+				</p>
+			</>
+		)
+	}
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<div class='flex flex-col gap-4'>
+					<a href='/dashboard/users/all'>🡨 Volver</a>
+					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
+				</div>
+				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+			</>
+		)
+	}
+
+	return await c.render(<EditUserForm data={res.user} />)
+})
+
+// Save changes in edit
+
+users.post('/edit/:id', editUserValidator, async c => {
+	const { prevUsername, username, prevName, name, prevRole, role, password } =
+		c.req.valid('form')
+
+	const {
+		commands: { editUser }
+	} = c.get('userCases')
+
+	const id = c.req.param('id')
+
+	const res = await editUser.execute({
+		id,
+		name,
+		password: password || undefined,
+		prevName,
+		prevRole,
+		prevUsername,
+		role,
+		username
+	})
+
+	if (res.type === 'NoHasChanges') {
+		return await c.render(
+			<>
+				<div class='flex flex-col gap-4'>
+					<a href='/dashboard/users/all'>🡨 Volver</a>
+					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
+				</div>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					No actualizó ningún dato
+				</p>
+			</>
+		)
+	}
+
+	if (res.type === 'UserAlreadyExists') {
+		return await c.render(
+			<>
+				<div class='flex flex-col gap-4'>
+					<a href='/dashboard/users/all'>🡨 Volver</a>
+					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
+				</div>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					El usuario ya está en uso
+				</p>
+			</>
+		)
+	}
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<div class='flex flex-col gap-4'>
+					<a href='/dashboard/users/all'>🡨 Volver</a>
+					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
+				</div>
+				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+			</>
+		)
+	}
+
+	return await c.render(
+		<>
+			<div class='flex flex-col gap-4'>
+				<a href='/dashboard/users/all'>🡨 Volver</a>
+				<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
+			</div>
+			<p class='w-fit text-3xl m-auto block text-center'>
+				Se actualizó correctamente el usuario
+			</p>
+		</>
+	)
+})
+
+// Delete an user
+
+users.post('/delete/:id', async c => {
+	const {
+		commands: { deleteUser }
+	} = c.get('userCases')
+
+	const id = c.req.param('id')
+
+	const res = await deleteUser.execute(id)
+
+	if (res.type === 'UserNotExists') {
+		return await c.render(
+			<>
+				<div class='flex flex-col gap-4'>
+					<a href='/dashboard/users/all'>🡨 Volver</a>
+					<h2 class='w-fit h-fit text-4xl'>Eliminar usuario</h2>
+				</div>
+				<p class='w-fit text-3xl mx-auto block'>
+					El usuario que intenta eliminar no existe
+				</p>
+			</>
+		)
+	}
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<div class='flex flex-col gap-4'>
+					<a href='/dashboard/users/all'>🡨 Volver</a>
+					<h2 class='w-fit h-fit text-4xl'>Eliminar usuario</h2>
+				</div>
+				<p class='w-fit text-3xl mx-auto block'>{res.message}</p>
+			</>
+		)
+	}
+
+	return c.redirect('/dashboard/users/all', 303)
+})
+
+export default users

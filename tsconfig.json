@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+		"ignoreDeprecations": "6.0", //Se colocó esto para evitar alerta de error de propiedad baseUrl deprecada.
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"paths": {
+			"@adapters/*": ["src/adapters/*"],
+			"@core/*": ["src/core/*"],
+			"@presentation/*": ["src/presentation/*"]
+		},
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ESNext",
+		"types": ["vite/client"]
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"src/**/*.d.ts",
+		"worker-configuration.d.ts"
+	]
+}

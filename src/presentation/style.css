@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+html {
+	box-sizing: border-box;
+	font-family: Verdana, sans-serif;
+	font-size: 62.5%;
+	scrollbar-width: thin;
+}

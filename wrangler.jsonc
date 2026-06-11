@@ -1,0 +1,53 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"account_id": "2e121a617b700541c3ecd175412990c3",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": "./dist"
+	},
+	"compatibility_date": "2025-08-03",
+	"compatibility_flags": ["nodejs_compat"],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "246a6461-b920-4285-9c45-3b6263b01b12",
+			"database_name": "herramienta-db",
+			"migrations_dir": "drizzle/migrations"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "KV",
+			"id": "12acf8a4f2284c1fa1cebfbb22e79543"
+		}
+	],
+	"main": "./src/server.tsx",
+	"name": "herramienta",
+	"observability": {
+		"enabled": false,
+		"head_sampling_rate": 1,
+		"logs": {
+			"enabled": true,
+			"head_sampling_rate": 1,
+			"invocation_logs": true,
+			"persist": true
+		},
+		"traces": {
+			"enabled": false,
+			"head_sampling_rate": 1,
+			"persist": true
+		}
+	},
+	"secrets_store_secrets": [
+		{
+			"binding": "AT_SECRET",
+			"secret_name": "ACCESS_TOKEN_SECRET",
+			"store_id": "64c95a919d9340f686c9ea5270b8e9c5"
+		},
+		{
+			"binding": "RT_SECRET",
+			"secret_name": "REFRESH_TOKEN_SECRET",
+			"store_id": "64c95a919d9340f686c9ea5270b8e9c5"
+		}
+	]
+}
