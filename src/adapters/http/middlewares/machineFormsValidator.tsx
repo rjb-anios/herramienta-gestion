@@ -1,5 +1,6 @@
 import { optionalField } from '@adapters/external/optionalValidationTool'
 import { zValidator } from '@hono/zod-validator'
+import Back from '@presentation/components/reusables/Back'
 import z from 'zod'
 
 const regMachineSchema = z.object({
@@ -99,10 +100,10 @@ export const regMachineValidator = zValidator(
 
 			return await c.render(
 				<>
-					<div class='flex flex-col gap-4'>
-						<a href='/dashboard/warehouse'>🡨 Volver</a>
-						<h2 class='w-fit h-fit text-4xl'>Ingresar equipo a depósito</h2>
-					</div>
+					<Back
+						route='warehouse'
+						title='Registrar equipo'
+					/>
 					{errorMessages.map(text => (
 						<p class='w-fit text-3xl m-auto block'>{text}</p>
 					))}
@@ -121,10 +122,10 @@ export const editMachineValidator = zValidator(
 
 			return await c.render(
 				<>
-					<div class='flex flex-col gap-4'>
-						<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-						<h2 class='w-fit h-fit text-4xl'>Editar equipo</h2>
-					</div>
+					<Back
+						route='warehouse/all'
+						title='Editar equipo'
+					/>
 					{errorMessages.map(text => (
 						<p class='w-fit text-3xl m-auto block'>{text}</p>
 					))}

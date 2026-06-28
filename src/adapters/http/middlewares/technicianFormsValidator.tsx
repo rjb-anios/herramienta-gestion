@@ -1,5 +1,6 @@
 import { optionalField } from '@adapters/external/optionalValidationTool'
 import { zValidator } from '@hono/zod-validator'
+import Back from '@presentation/components/reusables/Back'
 import RegTech from '@presentation/components/technician/RegTech'
 import z from 'zod'
 
@@ -88,10 +89,10 @@ export const editTechValidator = zValidator(
 
 			return await c.render(
 				<>
-					<div class='flex flex-col gap-4'>
-						<a href='/dashboard/service/technicians/all'>🡨 Volver</a>
-						<h2 class='w-fit h-fit text-4xl'>Editar técnico</h2>
-					</div>
+					<Back
+						route='service/technicians/all'
+						title='Editar técnico'
+					/>
 					{errorMessages.map(text => (
 						<p class='w-fit text-3xl m-auto block'>{text}</p>
 					))}

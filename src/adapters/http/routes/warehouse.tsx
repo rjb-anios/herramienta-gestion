@@ -1,11 +1,17 @@
-import { regMachineValidator } from '@adapters/http/middlewares/machineFormsValidator'
+import {
+	editMachineValidator,
+	regMachineValidator
+} from '@adapters/http/middlewares/machineFormsValidator'
+import EditMachineForm from '@presentation/components/machines/EditMachineForm'
 import RegMachine from '@presentation/components/machines/RegMachine'
+import Back from '@presentation/components/reusables/Back'
+import WarehouseMachinesTable from '@presentation/components/warehouse/WarehouseMachinesTable'
 import { Hono } from 'hono'
 import type { Env } from 'src/env'
 
 const warehouse = new Hono<Env>()
 
-// Listar equipos en depósito
+/// Listar equipos en depósito
 
 warehouse.get('/all', async c => {
 	const {
@@ -17,10 +23,10 @@ warehouse.get('/all', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/warehouse'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Equipos</h2>
-				</div>
+				<Back
+					route='warehouse'
+					title='Equipos'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -29,10 +35,10 @@ warehouse.get('/all', async c => {
 	if (res.machines.length === 0) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/warehouse'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Equipos</h2>
-				</div>
+				<Back
+					route='warehouse'
+					title='Equipos'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No existen equipos en depósito
 				</p>
@@ -40,41 +46,16 @@ warehouse.get('/all', async c => {
 		)
 	}
 
-	return await c.render(
-		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/warehouse'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Equipos</h2>
-			</div>
-			<table class='text-3xl min-w-[890px] w-auto max-w-[1440px] mx-auto'>
-				<thead class='w-full border-b p-3'>
-					<tr class='h-[40px]'>
-						<th class='w-1/3 border-x'>Fabricante</th>
-						<th class='w-1/3 border-x'>Modelo</th>
-						<th class='w-1/3 border-x'>Número de serie</th>
-					</tr>
-				</thead>
-				<tbody class='w-full text-center p-3'>
-					{res.machines.map(m => (
-						<tr class='h-[40px]'>
-							<td class='w-1/3 border-x truncate'>{m.manufacturer}</td>
-							<td class='w-1/3 border-x truncate'>{m.model}</td>
-							<td class='w-1/3 border-x truncate'>{m.serial_number}</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</>
-	)
+	return await c.render(<WarehouseMachinesTable arrMachine={res.machines} />)
 })
 
-// Formulario de ingreso
+/// Obtiene formulario de registro de equipos
 
 warehouse.get('/register', async c => {
 	return await c.render(<RegMachine />)
 })
 
-// Registrar ingreso
+/// Registrar equipo en depósito
 
 warehouse.post('/register', regMachineValidator, async c => {
 	const { manufacturer, model, serial_number } = c.req.valid('form')
@@ -97,13 +78,129 @@ warehouse.post('/register', regMachineValidator, async c => {
 		)
 	}
 
-	return await c.render(
-		<RegMachine>
-			<p class='w-fit text-3xl mx-auto block text-green-900'>
-				Se ingresó el equipo al depósito correctamente
-			</p>
-		</RegMachine>
-	)
+	return c.redirect('/dashboard/warehouse', 303)
+})
+
+//// Obtiene formulario para editar datos de equipo
+
+warehouse.get('/all/edit/:id', async c => {
+	const id = c.req.param('id')
+
+	const {
+		queries: { findMachine }
+	} = c.get('machineCases')
+
+	const res = await findMachine.execute(id)
+
+	if (res.type === 'NotExists') {
+		return await c.render(
+			<>
+				<Back
+					route='warehouse/all'
+					title='Editar equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					El equipo que intenta buscar no existe
+				</p>
+			</>
+		)
+	}
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<Back
+					route='warehouse/all'
+					title='Editar equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+			</>
+		)
+	}
+
+	return await c.render(<EditMachineForm data={res.machine} />)
+})
+
+//// Edita datos de equipo
+
+warehouse.post('/all/edit/:id', editMachineValidator, async c => {
+	const {
+		prevManufacturer,
+		manufacturer,
+		prevModel,
+		model,
+		prevSerial_number: prevSerialNumber,
+		serial_number: serialNumber
+	} = c.req.valid('form')
+
+	const {
+		commands: { editMachine }
+	} = c.get('machineCases')
+
+	const id = c.req.param('id')
+
+	const res = await editMachine.execute({
+		id,
+		manufacturer,
+		model,
+		prevManufacturer,
+		prevModel,
+		prevSerial_number: prevSerialNumber,
+		serial_number: serialNumber
+	})
+
+	if (res.type === 'NoHasChanges') {
+		return await c.render(
+			<>
+				<Back
+					route='warehouse/all'
+					title='Editar equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					No actualizó ningún dato
+				</p>
+			</>
+		)
+	}
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<Back
+					route='warehouse/all'
+					title='Editar equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+			</>
+		)
+	}
+
+	return c.redirect('/dashboard/warehouse/all', 303)
+})
+
+//// Elimina un equipo
+
+warehouse.post('/all/delete/:id', async c => {
+	const id = c.req.param('id')
+	const {
+		commands: { deleteMachine }
+	} = c.get('machineCases')
+
+	const res = await deleteMachine.execute(id)
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<Back
+					route='warehouse/all'
+					title='Eliminar equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+			</>
+		)
+	}
+
+	return c.redirect('/dashboard/warehouse/all', 303)
 })
 
 export default warehouse

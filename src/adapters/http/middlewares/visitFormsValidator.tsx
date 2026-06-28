@@ -1,6 +1,7 @@
 import { optionalField } from '@adapters/external/optionalValidationTool'
 import { CONCEPT_VALUES } from '@core/entities/Visit'
 import { zValidator } from '@hono/zod-validator'
+import Back from '@presentation/components/reusables/Back'
 import z from 'zod'
 
 const regVisitSchema = z
@@ -13,16 +14,16 @@ const regVisitSchema = z
 			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
 			.refine(
 				val =>
-					/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9./\-,"():=_%';][a-zA-ZñÑáéíóúÁÉÍÓÚ0-9./\-,"():=_%'; ]{10,650}[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9./\-,"():=_%';]$/.test(
+					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
 						val
 					),
 				{
 					message:
-						'Descripción: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _'
+						'Descripción: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
 				}
 			)
-			.refine(val => val.length >= 10, {
-				message: 'Descripción debe tener mínimo 10 caracteres'
+			.refine(val => val.length >= 6, {
+				message: 'Descripción debe tener mínimo 6 caracteres'
 			})
 			.refine(val => val.length <= 650, {
 				message: 'Descripción debe tener máximo 650 caracteres'
@@ -33,14 +34,20 @@ const regVisitSchema = z
 				.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
 				.refine(
 					val =>
-						/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9./\-,"():=_%';][a-zA-ZñÑáéíóúÁÉÍÓÚ0-9./\-,"():=_%'; ]{10,650}[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9./\-,"():=_%';]$/.test(
+						/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
 							val
 						),
 					{
 						message:
-							'Futuro: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _'
+							'Futuro: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
 					}
 				)
+				.refine(val => val.length >= 6, {
+					message: 'Futuro debe tener mínimo 6 caracteres'
+				})
+				.refine(val => val.length <= 650, {
+					message: 'Futuro debe tener máximo 650 caracteres'
+				})
 		),
 		hours: z
 			.string()
@@ -81,10 +88,10 @@ export const regVisitValidator = zValidator(
 
 			return await c.render(
 				<>
-					<div class='flex flex-col gap-4'>
-						<a href='/dashboard/service'>🡨 Volver</a>
-						<h2 class='w-fit h-fit text-4xl'>Registrar visita</h2>
-					</div>
+					<Back
+						route='service'
+						title='Registrar visita'
+					/>
 					{errorMessages.map(text => (
 						<p class='w-fit text-3xl m-auto block my-[10px]'>{text}</p>
 					))}

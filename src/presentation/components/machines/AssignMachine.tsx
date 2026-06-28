@@ -1,5 +1,6 @@
 import type { Client } from '@core/entities/Client'
 import type { Machine } from '@core/entities/Machine'
+import Back from '@presentation/components/reusables/Back'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
 const AssignMachine: FC<
@@ -7,17 +8,17 @@ const AssignMachine: FC<
 > = async ({ arrClient = [], arrMachine = [], children }) => {
 	return await (
 		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/clients'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Asignar equipo desde depósito</h2>
-			</div>
+			<Back
+				route='clients'
+				title='Asignar equipo'
+			/>
 			<form
-				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-7'
+				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				method='post'
 			>
 				{children}
 				<select
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					name='id_client'
 					required
 				>
@@ -27,7 +28,7 @@ const AssignMachine: FC<
 					))}
 				</select>
 				<select
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					name='id_machine'
 					required
 				>

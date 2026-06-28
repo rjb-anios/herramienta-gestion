@@ -1,20 +1,21 @@
+import Back from '@presentation/components/reusables/Back'
 import type { FC } from 'hono/jsx'
 
 const RegClient: FC = async props => {
 	return await (
 		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/clients'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Registrar cliente</h2>
-			</div>
+			<Back
+				route='clients'
+				title='Registrar cliente'
+			/>
 			<form
-				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-7'
+				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				method='post'
 			>
 				{props.children}
 				<input
 					autocomplete='off'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={40}
 					minlength={4}
 					name='name'
@@ -24,7 +25,7 @@ const RegClient: FC = async props => {
 				/>
 				<input
 					autocomplete='off'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={30}
 					minlength={4}
 					name='contact'
@@ -34,8 +35,8 @@ const RegClient: FC = async props => {
 				/>
 				<input
 					autocomplete='off'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
-					maxlength={9}
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
+					maxlength={8}
 					minlength={8}
 					name='phone'
 					placeholder='Teléfono (ej. 096123123)'
@@ -44,7 +45,7 @@ const RegClient: FC = async props => {
 				/>
 				<input
 					autocomplete='off'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					name='email'
 					placeholder='Email (ej. john@email.com)'
 					required

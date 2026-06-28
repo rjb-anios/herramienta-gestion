@@ -1,4 +1,5 @@
 import type { Machine } from '@core/entities/Machine'
+import Back from '@presentation/components/reusables/Back'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
 const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
@@ -7,13 +8,13 @@ const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
 }) => {
 	return await (
 		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar equipo</h2>
-			</div>
+			<Back
+				route='warehouse/all'
+				title='Editar equipo'
+			/>
 			<form
-				action={`/dashboard/clients/equipment/edit/${data.id}`}
-				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-7'
+				action={`/dashboard/warehouse/all/edit/${data.id}`}
+				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				id='editMachine'
 				method='post'
 			>
@@ -32,7 +33,7 @@ const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
 					Fabricante actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={40}
 						minlength={4}
 						name='prevManufacturer'
@@ -46,7 +47,7 @@ const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={40}
 					minlength={4}
 					name='manufacturer'
@@ -57,7 +58,7 @@ const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
 					Modelo actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={16}
 						minlength={4}
 						name='prevModel'
@@ -71,7 +72,7 @@ const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={16}
 					minlength={4}
 					name='model'
@@ -82,7 +83,7 @@ const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
 					Número de serial actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={16}
 						minlength={4}
 						name='prevSerial_number'
@@ -95,8 +96,8 @@ const EditMachineForm: FC<PropsWithChildren<{ data: Machine }>> = async ({
 					/>
 				</label>
 				<input
-					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					autocomplete='off'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={16}
 					minlength={4}
 					name='serial_number'

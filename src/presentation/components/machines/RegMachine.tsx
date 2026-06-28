@@ -1,20 +1,21 @@
+import Back from '@presentation/components/reusables/Back'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
 const RegMachine: FC<PropsWithChildren> = async ({ children }) => {
 	return await (
 		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/warehouse'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Ingresar equipo al depósito</h2>
-			</div>
+			<Back
+				route='warehouse'
+				title='Registrar equipo'
+			/>
 			<form
-				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-7'
+				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				method='post'
 			>
 				{children}
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={40}
 					minlength={4}
 					name='manufacturer'
@@ -24,7 +25,7 @@ const RegMachine: FC<PropsWithChildren> = async ({ children }) => {
 				/>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={16}
 					minlength={4}
 					name='model'
@@ -34,7 +35,7 @@ const RegMachine: FC<PropsWithChildren> = async ({ children }) => {
 				/>
 				<input
 					autocomplete='off'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={16}
 					minlength={4}
 					name='serial_number'

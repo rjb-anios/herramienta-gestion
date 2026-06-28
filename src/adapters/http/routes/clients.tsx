@@ -2,14 +2,12 @@ import {
 	editClientValidator,
 	regClientValidator
 } from '@adapters/http/middlewares/clientFormsValidator'
-
-import { editMachineValidator } from '@adapters/http/middlewares/machineFormsValidator'
 import ClientsTable from '@presentation/components/clients/ClientsTable'
 import EditClientForm from '@presentation/components/clients/EditClientForm'
 import RegClient from '@presentation/components/clients/RegClient'
 import AssignMachine from '@presentation/components/machines/AssignMachine'
-import EditMachineForm from '@presentation/components/machines/EditMachineForm'
 import MachinesTable from '@presentation/components/machines/MachinesTable'
+import Back from '@presentation/components/reusables/Back'
 import { Hono } from 'hono'
 import type { Env } from 'src/env'
 
@@ -27,10 +25,10 @@ clients.get('/all', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Clientes</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Clientes'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -39,10 +37,10 @@ clients.get('/all', async c => {
 	if (res.clients.length === 0) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Clientes</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Clientes'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No existen clientes registrados
 				</p>
@@ -83,19 +81,13 @@ clients.post('/register', regClientValidator, async c => {
 		)
 	}
 
-	return await c.render(
-		<RegClient>
-			<p class='w-fit text-3xl mx-auto block text-green-900'>
-				Se registró correctamente el cliente
-			</p>
-		</RegClient>
-	)
+	return c.redirect('/dashboard/clients/register', 303)
 })
 
 /// Obtiene formulario para editar un cliente específico
 
-clients.get('/edit/:id', async c => {
-	const { id } = c.req.param()
+clients.get('/all/edit/:id', async c => {
+	const id = c.req.param('id')
 
 	const {
 		queries: { findClient }
@@ -106,10 +98,10 @@ clients.get('/edit/:id', async c => {
 	if (res.type === 'NotExists') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar cliente</h2>
-				</div>
+				<Back
+					route='clients/all'
+					title='Editar cliente'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					El cliente no existe
 				</p>
@@ -120,10 +112,10 @@ clients.get('/edit/:id', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar cliente</h2>
-				</div>
+				<Back
+					route='clients/all'
+					title='Editar cliente'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -134,7 +126,7 @@ clients.get('/edit/:id', async c => {
 
 /// Edita cliente
 
-clients.post('/edit/:id', editClientValidator, async c => {
+clients.post('/all/edit/:id', editClientValidator, async c => {
 	const {
 		prevName,
 		name,
@@ -167,10 +159,10 @@ clients.post('/edit/:id', editClientValidator, async c => {
 	if (res.type === 'NoHasChanges') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar cliente</h2>
-				</div>
+				<Back
+					route='clients/all'
+					title='Editar cliente'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No actualizó ningún dato
 				</p>
@@ -181,32 +173,22 @@ clients.post('/edit/:id', editClientValidator, async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar cliente</h2>
-				</div>
+				<Back
+					route='clients/all'
+					title='Editar cliente'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
 	}
 
-	return await c.render(
-		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/clients/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar cliente</h2>
-			</div>
-			<p class='w-fit text-3xl m-auto block text-center'>
-				Se actualizó correctamente el cliente
-			</p>
-		</>
-	)
+	return c.redirect('/dashboard/clients/all', 303)
 })
 
 /// Elimina cliente
 
-clients.post('/delete/:id', async c => {
-	const id = c.req.param('id')
+clients.post('/all/delete/:id', async c => {
+	const id: string = c.req.param('id')
 
 	const {
 		commands: { deleteClient }
@@ -217,10 +199,10 @@ clients.post('/delete/:id', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Eliminar cliente</h2>
-				</div>
+				<Back
+					route='clients/all'
+					title='Eliminar cliente'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -241,10 +223,10 @@ clients.get('/equipment/all', async c => {
 	if (!hasClients) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Equipos</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Equipos'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					Deben existir clientes registrados con equipos asignados para poder
 					consultarlos
@@ -262,10 +244,10 @@ clients.get('/equipment/all', async c => {
 	if (resMach.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Equipos</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Equipos'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{resMach.message}</p>
 			</>
 		)
@@ -274,10 +256,10 @@ clients.get('/equipment/all', async c => {
 	if (resMach.machines.length === 0) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Equipos</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Equipos'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No existen ningún equipo asignado a un cliente
 				</p>
@@ -309,139 +291,7 @@ clients.get('/equipment/:id/all', async c => {
 	return c.json(res.machines)
 })
 
-/// Obtiene formulario para editar datos de equipo
-
-clients.get('/equipment/edit/:id', async c => {
-	const id = c.req.param('id')
-
-	const {
-		queries: { findMachine }
-	} = c.get('machineCases')
-
-	const res = await findMachine.execute(id)
-
-	if (res.type === 'NotExists') {
-		return await c.render(
-			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar equipo</h2>
-				</div>
-				<p class='w-fit text-3xl m-auto block text-center'>
-					El equipo que intenta buscar no existe
-				</p>
-			</>
-		)
-	}
-
-	if (res.type === 'Error') {
-		return await c.render(
-			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar equipo</h2>
-				</div>
-				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
-			</>
-		)
-	}
-
-	return await c.render(<EditMachineForm data={res.machine} />)
-})
-
-/// Edita datos de equipo
-
-clients.post('/equipment/edit/:id', editMachineValidator, async c => {
-	const {
-		prevManufacturer,
-		manufacturer,
-		prevModel,
-		model,
-		prevSerial_number: prevSerialNumber,
-		serial_number: serialNumber
-	} = c.req.valid('form')
-
-	const {
-		commands: { editMachine }
-	} = c.get('machineCases')
-
-	const id = c.req.param('id')
-
-	const res = await editMachine.execute({
-		id,
-		manufacturer,
-		model,
-		prevManufacturer,
-		prevModel,
-		prevSerial_number: prevSerialNumber,
-		serial_number: serialNumber
-	})
-
-	if (res.type === 'NoHasChanges') {
-		return await c.render(
-			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar equipo</h2>
-				</div>
-				<p class='w-fit text-3xl m-auto block text-center'>
-					No actualizó ningún dato
-				</p>
-			</>
-		)
-	}
-
-	if (res.type === 'Error') {
-		return await c.render(
-			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar equipo</h2>
-				</div>
-				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
-			</>
-		)
-	}
-
-	return await c.render(
-		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar equipo</h2>
-			</div>
-			<p class='w-fit text-3xl m-auto block text-center'>
-				Se actualizó correctamente el equipo
-			</p>
-		</>
-	)
-})
-
-/// Elimina un equipo
-
-clients.post('/equipment/delete/:id', async c => {
-	const id = c.req.param('id')
-	const {
-		commands: { deleteMachine }
-	} = c.get('machineCases')
-
-	const res = await deleteMachine.execute(id)
-
-	if (res.type === 'Error') {
-		return await c.render(
-			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients/equipment/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Eliminar equipo</h2>
-				</div>
-				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
-			</>
-		)
-	}
-
-	return c.redirect('/dashboard/clients/equipment/all')
-})
-
-// Asignar equipo desde depósito
+// Obtiene formulario paa asignar equipo desde depósito
 
 clients.get('/equipment/assign', async c => {
 	const {
@@ -457,27 +307,39 @@ clients.get('/equipment/assign', async c => {
 
 	if (clientsRes.type === 'Error') {
 		return await c.render(
-			<p class='w-fit text-3xl m-auto block text-center'>
-				{clientsRes.message}
-			</p>
+			<>
+				<Back
+					route='clients'
+					title='Asignar equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					{clientsRes.message}
+				</p>
+			</>
 		)
 	}
 
 	if (machinesRes.type === 'Error') {
 		return await c.render(
-			<p class='w-fit text-3xl m-auto block text-center'>
-				{machinesRes.message}
-			</p>
+			<>
+				<Back
+					route='clients'
+					title='Asignar equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					{machinesRes.message}
+				</p>
+			</>
 		)
 	}
 
 	if (clientsRes.clients.length === 0 || machinesRes.machines.length === 0) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Asignar equipo a cliente</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Asignar equipo'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					Deben existir clientes registrados y equipos en depósito para realizar
 					una asignación
@@ -494,6 +356,8 @@ clients.get('/equipment/assign', async c => {
 	)
 })
 
+// Asigna desde depósito equipo a cliente
+
 clients.post('/equipment/assign', async c => {
 	const form = await c.req.formData()
 	const clientId = form.get('id_client') as string
@@ -502,10 +366,10 @@ clients.post('/equipment/assign', async c => {
 	if (!clientId || !machineId) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Asignar equipo a cliente</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Asignar equipo'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					Debe seleccionar un cliente y un equipo
 				</p>
@@ -522,16 +386,16 @@ clients.post('/equipment/assign', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/clients'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Asignar equipo a cliente</h2>
-				</div>
+				<Back
+					route='clients'
+					title='Asignar equipo'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
 	}
 
-	return c.redirect('/dashboard/clients', 303)
+	return c.redirect('/dashboard/clients/equipment/assign', 303)
 })
 
 export default clients

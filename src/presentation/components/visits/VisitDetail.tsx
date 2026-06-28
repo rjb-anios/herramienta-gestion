@@ -1,5 +1,6 @@
 import type { VisitToDisplay } from '@core/entities/Visit'
 import { VISIT_CONCEPTS } from '@core/entities/Visit'
+import CloseCross from '@presentation/components/reusables/CloseCross'
 import dayjs from 'dayjs'
 import type { JSX } from 'hono/jsx/jsx-runtime'
 
@@ -22,14 +23,7 @@ const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
 						class='w-fit m-auto'
 						type='submit'
 					>
-						<svg
-							aria-label='Cerrar'
-							class='mx-auto size-14 cursor-pointer'
-							fill='currentColor'
-							viewBox='0 0 16 16'
-						>
-							<path d='M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z' />
-						</svg>
+						<CloseCross />
 					</button>
 				</form>
 				<div class='flex flex-col justify-items-start text-3xl m-auto border p-12 gap-4'>

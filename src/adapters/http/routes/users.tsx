@@ -2,6 +2,7 @@ import {
 	editUserValidator,
 	regUserValidator
 } from '@adapters/http/middlewares/userFormsValidator'
+import Back from '@presentation/components/reusables/Back'
 import EditUserForm from '@presentation/components/users/EditUserForm'
 import RegUser from '@presentation/components/users/RegUser'
 import UsersTable from '@presentation/components/users/UsersTable'
@@ -10,7 +11,7 @@ import type { Env } from 'src/env'
 
 const users = new Hono<Env>()
 
-// Find all system users
+/// Buscar todos los usuarios del sistema
 
 users.get('/all', async c => {
 	const {
@@ -28,7 +29,7 @@ users.get('/all', async c => {
 	return await c.render(<UsersTable arrUser={res.users} />)
 })
 
-// Reg user form
+/// Obtiene formulario de registro de usuario
 
 users.get('/register', async c => {
 	if (c.get('jwtPayload').role !== 'A') {
@@ -38,7 +39,7 @@ users.get('/register', async c => {
 	return await c.render(<RegUser hideRole={false} />)
 })
 
-// Reg user endpoint
+/// Registra usuario
 
 users.post('/register', regUserValidator, async c => {
 	if (c.get('jwtPayload').role !== 'A') {
@@ -95,9 +96,9 @@ users.post('/register', regUserValidator, async c => {
 	)
 })
 
-// Obtain edition forms
+/// Obtiene formulario de edición de usuario
 
-users.get('/edit/:id', async c => {
+users.get('/all/edit/:id', async c => {
 	const { id } = c.req.param()
 
 	const {
@@ -109,10 +110,10 @@ users.get('/edit/:id', async c => {
 	if (res.type === 'NotExist') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/users/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-				</div>
+				<Back
+					route='users/all'
+					title='Editar usuario'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					El usuario no existe
 				</p>
@@ -123,10 +124,10 @@ users.get('/edit/:id', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/users/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-				</div>
+				<Back
+					route='users/all'
+					title='Editar usuario'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -135,9 +136,9 @@ users.get('/edit/:id', async c => {
 	return await c.render(<EditUserForm data={res.user} />)
 })
 
-// Save changes in edit
+/// Editar usuario
 
-users.post('/edit/:id', editUserValidator, async c => {
+users.post('/all/edit/:id', editUserValidator, async c => {
 	const { prevUsername, username, prevName, name, prevRole, role, password } =
 		c.req.valid('form')
 
@@ -161,10 +162,10 @@ users.post('/edit/:id', editUserValidator, async c => {
 	if (res.type === 'NoHasChanges') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/users/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-				</div>
+				<Back
+					route='users/all'
+					title='Editar usuario'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No actualizó ningún dato
 				</p>
@@ -175,10 +176,10 @@ users.post('/edit/:id', editUserValidator, async c => {
 	if (res.type === 'UserAlreadyExists') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/users/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-				</div>
+				<Back
+					route='users/all'
+					title='Editar usuario'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					El usuario ya está en uso
 				</p>
@@ -189,31 +190,21 @@ users.post('/edit/:id', editUserValidator, async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/users/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-				</div>
+				<Back
+					route='users/all'
+					title='Editar usuario'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
 	}
 
-	return await c.render(
-		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/users/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-			</div>
-			<p class='w-fit text-3xl m-auto block text-center'>
-				Se actualizó correctamente el usuario
-			</p>
-		</>
-	)
+	return c.redirect('/dashboard/users/all', 303)
 })
 
-// Delete an user
+/// Eliminar usuario
 
-users.post('/delete/:id', async c => {
+users.post('/all/delete/:id', async c => {
 	const {
 		commands: { deleteUser }
 	} = c.get('userCases')
@@ -225,10 +216,10 @@ users.post('/delete/:id', async c => {
 	if (res.type === 'UserNotExists') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/users/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Eliminar usuario</h2>
-				</div>
+				<Back
+					route='users/all'
+					title='Eliminar usuario'
+				/>
 				<p class='w-fit text-3xl mx-auto block'>
 					El usuario que intenta eliminar no existe
 				</p>
@@ -239,10 +230,10 @@ users.post('/delete/:id', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/users/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Eliminar usuario</h2>
-				</div>
+				<Back
+					route='users/all'
+					title='Eliminar usuario'
+				/>
 				<p class='w-fit text-3xl mx-auto block'>{res.message}</p>
 			</>
 		)

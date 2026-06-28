@@ -1,4 +1,5 @@
 import type { User } from '@core/entities/User'
+import Back from '@presentation/components/reusables/Back'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
 const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
@@ -7,13 +8,13 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 }) => {
 	return await (
 		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/users/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-			</div>
+			<Back
+				route='users/all'
+				title='Editar usuario'
+			/>
 			<form
-				action={`/dashboard/users/edit/${data.id}`}
-				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-7'
+				action={`/dashboard/users/all/edit/${data.id}`}
+				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				id='editUser'
 				method='post'
 			>
@@ -32,7 +33,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					Usuario actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={16}
 						minlength={5}
 						name='prevUsername'
@@ -46,7 +47,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={16}
 					minlength={5}
 					name='username'
@@ -57,7 +58,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					Nombre actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={30}
 						minlength={4}
 						name='prevName'
@@ -71,7 +72,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={30}
 					minlength={4}
 					name='name'
@@ -81,7 +82,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 				<label class='flex flex-col'>
 					Rol actual
 					<select
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						disabled
 						name='prevRole'
 						tabindex={-1}
@@ -112,7 +113,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					value={data.role}
 				/>
 				<select
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					name='role'
 				>
 					<option value=''>Seleccione nuevo rol</option>
@@ -123,7 +124,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					Cambiar contraseña (opcional)
 					<input
 						autocomplete='new-password'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+						class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 						maxlength={16}
 						minlength={8}
 						name='password'
@@ -132,7 +133,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					/>
 					<input
 						autocomplete='new-password'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate mt-4'
+						class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 						maxlength={16}
 						minlength={8}
 						name='confirmPassword'

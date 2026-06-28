@@ -1,4 +1,6 @@
 import { VISIT_CONCEPTS } from '@core/entities/Visit'
+import Back from '@presentation/components/reusables/Back'
+import Dots from '@presentation/components/reusables/Dots'
 import VisitDetail from '@presentation/components/visits/VisitDetail'
 import { useVisits } from '@presentation/hooks/useVisits'
 import dayjs from 'dayjs'
@@ -34,6 +36,10 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 
 	return (
 		<>
+			<Back
+				route='service'
+				title='Visitas'
+			/>
 			<div
 				class='flex w-fit m-0 gap-14'
 				id='years'
@@ -51,7 +57,7 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 			<label class='flex flex-col gap-2 w-fit mb-10'>
 				Buscar por cliente, técnico, concepto o descripción
 				<input
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate pb-2'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					onChange={e => setQuery((e.target as HTMLInputElement).value)}
 					placeholder='Distingue mayúsculas de minúsculas'
 					type='search'
@@ -109,15 +115,7 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 									<td class='w-2/6 border-x truncate'>{e.client}</td>
 									<td class='w-1/6 border-x truncate'>{e.technician}</td>
 									<td class='w-1/6 border-x truncate'>
-										<svg
-											aria-label='Detalles'
-											class='mx-auto size-12 cursor-pointer'
-											fill='currentColor'
-											onclick={`document.getElementById('${e.id}').showModal()`}
-											viewBox='0 0 16 16'
-										>
-											<path d='M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3' />
-										</svg>
+										<Dots id={e.id} />
 									</td>
 									<td>
 										<VisitDetail visit={e} />

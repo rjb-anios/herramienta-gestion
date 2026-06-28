@@ -1,5 +1,6 @@
 import { optionalField } from '@adapters/external/optionalValidationTool'
 import { zValidator } from '@hono/zod-validator'
+import Back from '@presentation/components/reusables/Back'
 import RegUser from '@presentation/components/users/RegUser'
 import LoginLayout from '@presentation/layouts/LoginLayout'
 import z from 'zod'
@@ -155,10 +156,10 @@ export const editUserValidator = zValidator(
 
 			return await c.render(
 				<>
-					<div class='flex flex-col gap-4'>
-						<a href='/dashboard/users/all'>🡨 Volver</a>
-						<h2 class='w-fit h-fit text-4xl'>Editar usuario</h2>
-					</div>
+					<Back
+						route='users/all'
+						title='Editar usuario'
+					/>
 					{errorMessages.map(text => (
 						<p class='w-fit text-3xl m-auto block my-[10px]'>{text}</p>
 					))}

@@ -1,4 +1,5 @@
 import type { Client } from '@core/entities/Client'
+import Back from '@presentation/components/reusables/Back'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
 const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
@@ -7,13 +8,13 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 }) => {
 	return await (
 		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/clients/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar cliente</h2>
-			</div>
+			<Back
+				route='clients/all'
+				title='Editar cliente'
+			/>
 			<form
-				action={`/dashboard/clients/edit/${data.id}`}
-				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-7'
+				action={`/dashboard/clients/all/edit/${data.id}`}
+				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				id='editClient'
 				method='post'
 			>
@@ -32,7 +33,7 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 					Nombre cliente actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={40}
 						minlength={4}
 						name='prevName'
@@ -46,7 +47,7 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={40}
 					minlength={4}
 					name='name'
@@ -57,7 +58,7 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 					Nombre de contacto actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={30}
 						minlength={4}
 						name='prevContact'
@@ -71,7 +72,7 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={30}
 					minlength={4}
 					name='contact'
@@ -82,11 +83,11 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 					Teléfono actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
-						maxlength={9}
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						maxlength={8}
 						minlength={8}
 						name='prevPhone'
-						placeholder='Teléfono (ej. 096123123)'
+						placeholder='Teléfono (ej. 96123123)'
 						readonly
 						required
 						tabindex={-1}
@@ -96,18 +97,18 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
-					maxlength={9}
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
+					maxlength={8}
 					minlength={8}
 					name='phone'
-					placeholder='Nuevo teléfono (ej. 099321321)'
+					placeholder='Nuevo teléfono (ej. 99321321)'
 					type='text'
 				/>
 				<label class='flex flex-col'>
 					Correo actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						name='prevEmail'
 						placeholder='Email (ej. maria@email.com)'
 						readonly
@@ -119,7 +120,7 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					name='email'
 					placeholder='Nuevo email (ej. carlos@email.com)'
 					type='email'

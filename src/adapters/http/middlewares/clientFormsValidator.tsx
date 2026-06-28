@@ -1,6 +1,7 @@
 import { optionalField } from '@adapters/external/optionalValidationTool'
 import { zValidator } from '@hono/zod-validator'
 import RegClient from '@presentation/components/clients/RegClient'
+import Back from '@presentation/components/reusables/Back'
 import z from 'zod'
 
 const regClientSchema = z.object({
@@ -26,9 +27,9 @@ const regClientSchema = z.object({
 	phone: z
 		.string()
 		.trim()
-		.regex(/^[0-9]{8,9}$/, { error: 'Teléfono: sólo se permiten números' })
+		.regex(/^[0-9]{8}$/, { error: 'Teléfono: sólo se permiten números' })
 		.min(8, { error: 'Teléfono debe tener mínimo 8 caracteres' })
-		.max(9, { error: 'Teléfono debe tener un máximo de 9 caracteres' })
+		.max(8, { error: 'Teléfono debe tener un máximo de 8 caracteres' })
 })
 
 const editClientSchema = z.object({
@@ -56,7 +57,7 @@ const editClientSchema = z.object({
 		z
 			.string()
 			.trim()
-			.regex(/^[0-9]{8,9}$/, { error: 'Teléfono: sólo se permiten números' })
+			.regex(/^[0-9]{8}$/, { error: 'Teléfono: sólo se permiten números' })
 	),
 	prevContact: z
 		.string()
@@ -80,9 +81,9 @@ const editClientSchema = z.object({
 	prevPhone: z
 		.string()
 		.trim()
-		.regex(/^[0-9]{8,9}$/, { error: 'Teléfono: sólo se permiten números' })
+		.regex(/^[0-9]{8}$/, { error: 'Teléfono: sólo se permiten números' })
 		.min(8, { error: 'Teléfono debe tener mínimo 8 caracteres' })
-		.max(9, { error: 'Teléfono debe tener un máximo de 9 caracteres' })
+		.max(8, { error: 'Teléfono debe tener un máximo de 8 caracteres' })
 })
 
 export const regClientValidator = zValidator(
@@ -112,10 +113,10 @@ export const editClientValidator = zValidator(
 
 			return await c.render(
 				<>
-					<div class='flex flex-col gap-4'>
-						<a href='/dashboard/clients/all'>🡨 Volver</a>
-						<h2 class='w-fit h-fit text-4xl'>Clientes</h2>
-					</div>
+					<Back
+						route='clients/all'
+						title='Editar cliente'
+					/>
 					{errorMessages.map(text => (
 						<p class='w-fit text-3xl m-auto block'>{text}</p>
 					))}

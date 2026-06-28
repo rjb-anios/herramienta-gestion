@@ -3,6 +3,7 @@ import {
 	regTechValidator
 } from '@adapters/http/middlewares/technicianFormsValidator'
 import { regVisitValidator } from '@adapters/http/middlewares/visitFormsValidator'
+import Back from '@presentation/components/reusables/Back'
 import EditTechnicianForm from '@presentation/components/technician/EditTechicianForm'
 import RegTech from '@presentation/components/technician/RegTech'
 import TechniciansTable from '@presentation/components/technician/TechniciansTable'
@@ -25,10 +26,10 @@ service.get('/visits/all', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Consultar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Visitas'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -37,10 +38,10 @@ service.get('/visits/all', async c => {
 	if (res.years.length === 0) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Consultar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Visitas'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No existe ninguna visita registrada
 				</p>
@@ -49,19 +50,13 @@ service.get('/visits/all', async c => {
 	}
 
 	return await c.render(
-		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/service'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Consultar visitas</h2>
-			</div>
-			<div
-				class='hono-island flex flex-col gap-12'
-				data-component='VisitsTable'
-				data-props={JSON.stringify({ years: res.years })}
-			>
-				<VisitsTable years={res.years} />
-			</div>
-		</>
+		<div
+			class='hono-island flex flex-col gap-8'
+			data-component='VisitsTable'
+			data-props={JSON.stringify({ years: res.years })}
+		>
+			<VisitsTable years={res.years} />
+		</div>
 	)
 })
 
@@ -91,10 +86,10 @@ service.get('/visits/register', async c => {
 	if (clientsRes.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Registrar visita'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					{clientsRes.message}
 				</p>
@@ -105,10 +100,10 @@ service.get('/visits/register', async c => {
 	if (clientsRes.clients.length === 0) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Registrar visita'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					Deben tener clientes registrados para poder crear visitas
 				</p>
@@ -125,10 +120,10 @@ service.get('/visits/register', async c => {
 	if (!existsMachine) {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Registrar visita'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					Deben tener equipos registrados para poder crear visitas
 				</p>
@@ -145,10 +140,10 @@ service.get('/visits/register', async c => {
 	if (technicians.type === 'NoHasTechnicians') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Registrar visita'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					Deben existir técnicos registrados para poder crear visitas
 				</p>
@@ -159,10 +154,10 @@ service.get('/visits/register', async c => {
 	if (technicians.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Registrar visita'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					{technicians.message}
 				</p>
@@ -172,25 +167,19 @@ service.get('/visits/register', async c => {
 
 	if (technicians.type === 'Success') {
 		return await c.render(
-			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-				</div>
-				<div
-					class='hono-island'
-					data-component='RegVisit'
-					data-props={JSON.stringify({
-						arrClient: clientsRes.clients,
-						arrTech: technicians.technician
-					})}
-				>
-					<RegVisit
-						arrClient={clientsRes.clients}
-						arrTech={technicians.technician}
-					/>
-				</div>
-			</>
+			<div
+				class='hono-island flex flex-col gap-8'
+				data-component='RegVisit'
+				data-props={JSON.stringify({
+					arrClient: clientsRes.clients,
+					arrTech: technicians.technician
+				})}
+			>
+				<RegVisit
+					arrClient={clientsRes.clients}
+					arrTech={technicians.technician}
+				/>
+			</div>
 		)
 	}
 })
@@ -227,33 +216,16 @@ service.post('/visits/register', regVisitValidator, async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-				</div>
+				<Back
+					route='service'
+					title='Registrar visita'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
 	}
 
-	return await c.render(
-		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/service'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Registrar visitas</h2>
-			</div>
-			<p class='w-fit text-3xl m-auto block text-center'>
-				Visita agregada exitosamente, puedes&nbsp;
-				<a
-					class='text-green-800 underline underline-offset-2'
-					href='/dashboard/service/visits/register'
-				>
-					registrar
-				</a>{' '}
-				una nueva
-			</p>
-		</>
-	)
+	return c.redirect('/dashboard/service/visits/register', 303)
 })
 
 /// Obtiene formulario para registrar técnico
@@ -294,13 +266,7 @@ service.post('/technicians/register', regTechValidator, async c => {
 		)
 	}
 
-	return await c.render(
-		<RegTech>
-			<p class='w-fit text-3xl mx-auto block text-green-900'>
-				Se registró el técnico correctamente
-			</p>
-		</RegTech>
-	)
+	return c.redirect('/dashboard/service/technicians/register', 303)
 })
 
 /// Obtiene la lista de técnicos registrados
@@ -315,10 +281,10 @@ service.get('/technicians/all', async c => {
 	if (res.type === 'NoHasTechnicians') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Consultar técnicos</h2>
-				</div>
+				<Back
+					route='service'
+					title='Técnicos'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No hay técnicos agregados
 				</p>
@@ -329,10 +295,10 @@ service.get('/technicians/all', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Consultar técnicos</h2>
-				</div>
+				<Back
+					route='service'
+					title='Técnicos'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -357,12 +323,12 @@ service.get('/technicians/all/edit/:id', async c => {
 	if (res.type === 'NotExists') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar técnico</h2>
-				</div>
+				<Back
+					route='service/technicians/all'
+					title='Editar técnico'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
-					El técnico que busca no existe
+					El técnico que intenta editar no existe
 				</p>
 			</>
 		)
@@ -371,10 +337,10 @@ service.get('/technicians/all/edit/:id', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar técnico</h2>
-				</div>
+				<Back
+					route='service/technicians/all'
+					title='Editar técnico'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
@@ -407,10 +373,10 @@ service.post('/technicians/all/edit/:id', editTechValidator, async c => {
 	if (res.type === 'NoHasChanges') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service/technicians/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar técnico</h2>
-				</div>
+				<Back
+					route='service/technicians/all'
+					title='Editar técnico'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>
 					No actualizó ningún dato
 				</p>
@@ -421,26 +387,16 @@ service.post('/technicians/all/edit/:id', editTechValidator, async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service/technicians/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Editar técnico</h2>
-				</div>
+				<Back
+					route='service/technicians/all'
+					title='Editar técnico'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)
 	}
 
-	return await c.render(
-		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/service/technicians/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar técnico</h2>
-			</div>
-			<p class='w-fit text-3xl m-auto block text-center'>
-				Se actualizó correctamente el técnico
-			</p>
-		</>
-	)
+	return c.redirect('/dashboard/service/technicians/all', 303)
 })
 
 /// Borrar técnico
@@ -458,10 +414,10 @@ service.post('/technicians/all/delete/:id', async c => {
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
-				<div class='flex flex-col gap-4'>
-					<a href='/dashboard/service/technicians/all'>🡨 Volver</a>
-					<h2 class='w-fit h-fit text-4xl'>Eliminar técnico</h2>
-				</div>
+				<Back
+					route='service/technicians/all'
+					title='Eliminar técnico'
+				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>
 		)

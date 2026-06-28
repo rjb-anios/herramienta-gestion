@@ -1,4 +1,5 @@
 import type { Technician } from '@core/entities/Technician'
+import Back from '@presentation/components/reusables/Back'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
 const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
@@ -7,13 +8,13 @@ const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
 }) => {
 	return await (
 		<>
-			<div class='flex flex-col gap-4'>
-				<a href='/dashboard/service/technicians/all'>🡨 Volver</a>
-				<h2 class='w-fit h-fit text-4xl'>Editar técnico</h2>
-			</div>
+			<Back
+				route='service/technicians/all'
+				title='Editar técnico'
+			/>
 			<form
 				action={`/dashboard/service/technicians/all/edit/${data.id}`}
-				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-7'
+				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				id='editTech'
 				method='post'
 			>
@@ -32,7 +33,7 @@ const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
 					Nombre de técnico actual
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={30}
 						minlength={4}
 						name='prevName'
@@ -46,7 +47,7 @@ const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={30}
 					minlength={4}
 					name='name'
@@ -57,7 +58,7 @@ const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
 					Iniciales actuales
 					<input
 						autocomplete='off'
-						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={3}
 						minlength={2}
 						name='prevInitials'
@@ -71,7 +72,7 @@ const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
 				</label>
 				<input
 					autocomplete='on'
-					class='h-[45px] min-w-[300px] w-full max-w-[500px] border-b-2 px-[10px] outline-none mx-auto truncate'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={3}
 					minlength={2}
 					name='initials'
