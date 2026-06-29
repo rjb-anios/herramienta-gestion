@@ -1,4 +1,8 @@
 import * as schema from '@adapters/db/SchemaD1'
+import {
+	kvCacheGet,
+	kvCacheInvalidate
+} from '@adapters/db/kvCache'
 import type {
 	AddOrDeleteClientResponse,
 	Client,
@@ -11,14 +15,20 @@ import type { ClientRepo } from '@core/ports/ClientRepo'
 import { asc, eq } from 'drizzle-orm'
 import type { DrizzleD1Database } from 'drizzle-orm/d1'
 
+const CACHE_KEY = 'clients:all'
+
 export class D1ClientRepo implements ClientRepo {
-	constructor(private readonly db: DrizzleD1Database<typeof schema>) {}
+	constructor(
+		private readonly db: DrizzleD1Database<typeof schema>,
+		private readonly kv: KVNamespace
+	) {}
 
 	// Añadir un cliente
 
 	async addClient(data: Client): Promise<AddOrDeleteClientResponse> {
 		try {
 			await this.db.insert(schema.clientsTable).values(data)
+			kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -38,6 +48,7 @@ export class D1ClientRepo implements ClientRepo {
 			await this.db
 				.delete(schema.clientsTable)
 				.where(eq(schema.clientsTable.id, id))
+			kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -58,6 +69,7 @@ export class D1ClientRepo implements ClientRepo {
 				.update(schema.clientsTable)
 				.set(data)
 				.where(eq(schema.clientsTable.id, data.id))
+			kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -98,22 +110,24 @@ export class D1ClientRepo implements ClientRepo {
 	// Buscar todos los clientes registrados
 
 	async findAllClients(): Promise<FindAllClientsResponse> {
-		try {
-			const res = await this.db
-				.select()
-				.from(schema.clientsTable)
-				.orderBy(asc(schema.clientsTable.name))
-				.execute()
+		return kvCacheGet<FindAllClientsResponse>(this.kv, CACHE_KEY, async () => {
+			try {
+				const res = await this.db
+					.select()
+					.from(schema.clientsTable)
+					.orderBy(asc(schema.clientsTable.name))
+					.execute()
 
-			return { clients: res, type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al obtener todos los clientes: ', error.message)
+				return { clients: res, type: 'Success' }
+			} catch (error: any) {
+				console.log('Error al obtener todos los clientes: ', error.message)
 
-			return {
-				message: 'Obtener clientes: error desconocido',
-				type: 'Error'
+				return {
+					message: 'Obtener clientes: error desconocido',
+					type: 'Error'
+				}
 			}
-		}
+		})
 	}
 
 	/// Verificar si existe un cliente con el mismo nombre

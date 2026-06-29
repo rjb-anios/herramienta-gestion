@@ -45,7 +45,7 @@ const MachinesTable: FC<
 										<li class='cursor-pointer w-fit'>
 											<button
 												class='w-c'
-												onclick={`document.getElementById('${e.id}-mc26').showModal()`}
+												data-dialog-id={`${e.id}-mc26`}
 												type='button'
 											>
 												Mover

@@ -1,3 +1,4 @@
+import { isValidUUID } from '@adapters/external/optionalValidationTool'
 import {
 	editClientValidator,
 	regClientValidator
@@ -89,6 +90,10 @@ clients.post('/register', regClientValidator, async c => {
 clients.get('/all/edit/:id', async c => {
 	const id = c.req.param('id')
 
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/clients/all', 303)
+	}
+
 	const {
 		queries: { findClient }
 	} = c.get('clientCases')
@@ -126,7 +131,19 @@ clients.get('/all/edit/:id', async c => {
 
 /// Edita cliente
 
-clients.post('/all/edit/:id', editClientValidator, async c => {
+clients.post(
+	'/all/edit/:id',
+	async (c, next) => {
+		const id = c.req.param('id')
+
+		if (!isValidUUID(id)) {
+			return c.redirect('/dashboard/clients/all', 303)
+		}
+
+		await next()
+	},
+	editClientValidator,
+	async c => {
 	const {
 		prevName,
 		name,
@@ -188,7 +205,11 @@ clients.post('/all/edit/:id', editClientValidator, async c => {
 /// Elimina cliente
 
 clients.post('/all/delete/:id', async c => {
-	const id: string = c.req.param('id')
+	const id = c.req.param('id')
+
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/clients/all', 303)
+	}
 
 	const {
 		commands: { deleteClient }
@@ -274,6 +295,11 @@ clients.get('/equipment/all', async c => {
 
 clients.get('/equipment/:id/all', async c => {
 	const id = c.req.param('id')
+
+	if (!isValidUUID(id)) {
+		return c.json([])
+	}
+
 	const {
 		queries: { findAllMachinesByClient }
 	} = c.get('machineCases')

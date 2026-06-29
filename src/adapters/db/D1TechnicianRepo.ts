@@ -1,4 +1,8 @@
 import * as schema from '@adapters/db/SchemaD1'
+import {
+	kvCacheGet,
+	kvCacheInvalidate
+} from '@adapters/db/kvCache'
 import type {
 	AddTechnicianResponse,
 	DeleteTechnicianResponse,
@@ -11,8 +15,13 @@ import type { TechnicianRepo } from '@core/ports/TechnicianRepo'
 import { eq } from 'drizzle-orm'
 import type { DrizzleD1Database } from 'drizzle-orm/d1'
 
+const CACHE_KEY = 'technicians:all'
+
 export class D1TechnicianRepo implements TechnicianRepo {
-	constructor(private readonly db: DrizzleD1Database<typeof schema>) {}
+	constructor(
+		private readonly db: DrizzleD1Database<typeof schema>,
+		private readonly kv: KVNamespace
+	) {}
 
 	/// Agregar técnico
 
@@ -23,6 +32,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 				initials: data.initials,
 				name: data.name
 			})
+			kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -39,6 +49,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			await this.db
 				.delete(schema.techniciansTable)
 				.where(eq(schema.techniciansTable.id, id))
+			kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -49,18 +60,26 @@ export class D1TechnicianRepo implements TechnicianRepo {
 	}
 
 	async findAll(): Promise<FindTechnicianResponse> {
-		try {
-			const res = await this.db.select().from(schema.techniciansTable).execute()
+		return kvCacheGet<FindTechnicianResponse>(this.kv, CACHE_KEY, async () => {
+			try {
+				const res = await this.db
+					.select()
+					.from(schema.techniciansTable)
+					.execute()
 
-			if (res.length === 0) {
-				return { type: 'NoHasTechnicians' }
+				if (res.length === 0) {
+					return { type: 'NoHasTechnicians' }
+				}
+
+				return { technician: res, type: 'Success' }
+			} catch (error: any) {
+				console.log('Error al buscar técnicos: ', error.message)
+				return {
+					message: 'Buscar técnicos: error desconocido',
+					type: 'Error'
+				}
 			}
-
-			return { technician: res, type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al buscar técnicos: ', error.message)
-			return { message: 'Buscar técnicos: error desconocido', type: 'Error' }
-		}
+		})
 	}
 
 	async findById(id: string): Promise<FindTechnicianResponse> {
@@ -111,6 +130,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 					name: data.name
 				})
 				.where(eq(schema.techniciansTable.id, data.id))
+			kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {

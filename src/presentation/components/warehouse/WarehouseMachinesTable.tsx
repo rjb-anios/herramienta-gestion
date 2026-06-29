@@ -40,7 +40,7 @@ const WarehouseMachinesTable: FC<
 									</li>
 									<li class='cursor-pointer'>
 										<button
-											onclick={`document.getElementById('${m.id}-mach26').showModal();`}
+											data-dialog-id={`${m.id}-wrmc26`}
 											type='button'
 										>
 											Eliminar
@@ -51,7 +51,7 @@ const WarehouseMachinesTable: FC<
 							<td>
 								<dialog
 									class='backdrop:bg-black/50 m-auto'
-									id={`${m.id}-mach26`}
+									id={`${m.id}-wrmc26`}
 								>
 									<div class='flex flex-col w-[320px] items-center justify-center m-auto border p-8 gap-8'>
 										<h3 class='text-3xl w-fit mx-auto text-center'>

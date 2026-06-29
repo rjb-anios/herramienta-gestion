@@ -46,6 +46,8 @@ import type {
 	Visit
 } from '@core/entities/Visit'
 
+import type { Role } from '@core/entities/Role'
+
 import type { CookieService } from '@core/ports/CookieService'
 
 import type { TokenManager } from '@core/ports/TokenManager'
@@ -65,7 +67,7 @@ export interface Env {
 				refreshSession: {
 					execute(
 						oldTokenId: string,
-						user: { id: string; name: string; role: 'A' | 'u' }
+						user: { id: string; name: string; role: Role }
 					): Promise<{
 						newAcToken: string
 						newRfToken: string
@@ -175,7 +177,7 @@ export interface Env {
 		jwtPayload: {
 			id: string
 			name: string
-			role: 'A' | 'u'
+			role: Role
 		}
 	}
 

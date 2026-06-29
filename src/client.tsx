@@ -25,6 +25,19 @@ const hydrate = (): void => {
 	})
 }
 
+document.addEventListener('click', (e: MouseEvent) => {
+	const target = (e.target as HTMLElement).closest('[data-dialog-id]')
+	if (!target) return
+
+	const dialogId = target.getAttribute('data-dialog-id')
+	if (!dialogId) return
+
+	const dialog = document.getElementById(dialogId)
+	if (dialog instanceof HTMLDialogElement) {
+		dialog.showModal()
+	}
+})
+
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', hydrate)
 } else {

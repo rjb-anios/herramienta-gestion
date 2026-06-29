@@ -44,7 +44,7 @@ const TechniciansTable: FC<
 										</li>
 										<li class='cursor-pointer'>
 											<button
-												onclick={`document.getElementById('${e.id}-tec26').showModal();`}
+												data-dialog-id={`${e.id}-tec26`}
 												type='button'
 											>
 												Eliminar

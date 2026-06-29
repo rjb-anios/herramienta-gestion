@@ -1,3 +1,4 @@
+import { loginRateLimiter } from '@adapters/http/middlewares/loginRateLimiter'
 import { loginValidator } from '@adapters/http/middlewares/userFormsValidator'
 import LoginLayout from '@presentation/layouts/LoginLayout'
 import { Hono } from 'hono'
@@ -32,7 +33,7 @@ login.get('/', async c => {
 	return await c.render(<LoginLayout />)
 })
 
-login.post('/', loginValidator, async c => {
+login.post('/', loginRateLimiter, loginValidator, async c => {
 	const { username, password } = c.req.valid('form')
 
 	const {

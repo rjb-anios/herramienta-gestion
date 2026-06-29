@@ -1,3 +1,4 @@
+import type { Role } from '@core/entities/Role'
 import { env } from 'cloudflare:workers'
 import type {
 	RefreshTokenData,
@@ -14,7 +15,7 @@ dayjs.extend(utc)
 interface Payload extends JWTPayload {
 	id: string
 	name: string
-	role: 'A' | 'u'
+	role: Role
 }
 
 export class JwtTokenManager implements TokenManager {

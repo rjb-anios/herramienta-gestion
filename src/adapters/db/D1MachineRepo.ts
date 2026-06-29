@@ -1,4 +1,8 @@
 import * as schema from '@adapters/db/SchemaD1'
+import {
+	kvCacheGet,
+	kvCacheInvalidate
+} from '@adapters/db/kvCache'
 import type {
 	AddOrDeleteMachineResponse,
 	EditMachineRequest,
@@ -13,7 +17,23 @@ import { asc, eq, isNull } from 'drizzle-orm'
 import type { DrizzleD1Database } from 'drizzle-orm/d1'
 
 export class D1MachineRepo implements MachineRepo {
-	constructor(private readonly db: DrizzleD1Database<typeof schema>) {}
+	constructor(
+		private readonly db: DrizzleD1Database<typeof schema>,
+		private readonly kv: KVNamespace
+	) {}
+
+	private get cacheKeys() {
+		return {
+			warehouse: 'machines:warehouse',
+			assigned: 'machines:assigned',
+			all: 'machines:all'
+		}
+	}
+
+	private invalidateAll() {
+		const keys = Object.values(this.cacheKeys)
+		kvCacheInvalidate(this.kv, ...keys)
+	}
 
 	/// Asociar una máquina a un cliente particular
 
@@ -26,6 +46,7 @@ export class D1MachineRepo implements MachineRepo {
 				model: data.model,
 				serial_number: data.serial_number
 			})
+			this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -45,6 +66,7 @@ export class D1MachineRepo implements MachineRepo {
 			await this.db
 				.delete(schema.machinesTable)
 				.where(eq(schema.machinesTable.id, id))
+			this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -88,6 +110,7 @@ export class D1MachineRepo implements MachineRepo {
 					serial_number: data.serial_number
 				})
 				.where(eq(schema.machinesTable.id, data.id))
+			this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -127,6 +150,7 @@ export class D1MachineRepo implements MachineRepo {
 				model: data.model,
 				serial_number: data.serial_number
 			})
+			this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -147,6 +171,7 @@ export class D1MachineRepo implements MachineRepo {
 				.update(schema.machinesTable)
 				.set({ id_client: clientId })
 				.where(eq(schema.machinesTable.id, machineId))
+			this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -160,23 +185,29 @@ export class D1MachineRepo implements MachineRepo {
 	}
 
 	async findAllWarehouse(): Promise<FindAllMachinesResponse> {
-		try {
-			const res = await this.db
-				.select()
-				.from(schema.machinesTable)
-				.where(isNull(schema.machinesTable.id_client))
-				.orderBy(asc(schema.machinesTable.manufacturer))
-				.execute()
+		return kvCacheGet<FindAllMachinesResponse>(
+			this.kv,
+			this.cacheKeys.warehouse,
+			async () => {
+				try {
+					const res = await this.db
+						.select()
+						.from(schema.machinesTable)
+						.where(isNull(schema.machinesTable.id_client))
+						.orderBy(asc(schema.machinesTable.manufacturer))
+						.execute()
 
-			return { machines: res, type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al buscar equipos en depósito: ', error.message)
+					return { machines: res, type: 'Success' }
+				} catch (error: any) {
+					console.log('Error al buscar equipos en depósito: ', error.message)
 
-			return {
-				message: 'Buscar depósito: error desconocido',
-				type: 'Error'
+					return {
+						message: 'Buscar depósito: error desconocido',
+						type: 'Error'
+					}
+				}
 			}
-		}
+		)
 	}
 
 	async existsAnyMachine(): Promise<boolean> {
@@ -196,55 +227,67 @@ export class D1MachineRepo implements MachineRepo {
 	}
 
 	async findAllMachinesWithClientName(): Promise<FindAllMachinesWithClientNameResponse> {
-		try {
-			const res = await this.db
-				.select({
-					client: schema.clientsTable.name,
-					id: schema.machinesTable.id,
-					id_client: schema.machinesTable.id_client,
-					manufacturer: schema.machinesTable.manufacturer,
-					model: schema.machinesTable.model,
-					serial_number: schema.machinesTable.serial_number
-				})
-				.from(schema.machinesTable)
-				.innerJoin(
-					schema.clientsTable,
-					eq(schema.machinesTable.id_client, schema.clientsTable.id)
-				)
-				.orderBy(asc(schema.clientsTable.name))
-				.execute()
+		return kvCacheGet<FindAllMachinesWithClientNameResponse>(
+			this.kv,
+			this.cacheKeys.assigned,
+			async () => {
+				try {
+					const res = await this.db
+						.select({
+							client: schema.clientsTable.name,
+							id: schema.machinesTable.id,
+							id_client: schema.machinesTable.id_client,
+							manufacturer: schema.machinesTable.manufacturer,
+							model: schema.machinesTable.model,
+							serial_number: schema.machinesTable.serial_number
+						})
+						.from(schema.machinesTable)
+						.innerJoin(
+							schema.clientsTable,
+							eq(schema.machinesTable.id_client, schema.clientsTable.id)
+						)
+						.orderBy(asc(schema.clientsTable.name))
+						.execute()
 
-			return { machines: res, type: 'Success' }
-		} catch (error: any) {
-			console.log(
-				'Error al buscar la lista de equipos con cliente: ',
-				error.message
-			)
+					return { machines: res, type: 'Success' }
+				} catch (error: any) {
+					console.log(
+						'Error al buscar la lista de equipos con cliente: ',
+						error.message
+					)
 
-			return {
-				message: 'Buscar equipos con cliente: error desconocido',
-				type: 'Error'
+					return {
+						message: 'Buscar equipos con cliente: error desconocido',
+						type: 'Error'
+					}
+				}
 			}
-		}
+		)
 	}
 
 	async findAllMachines(): Promise<FindAllMachinesResponse> {
-		try {
-			const res = await this.db
-				.select()
-				.from(schema.machinesTable)
-				.orderBy(asc(schema.machinesTable.manufacturer))
-				.execute()
+		return kvCacheGet<FindAllMachinesResponse>(
+			this.kv,
+			this.cacheKeys.all,
+			async () => {
+				try {
+					const res = await this.db
+						.select()
+						.from(schema.machinesTable)
+						.orderBy(asc(schema.machinesTable.manufacturer))
+						.execute()
 
-			return { machines: res, type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al buscar la lista de equipos: ', error.message)
+					return { machines: res, type: 'Success' }
+				} catch (error: any) {
+					console.log('Error al buscar la lista de equipos: ', error.message)
 
-			return {
-				message: 'Buscar equipos: error desconocido',
-				type: 'Error'
+					return {
+						message: 'Buscar equipos: error desconocido',
+						type: 'Error'
+					}
+				}
 			}
-		}
+		)
 	}
 
 	async hasVisits(id: string): Promise<boolean> {
@@ -266,22 +309,28 @@ export class D1MachineRepo implements MachineRepo {
 	/// Buscar todas las máquinas asociadas a un cliente particular
 
 	async findAllMachinesByClient(id: string): Promise<FindAllMachinesResponse> {
-		try {
-			const res = await this.db
-				.select()
-				.from(schema.machinesTable)
-				.where(eq(schema.machinesTable.id_client, id))
-				.orderBy(asc(schema.machinesTable.manufacturer))
-				.execute()
+		return kvCacheGet<FindAllMachinesResponse>(
+			this.kv,
+			`machines:by-client:${id}`,
+			async () => {
+				try {
+					const res = await this.db
+						.select()
+						.from(schema.machinesTable)
+						.where(eq(schema.machinesTable.id_client, id))
+						.orderBy(asc(schema.machinesTable.manufacturer))
+						.execute()
 
-			return { machines: res, type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al buscar equipos por cliente: ', error.message)
+					return { machines: res, type: 'Success' }
+				} catch (error: any) {
+					console.log('Error al buscar equipos por cliente: ', error.message)
 
-			return {
-				message: 'Buscar equipos por cliente: error desconocido',
-				type: 'Error'
+					return {
+						message: 'Buscar equipos por cliente: error desconocido',
+						type: 'Error'
+					}
+				}
 			}
-		}
+		)
 	}
 }

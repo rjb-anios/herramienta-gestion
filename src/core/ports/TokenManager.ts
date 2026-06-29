@@ -1,7 +1,9 @@
+import type { Role } from '@core/entities/Role'
+
 export interface TokenPayload {
 	id: string
 	name: string
-	role: 'A' | 'u'
+	role: Role
 }
 
 export interface RefreshTokenData {

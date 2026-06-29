@@ -1,3 +1,4 @@
+import { isValidUUID, isValidYear } from '@adapters/external/optionalValidationTool'
 import {
 	editTechValidator,
 	regTechValidator
@@ -63,11 +64,15 @@ service.get('/visits/all', async c => {
 /// Obtiene la lista completa de visitas realizadas en el año seleccionado
 
 service.get('/visits/all/:year', async c => {
+	const year = c.req.param('year')
+
+	if (!isValidYear(year)) {
+		return c.json({ type: 'Error', message: 'Año inválido' } as const, 400)
+	}
+
 	const {
 		queries: { findVisits }
 	} = c.get('visitCases')
-
-	const year = c.req.param('year')
 
 	const visitsByYear = await findVisits.execute(year)
 
@@ -314,6 +319,10 @@ service.get('/technicians/all', async c => {
 service.get('/technicians/all/edit/:id', async c => {
 	const id = c.req.param('id')
 
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/service/technicians/all', 303)
+	}
+
 	const {
 		queries: { findTechnicianById }
 	} = c.get('technicianCases')
@@ -403,11 +412,14 @@ service.post('/technicians/all/edit/:id', editTechValidator, async c => {
 
 service.post('/technicians/all/delete/:id', async c => {
 	const id = c.req.param('id')
+
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/service/technicians/all', 303)
+	}
+
 	const {
 		commands: { deleteTechnician }
 	} = c.get('technicianCases')
-
-	console.log(id)
 
 	const res = await deleteTechnician.execute(id)
 

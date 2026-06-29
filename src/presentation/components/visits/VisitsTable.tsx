@@ -115,7 +115,7 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 									<td class='w-2/6 border-x truncate'>{e.client}</td>
 									<td class='w-1/6 border-x truncate'>{e.technician}</td>
 									<td class='w-1/6 border-x truncate'>
-										<Dots id={e.id} />
+										<Dots dialogId={e.id} />
 									</td>
 									<td>
 										<VisitDetail visit={e} />

@@ -1,3 +1,4 @@
+import { isValidUUID } from '@adapters/external/optionalValidationTool'
 import {
 	editMachineValidator,
 	regMachineValidator
@@ -86,6 +87,10 @@ warehouse.post('/register', regMachineValidator, async c => {
 warehouse.get('/all/edit/:id', async c => {
 	const id = c.req.param('id')
 
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/warehouse/all', 303)
+	}
+
 	const {
 		queries: { findMachine }
 	} = c.get('machineCases')
@@ -123,7 +128,19 @@ warehouse.get('/all/edit/:id', async c => {
 
 //// Edita datos de equipo
 
-warehouse.post('/all/edit/:id', editMachineValidator, async c => {
+warehouse.post(
+	'/all/edit/:id',
+	async (c, next) => {
+		const id = c.req.param('id')
+
+		if (!isValidUUID(id)) {
+			return c.redirect('/dashboard/warehouse/all', 303)
+		}
+
+		await next()
+	},
+	editMachineValidator,
+	async c => {
 	const {
 		prevManufacturer,
 		manufacturer,
@@ -182,6 +199,11 @@ warehouse.post('/all/edit/:id', editMachineValidator, async c => {
 
 warehouse.post('/all/delete/:id', async c => {
 	const id = c.req.param('id')
+
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/warehouse/all', 303)
+	}
+
 	const {
 		commands: { deleteMachine }
 	} = c.get('machineCases')

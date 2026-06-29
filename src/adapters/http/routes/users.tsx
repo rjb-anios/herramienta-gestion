@@ -1,3 +1,4 @@
+import { isValidUUID } from '@adapters/external/optionalValidationTool'
 import {
 	editUserValidator,
 	regUserValidator
@@ -32,20 +33,12 @@ users.get('/all', async c => {
 /// Obtiene formulario de registro de usuario
 
 users.get('/register', async c => {
-	if (c.get('jwtPayload').role !== 'A') {
-		return c.redirect('/dashboard', 303)
-	}
-
 	return await c.render(<RegUser hideRole={false} />)
 })
 
 /// Registra usuario
 
 users.post('/register', regUserValidator, async c => {
-	if (c.get('jwtPayload').role !== 'A') {
-		return c.redirect('/dashboard', 303)
-	}
-
 	const { username, name, password, confirmPassword, role } =
 		c.req.valid('form')
 
@@ -99,7 +92,11 @@ users.post('/register', regUserValidator, async c => {
 /// Obtiene formulario de edición de usuario
 
 users.get('/all/edit/:id', async c => {
-	const { id } = c.req.param()
+	const id = c.req.param('id')
+
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/users/all', 303)
+	}
 
 	const {
 		queries: { findUser }
@@ -138,78 +135,95 @@ users.get('/all/edit/:id', async c => {
 
 /// Editar usuario
 
-users.post('/all/edit/:id', editUserValidator, async c => {
-	const { prevUsername, username, prevName, name, prevRole, role, password } =
-		c.req.valid('form')
+users.post(
+	'/all/edit/:id',
+	async (c, next) => {
+		const id = c.req.param('id')
 
-	const {
-		commands: { editUser }
-	} = c.get('userCases')
+		if (!isValidUUID(id)) {
+			return c.redirect('/dashboard/users/all', 303)
+		}
 
-	const id = c.req.param('id')
+		await next()
+	},
+	editUserValidator,
+	async c => {
+		const { prevUsername, username, prevName, name, prevRole, role, password } =
+			c.req.valid('form')
 
-	const res = await editUser.execute({
-		id,
-		name,
-		password: password || undefined,
-		prevName,
-		prevRole,
-		prevUsername,
-		role,
-		username
-	})
+		const {
+			commands: { editUser }
+		} = c.get('userCases')
 
-	if (res.type === 'NoHasChanges') {
-		return await c.render(
-			<>
-				<Back
-					route='users/all'
-					title='Editar usuario'
-				/>
-				<p class='w-fit text-3xl m-auto block text-center'>
-					No actualizó ningún dato
-				</p>
-			</>
-		)
+		const id = c.req.param('id')
+
+		const res = await editUser.execute({
+			id,
+			name,
+			password: password || undefined,
+			prevName,
+			prevRole,
+			prevUsername,
+			role,
+			username
+		})
+
+		if (res.type === 'NoHasChanges') {
+			return await c.render(
+				<>
+					<Back
+						route='users/all'
+						title='Editar usuario'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>
+						No actualizó ningún dato
+					</p>
+				</>
+			)
+		}
+
+		if (res.type === 'UserAlreadyExists') {
+			return await c.render(
+				<>
+					<Back
+						route='users/all'
+						title='Editar usuario'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>
+						El usuario ya está en uso
+					</p>
+				</>
+			)
+		}
+
+		if (res.type === 'Error') {
+			return await c.render(
+				<>
+					<Back
+						route='users/all'
+						title='Editar usuario'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+				</>
+			)
+		}
+
+		return c.redirect('/dashboard/users/all', 303)
 	}
-
-	if (res.type === 'UserAlreadyExists') {
-		return await c.render(
-			<>
-				<Back
-					route='users/all'
-					title='Editar usuario'
-				/>
-				<p class='w-fit text-3xl m-auto block text-center'>
-					El usuario ya está en uso
-				</p>
-			</>
-		)
-	}
-
-	if (res.type === 'Error') {
-		return await c.render(
-			<>
-				<Back
-					route='users/all'
-					title='Editar usuario'
-				/>
-				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
-			</>
-		)
-	}
-
-	return c.redirect('/dashboard/users/all', 303)
-})
+)
 
 /// Eliminar usuario
 
 users.post('/all/delete/:id', async c => {
+	const id = c.req.param('id')
+
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/users/all', 303)
+	}
+
 	const {
 		commands: { deleteUser }
 	} = c.get('userCases')
-
-	const id = c.req.param('id')
 
 	const res = await deleteUser.execute(id)
 

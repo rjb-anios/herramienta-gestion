@@ -1,11 +1,13 @@
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
-const Dots: FC<PropsWithChildren<{ id: string | undefined }>> = ({ id }) => {
+const Dots: FC<
+	PropsWithChildren<{ id?: string; dialogId?: string }>
+> = ({ id, dialogId }) => {
 	return (
 		<button
 			class='btn outline-none shadow-none cursor-pointer'
-			onclick={`document.getElementById('${id}').showModal()`}
-			popovertarget={id}
+			data-dialog-id={dialogId ?? undefined}
+			popovertarget={dialogId ? undefined : id}
 			type='button'
 		>
 			<svg

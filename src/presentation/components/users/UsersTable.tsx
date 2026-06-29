@@ -45,7 +45,7 @@ const UsersTable: FC<PropsWithChildren<{ arrUser: User[] }>> = async ({
 										</li>
 										<li class='cursor-pointer'>
 											<button
-												onclick={`document.getElementById('${e.id}-usr26').showModal();`}
+												data-dialog-id={`${e.id}-usr26`}
 												type='button'
 											>
 												Eliminar

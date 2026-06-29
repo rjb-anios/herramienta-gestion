@@ -1,10 +1,7 @@
 import auth from '@adapters/http/middlewares/auth'
-import injectClientServices from '@adapters/http/middlewares/injectClientServices'
-import injectExternalServices from '@adapters/http/middlewares/injectExternalServices'
-import injectMachineServices from '@adapters/http/middlewares/injectMachineServices'
-import injectTechnicianServices from '@adapters/http/middlewares/injectTechnicianServices'
-import injectUserServices from '@adapters/http/middlewares/injectUserServices'
-import injectVisitServices from '@adapters/http/middlewares/injectVisitServices'
+import injectServices from '@adapters/http/middlewares/injectServices'
+import { requireMinLevel } from '@adapters/http/middlewares/requireRole'
+import { ROLES } from '@core/entities/Role'
 import clients from '@adapters/http/routes/clients'
 import dashboard from '@adapters/http/routes/dashboard'
 import login from '@adapters/http/routes/login'
@@ -19,12 +16,21 @@ import type { Env } from 'src/env'
 
 const app = new Hono<Env>()
 
-app.use(injectExternalServices)
-app.use(injectUserServices)
-app.use(injectClientServices)
-app.use(injectMachineServices)
-app.use(injectTechnicianServices)
-app.use(injectVisitServices)
+app.use('*', async (c, next) => {
+	c.header('X-Content-Type-Options', 'nosniff')
+	c.header('X-Frame-Options', 'DENY')
+	c.header(
+		'Strict-Transport-Security',
+		'max-age=31536000; includeSubDomains'
+	)
+	c.header(
+		'Content-Security-Policy',
+		"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+	)
+	await next()
+})
+
+app.use(injectServices)
 
 app.use(renderer)
 
@@ -32,6 +38,7 @@ app.route('/', login)
 app.route('/register', register)
 
 app.use('/dashboard/*', auth)
+app.use('/dashboard/users/*', requireMinLevel(ROLES.A))
 
 dashboard.route('/service', service)
 dashboard.route('/clients', clients)

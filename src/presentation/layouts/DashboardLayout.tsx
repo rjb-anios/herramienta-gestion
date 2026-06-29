@@ -1,6 +1,6 @@
+import { ROLES } from '@core/entities/Role'
+import type { Role } from '@core/entities/Role'
 import type { FC, PropsWithChildren } from 'hono/jsx'
-
-type Role = 'A' | 'u'
 
 const DashboardLayout: FC<PropsWithChildren<{ role: Role }>> = async ({
 	children,
@@ -28,7 +28,7 @@ const DashboardLayout: FC<PropsWithChildren<{ role: Role }>> = async ({
 					>
 						Depósito
 					</a>
-					{role === 'A' && (
+					{ROLES[role] >= ROLES.A && (
 						<a
 							class='w-fit flex text-center'
 							href='/dashboard/users'

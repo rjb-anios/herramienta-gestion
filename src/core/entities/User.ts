@@ -1,8 +1,10 @@
+import type { Role } from '@core/entities/Role'
+
 export interface User {
 	id: string
 	username: string
 	name: string
-	role: 'A' | 'u'
+	role: Role
 }
 
 export interface DataToLoginUser extends User {
@@ -42,8 +44,8 @@ export interface EditUserRequest {
 	username?: string
 	prevName: string
 	name?: string
-	prevRole: 'A' | 'u'
-	role?: 'A' | 'u'
+	prevRole: Role
+	role?: Role
 	password?: string
 }
 
