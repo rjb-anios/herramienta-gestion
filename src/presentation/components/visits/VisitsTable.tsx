@@ -8,6 +8,8 @@ import type { Child } from 'hono/jsx'
 import { useState } from 'hono/jsx'
 import type { JSX } from 'hono/jsx/jsx-runtime'
 
+const PAGE_SIZE = 20
+
 interface AvailableYears {
 	years: number[]
 	children?: Child
@@ -16,11 +18,13 @@ interface AvailableYears {
 const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [query, setQuery] = useState('')
+	const [page, setPage] = useState(0)
 
 	const { visits, isLoading, fetchByYear } = useVisits()
 
 	const handleYearClick = (year: number) => {
 		setSelectedYear(year)
+		setPage(0)
 		fetchByYear(year)
 	}
 
@@ -33,6 +37,13 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 					v.description.includes(query)
 			)
 		: visits
+
+	const totalPages = Math.ceil(filtered.length / PAGE_SIZE)
+	const start = page * PAGE_SIZE
+	const pageItems = filtered.slice(start, start + PAGE_SIZE)
+
+	const handlePrev = () => setPage(p => Math.max(0, p - 1))
+	const handleNext = () => setPage(p => Math.min(totalPages - 1, p + 1))
 
 	return (
 		<>
@@ -58,7 +69,10 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 				<b>Buscar por cliente, técnico, concepto o descripción</b>
 				<input
 					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
-					onChange={e => setQuery((e.target as HTMLInputElement).value)}
+					onChange={e => {
+						setQuery((e.target as HTMLInputElement).value)
+						setPage(0)
+					}}
 					placeholder='Distingue mayúsculas de minúsculas'
 					type='search'
 					value={query}
@@ -107,7 +121,7 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 								</td>
 							</tr>
 						) : (
-							filtered.map(e => (
+							pageItems.map(e => (
 								<tr class='h-[40px]'>
 									<td class='w-2/6 border-x truncate'>
 										{dayjs(e.date).format('DD-MM-YYYY')}
@@ -127,6 +141,29 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 						)}
 					</tbody>
 				</table>
+				{totalPages > 1 && (
+					<div class='flex justify-center items-center gap-6 text-3xl'>
+						<button
+							class={`cursor-pointer ${page === 0 ? 'text-gray-400' : ''}`}
+							disabled={page === 0}
+							onClick={handlePrev}
+							type='button'
+						>
+							◀ Anterior
+						</button>
+						<span>
+							{page + 1} / {totalPages}
+						</span>
+						<button
+							class={`cursor-pointer ${page >= totalPages - 1 ? 'text-gray-400' : ''}`}
+							disabled={page >= totalPages - 1}
+							onClick={handleNext}
+							type='button'
+						>
+							Siguiente ▶
+						</button>
+					</div>
+				)}
 			</div>
 		</>
 	)
