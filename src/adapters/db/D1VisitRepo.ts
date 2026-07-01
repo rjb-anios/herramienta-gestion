@@ -25,21 +25,30 @@ export class D1VisitRepo implements VisitRepo {
 				hours: Number(data.hours),
 				id: data.id,
 				id_client: data.id_client,
-				id_technician: data.id_technician
+				id_technician: data.id_technicians[0]
 			})
 
-			if (data.id_machine.length > 0) {
-				const relations = data.id_machine.map(machineId =>
+			const relations = []
+
+			for (const machineId of data.id_machine) {
+				relations.push(
 					this.db.insert(schema.visitsToMachinesTable).values({
 						id_machine: machineId,
 						id_visit: data.id
 					})
 				)
-
-				await this.db.batch([insertVisit, ...relations])
-			} else {
-				await this.db.batch([insertVisit])
 			}
+
+			for (const technicianId of data.id_technicians) {
+				relations.push(
+					this.db.insert(schema.visitsToTechniciansTable).values({
+						id_technician: technicianId,
+						id_visit: data.id
+					})
+				)
+			}
+
+			await this.db.batch([insertVisit, ...relations])
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -90,8 +99,12 @@ export class D1VisitRepo implements VisitRepo {
 							}
 						}
 					},
-					technician: {
-						columns: { id: true, initials: true }
+					technicians: {
+						with: {
+							technician: {
+								columns: { initials: true }
+							}
+						}
 					}
 				}
 			})
@@ -107,7 +120,7 @@ export class D1VisitRepo implements VisitRepo {
 				hours: Number(v.hours),
 				id: v.id,
 				machines: v.machines.map(m => m.machine),
-				technician: v.technician.initials
+				technicians: v.technicians.map(t => t.technician.initials)
 			}))
 
 			return { type: 'Success', visits: formattedVisits }

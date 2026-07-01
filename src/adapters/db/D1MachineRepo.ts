@@ -181,6 +181,27 @@ export class D1MachineRepo implements MachineRepo {
 		}
 	}
 
+	async unassignFromClient(
+		machineId: string
+	): Promise<AddOrDeleteMachineResponse> {
+		try {
+			await this.db
+				.update(schema.machinesTable)
+				.set({ id_client: null })
+				.where(eq(schema.machinesTable.id, machineId))
+			await this.invalidateAll()
+
+			return { type: 'Success' }
+		} catch (error: any) {
+			console.log('Error al desasignar equipo: ', error.message)
+
+			return {
+				message: 'Desasignar equipo: error desconocido',
+				type: 'Error'
+			}
+		}
+	}
+
 	async findAllWarehouse(): Promise<FindAllMachinesResponse> {
 		return kvCacheGet<FindAllMachinesResponse>(
 			this.kv,

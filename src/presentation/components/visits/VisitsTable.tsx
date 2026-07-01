@@ -28,7 +28,7 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 		? visits.filter(
 				v =>
 					v.client.includes(query) ||
-					v.technician.includes(query) ||
+					v.technicians.some(t => t.includes(query)) ||
 					(VISIT_CONCEPTS[v.concept]?.label ?? v.concept).includes(query) ||
 					v.description.includes(query)
 			)
@@ -55,7 +55,7 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 				))}
 			</div>
 			<label class='flex flex-col gap-2 w-fit mb-10'>
-				Buscar por cliente, técnico, concepto o descripción
+				<b>Buscar por cliente, técnico, concepto o descripción</b>
 				<input
 					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					onChange={e => setQuery((e.target as HTMLInputElement).value)}
@@ -74,7 +74,7 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 						<tr class='h-[40px]'>
 							<th class='w-2/6 border-x'>Fecha</th>
 							<th class='w-2/6 border-x'>Cliente</th>
-							<th class='w-1/6 border-x'>Técnico</th>
+							<th class='w-1/6 border-x'>Técnico(s)</th>
 							<th class='w-1/6 border-x'>Detalles</th>
 						</tr>
 					</thead>
@@ -113,7 +113,9 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 										{dayjs(e.date).format('DD-MM-YYYY')}
 									</td>
 									<td class='w-2/6 border-x truncate'>{e.client}</td>
-									<td class='w-1/6 border-x truncate'>{e.technician}</td>
+									<td class='w-1/6 border-x truncate'>
+										{e.technicians.join(' / ')}
+									</td>
 									<td class='w-1/6 border-x truncate'>
 										<Dots dialogId={e.id} />
 									</td>

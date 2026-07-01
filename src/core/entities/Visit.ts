@@ -23,7 +23,7 @@ export interface Visit {
 	id: string
 	date: string
 	id_client: string
-	id_technician: string
+	id_technicians: string[]
 	id_machine: string[]
 	concept: VisitConcepts
 	description: string
@@ -38,7 +38,7 @@ export interface VisitToDisplay {
 	client: string
 	machines: MachineToDisplay[]
 	description: string
-	technician: string
+	technicians: string[]
 	future: string | undefined
 	hours: number
 }

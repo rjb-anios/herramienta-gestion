@@ -40,6 +40,14 @@ CREATE TABLE IF NOT EXISTS "visits" (
   FOREIGN KEY ("id_technician") REFERENCES "technicians"("id") ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
+CREATE TABLE IF NOT EXISTS "visits_to_technicians" (
+  "id_visit" TEXT NOT NULL,
+  "id_technician" TEXT NOT NULL,
+  PRIMARY KEY ("id_visit", "id_technician"),
+  FOREIGN KEY ("id_visit") REFERENCES "visits"("id") ON UPDATE NO ACTION ON DELETE CASCADE,
+  FOREIGN KEY ("id_technician") REFERENCES "technicians"("id") ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
 CREATE TABLE IF NOT EXISTS "visits_to_machines" (
   "id_visit" TEXT NOT NULL,
   "id_machine" TEXT NOT NULL,
@@ -72,4 +80,5 @@ CREATE INDEX IF NOT EXISTS "machines_index_0" ON "machines" ("model", "serial_nu
 CREATE INDEX IF NOT EXISTS "visits_index_0" ON "visits" ("id_client", "date");
 CREATE INDEX IF NOT EXISTS "visits_index_1" ON "visits" ("date", "id_client");
 CREATE INDEX IF NOT EXISTS "find_machine_index_0" ON "visits_to_machines" ("id_machine");
+CREATE INDEX IF NOT EXISTS "find_technician_index_0" ON "visits_to_technicians" ("id_technician");
 CREATE INDEX IF NOT EXISTS "refresh_tokens_index_0" ON "refresh_tokens" ("id_user");

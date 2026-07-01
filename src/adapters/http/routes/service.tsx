@@ -218,7 +218,7 @@ service.post('/visits/register', regVisitValidator, async c => {
 		hours: Number(hours),
 		id_client: client,
 		id_machine: machine,
-		id_technician: technician
+		id_technicians: technician
 	})
 
 	if (res.type === 'Error') {
@@ -233,7 +233,7 @@ service.post('/visits/register', regVisitValidator, async c => {
 		)
 	}
 
-	return c.redirect('/dashboard/service/visits/register', 303)
+	return c.redirect('/dashboard/service', 303)
 })
 
 /// Obtiene formulario para registrar técnico

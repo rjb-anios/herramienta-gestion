@@ -62,6 +62,22 @@ export const visitsTable = sqliteTable(
 	]
 )
 
+export const visitsToTechniciansTable = sqliteTable(
+	'visits_to_technicians',
+	{
+		id_technician: text()
+			.notNull()
+			.references(() => techniciansTable.id),
+		id_visit: text()
+			.notNull()
+			.references(() => visitsTable.id, { onDelete: 'cascade' })
+	},
+	table => [
+		primaryKey({ columns: [table.id_visit, table.id_technician] }),
+		index('find_technician_index_0').on(table.id_technician)
+	]
+)
+
 export const visitsToMachinesTable = sqliteTable(
 	'visits_to_machines',
 	{
@@ -106,11 +122,22 @@ export const visitsRelations = relations(visitsTable, ({ one, many }) => ({
 		references: [clientsTable.id]
 	}),
 	machines: many(visitsToMachinesTable),
-	technician: one(techniciansTable, {
-		fields: [visitsTable.id_technician],
-		references: [techniciansTable.id]
-	})
+	technicians: many(visitsToTechniciansTable)
 }))
+
+export const visitsToTechniciansRelations = relations(
+	visitsToTechniciansTable,
+	({ one }) => ({
+		technician: one(techniciansTable, {
+			fields: [visitsToTechniciansTable.id_technician],
+			references: [techniciansTable.id]
+		}),
+		visit: one(visitsTable, {
+			fields: [visitsToTechniciansTable.id_visit],
+			references: [visitsTable.id]
+		})
+	})
+)
 
 export const visitsToMachinesRelations = relations(
 	visitsToMachinesTable,

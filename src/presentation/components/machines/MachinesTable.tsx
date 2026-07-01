@@ -70,12 +70,17 @@ const MachinesTable: FC<
 											</div>
 											<div class='flex gap-10 justify-center'>
 												<form
-												// action={`#`}
-												// method='post'
+													action='/dashboard/clients/equipment/unassign'
+													method='post'
 												>
+													<input
+														hidden
+														name='id_machine'
+														readonly
+														value={e.id}
+													/>
 													<button
 														class='text-red-700 cursor-pointer'
-														disabled
 														type='submit'
 													>
 														<strong>Mover</strong>

@@ -37,4 +37,8 @@ export interface MachineRepo {
 		machineId: string,
 		clientId: string
 	) => Promise<AddOrDeleteMachineResponse>
+
+	unassignFromClient: (
+		machineId: string
+	) => Promise<AddOrDeleteMachineResponse>
 }

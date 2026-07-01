@@ -144,63 +144,64 @@ clients.post(
 	},
 	editClientValidator,
 	async c => {
-	const {
-		prevName,
-		name,
-		prevContact,
-		contact,
-		prevPhone,
-		phone,
-		email,
-		prevEmail
-	} = c.req.valid('form')
+		const {
+			prevName,
+			name,
+			prevContact,
+			contact,
+			prevPhone,
+			phone,
+			email,
+			prevEmail
+		} = c.req.valid('form')
 
-	const {
-		commands: { editClient }
-	} = c.get('clientCases')
+		const {
+			commands: { editClient }
+		} = c.get('clientCases')
 
-	const id = c.req.param('id')
+		const id = c.req.param('id')
 
-	const res = await editClient.execute({
-		contact,
-		email,
-		id,
-		name,
-		phone,
-		prevContact,
-		prevEmail,
-		prevName,
-		prevPhone
-	})
+		const res = await editClient.execute({
+			contact,
+			email,
+			id,
+			name,
+			phone,
+			prevContact,
+			prevEmail,
+			prevName,
+			prevPhone
+		})
 
-	if (res.type === 'NoHasChanges') {
-		return await c.render(
-			<>
-				<Back
-					route='clients/all'
-					title='Editar cliente'
-				/>
-				<p class='w-fit text-3xl m-auto block text-center'>
-					No actualizó ningún dato
-				</p>
-			</>
-		)
+		if (res.type === 'NoHasChanges') {
+			return await c.render(
+				<>
+					<Back
+						route='clients/all'
+						title='Editar cliente'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>
+						No actualizó ningún dato
+					</p>
+				</>
+			)
+		}
+
+		if (res.type === 'Error') {
+			return await c.render(
+				<>
+					<Back
+						route='clients/all'
+						title='Editar cliente'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+				</>
+			)
+		}
+
+		return c.redirect('/dashboard/clients/all', 303)
 	}
-
-	if (res.type === 'Error') {
-		return await c.render(
-			<>
-				<Back
-					route='clients/all'
-					title='Editar cliente'
-				/>
-				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
-			</>
-		)
-	}
-
-	return c.redirect('/dashboard/clients/all', 303)
-})
+)
 
 /// Elimina cliente
 
@@ -421,7 +422,48 @@ clients.post('/equipment/assign', async c => {
 		)
 	}
 
-	return c.redirect('/dashboard/clients/equipment/assign', 303)
+	return c.redirect('/dashboard/clients', 303)
+})
+
+// Desasigna equipo de un cliente y lo devuelve a depósito
+
+clients.post('/equipment/unassign', async c => {
+	const form = await c.req.formData()
+	const machineId = form.get('id_machine') as string
+
+	if (!machineId) {
+		return await c.render(
+			<>
+				<Back
+					route='clients'
+					title='Mover equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					Debe seleccionar un equipo
+				</p>
+			</>
+		)
+	}
+
+	const {
+		commands: { unassignMachine }
+	} = c.get('machineCases')
+
+	const res = await unassignMachine.execute(machineId)
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<Back
+					route='clients'
+					title='Mover equipo'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+			</>
+		)
+	}
+
+	return c.redirect('/dashboard/clients/equipment/all', 303)
 })
 
 export default clients

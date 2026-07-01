@@ -62,7 +62,11 @@ const regVisitSchema = z
 			if (typeof val === 'string') return [val]
 			return val
 		}, z.array(z.uuid())),
-		technician: z.uuid()
+		technician: z.preprocess(val => {
+			if (!val) return []
+			if (typeof val === 'string') return [val]
+			return val
+		}, z.array(z.uuid()).min(1, { message: 'Debe seleccionar al menos un técnico' }))
 	})
 	.superRefine((data, ctx) => {
 		const requiresEquipment =

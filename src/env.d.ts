@@ -16,7 +16,7 @@ import type {
 	FindMachineResponse,
 	Machine
 } from '@core/entities/Machine'
-
+import type { Role } from '@core/entities/Role'
 import type {
 	AddTechnicianResponse,
 	DeleteTechnicianResponse,
@@ -25,7 +25,6 @@ import type {
 	FindTechnicianResponse,
 	Technician
 } from '@core/entities/Technician'
-
 import type {
 	DeleteUserResponse,
 	EditUserRequest,
@@ -38,15 +37,12 @@ import type {
 	RegisterUserResponse,
 	TokenData
 } from '@core/entities/User'
-
 import type {
 	AddVisitResponse,
 	FindVisitsResponse,
 	GetAvailableYearsResponse,
 	Visit
 } from '@core/entities/Visit'
-
-import type { Role } from '@core/entities/Role'
 
 import type { CookieService } from '@core/ports/CookieService'
 
@@ -120,6 +116,9 @@ export interface Env {
 					execute(
 						data: Omit<Machine, 'id' | 'id_client'>
 					): Promise<AddOrDeleteMachineResponse>
+				}
+				unassignMachine: {
+					execute(machineId: string): Promise<AddOrDeleteMachineResponse>
 				}
 			}
 			queries: {

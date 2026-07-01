@@ -31,6 +31,7 @@ type Title =
 	| 'Eliminar técnico'
 	| 'Visitas'
 	| 'Registrar visita'
+	| 'Mover equipo'
 
 const Back: FC<PropsWithChildren<{ route: Route; title: Title }>> = ({
 	route,

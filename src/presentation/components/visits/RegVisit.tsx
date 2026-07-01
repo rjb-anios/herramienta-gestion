@@ -126,17 +126,28 @@ const RegVisit = ({
 					</div>
 				)}
 
-				{/* Selección de técnico */}
+			{/* Selección de técnico */}
 
-				<select
-					class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
-					name='technician'
-				>
-					<option value=''>Seleccione técnico</option>
-					{arrTech.map(e => (
-						<option value={e.id}>{e.name}</option>
-					))}
-				</select>
+				<div class='min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'>
+					<p class='text-gray-500 mb-2'>Técnicos participantes:</p>
+					<div class='bg-base-100 max-h-[200px] overflow-y-auto flex flex-col gap-2 p-2'>
+						{arrTech.map((e, idx) => (
+							<label
+								class='label h-[35px] flex items-center gap-2 cursor-pointer hover:bg-base-200 p-1 transition-colors rounded-lg'
+								key={e.id}
+							>
+								<input
+									class='checkbox checkbox-lg'
+									defaultChecked={idx === 0}
+									name='technician'
+									type='checkbox'
+									value={e.id}
+								/>
+								<span class='truncate'>{e.name}</span>
+							</label>
+						))}
+					</div>
+				</div>
 
 				{/* Descripción de visita realizada*/}
 

@@ -17,6 +17,7 @@ import { AssignMachineCommand } from '@core/use-cases/machine/commands/AssignMac
 import { DeleteMachineCommand } from '@core/use-cases/machine/commands/DeleteMachine.command'
 import { EditMachineCommand } from '@core/use-cases/machine/commands/EditMachine.command'
 import { RegMachineCommand } from '@core/use-cases/machine/commands/RegMachine.command'
+import { UnassignMachineCommand } from '@core/use-cases/machine/commands/UnassignMachine.command'
 import { ExistsAnyMachineQuery } from '@core/use-cases/machine/queries/ExistsAnyMachine.query'
 import {
 	FindAllMachinesQuery,
@@ -98,7 +99,8 @@ const injectServices = createMiddleware<Env>(async (c, next) => {
 			assignMachine: new AssignMachineCommand(machineRepo),
 			deleteMachine: new DeleteMachineCommand(machineRepo),
 			editMachine: new EditMachineCommand(machineRepo),
-			regMachine: new RegMachineCommand(machineRepo)
+			regMachine: new RegMachineCommand(machineRepo),
+			unassignMachine: new UnassignMachineCommand(machineRepo)
 		},
 		queries: {
 			existsAnyMachine: new ExistsAnyMachineQuery(machineRepo),

@@ -48,9 +48,9 @@ const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
 						</div>
 						<div class='w-fit flex flex-col gap-2'>
 							<h3 class='w-fit'>
-								<strong>Técnico</strong>
+								<strong>Técnico(s)</strong>
 							</h3>
-							<h4>{visit.technician}</h4>
+							<h4>{visit.technicians.join(' / ')}</h4>
 						</div>
 						<div class='w-fit flex flex-col gap-2'>
 							<h3 class='w-fit'>
