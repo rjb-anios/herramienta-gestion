@@ -1,4 +1,7 @@
-import { isValidUUID, isValidYear } from '@adapters/external/optionalValidationTool'
+import {
+	isValidUUID,
+	isValidYear
+} from '@adapters/external/optionalValidationTool'
 import {
 	editTechValidator,
 	regTechValidator
@@ -67,7 +70,7 @@ service.get('/visits/all/:year', async c => {
 	const year = c.req.param('year')
 
 	if (!isValidYear(year)) {
-		return c.json({ type: 'Error', message: 'Año inválido' } as const, 400)
+		return c.json({ message: 'Año inválido', type: 'Error' } as const, 400)
 	}
 
 	const {

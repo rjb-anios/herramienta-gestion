@@ -15,8 +15,6 @@ export async function kvCacheGet<T>(
 	return data
 }
 
-export function kvCacheInvalidate(kv: KVNamespace, ...keys: string[]) {
-	for (const key of keys) {
-		kv.delete(key).catch(() => {})
-	}
+export async function kvCacheInvalidate(kv: KVNamespace, ...keys: string[]) {
+	await Promise.allSettled(keys.map(key => kv.delete(key)))
 }

@@ -1,8 +1,5 @@
+import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
-import {
-	kvCacheGet,
-	kvCacheInvalidate
-} from '@adapters/db/kvCache'
 import type {
 	AddOrDeleteClientResponse,
 	Client,
@@ -28,7 +25,7 @@ export class D1ClientRepo implements ClientRepo {
 	async addClient(data: Client): Promise<AddOrDeleteClientResponse> {
 		try {
 			await this.db.insert(schema.clientsTable).values(data)
-			kvCacheInvalidate(this.kv, CACHE_KEY)
+			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -48,7 +45,7 @@ export class D1ClientRepo implements ClientRepo {
 			await this.db
 				.delete(schema.clientsTable)
 				.where(eq(schema.clientsTable.id, id))
-			kvCacheInvalidate(this.kv, CACHE_KEY)
+			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -69,7 +66,7 @@ export class D1ClientRepo implements ClientRepo {
 				.update(schema.clientsTable)
 				.set(data)
 				.where(eq(schema.clientsTable.id, data.id))
-			kvCacheInvalidate(this.kv, CACHE_KEY)
+			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {

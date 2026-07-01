@@ -1,8 +1,5 @@
+import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
-import {
-	kvCacheGet,
-	kvCacheInvalidate
-} from '@adapters/db/kvCache'
 import type {
 	AddOrDeleteMachineResponse,
 	EditMachineRequest,
@@ -24,15 +21,15 @@ export class D1MachineRepo implements MachineRepo {
 
 	private get cacheKeys() {
 		return {
-			warehouse: 'machines:warehouse',
+			all: 'machines:all',
 			assigned: 'machines:assigned',
-			all: 'machines:all'
+			warehouse: 'machines:warehouse'
 		}
 	}
 
-	private invalidateAll() {
+	private async invalidateAll() {
 		const keys = Object.values(this.cacheKeys)
-		kvCacheInvalidate(this.kv, ...keys)
+		await kvCacheInvalidate(this.kv, ...keys)
 	}
 
 	/// Asociar una máquina a un cliente particular
@@ -46,7 +43,7 @@ export class D1MachineRepo implements MachineRepo {
 				model: data.model,
 				serial_number: data.serial_number
 			})
-			this.invalidateAll()
+			await this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -66,7 +63,7 @@ export class D1MachineRepo implements MachineRepo {
 			await this.db
 				.delete(schema.machinesTable)
 				.where(eq(schema.machinesTable.id, id))
-			this.invalidateAll()
+			await this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -110,7 +107,7 @@ export class D1MachineRepo implements MachineRepo {
 					serial_number: data.serial_number
 				})
 				.where(eq(schema.machinesTable.id, data.id))
-			this.invalidateAll()
+			await this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -150,7 +147,7 @@ export class D1MachineRepo implements MachineRepo {
 				model: data.model,
 				serial_number: data.serial_number
 			})
-			this.invalidateAll()
+			await this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -171,7 +168,7 @@ export class D1MachineRepo implements MachineRepo {
 				.update(schema.machinesTable)
 				.set({ id_client: clientId })
 				.where(eq(schema.machinesTable.id, machineId))
-			this.invalidateAll()
+			await this.invalidateAll()
 
 			return { type: 'Success' }
 		} catch (error: any) {

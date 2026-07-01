@@ -1,8 +1,5 @@
+import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
-import {
-	kvCacheGet,
-	kvCacheInvalidate
-} from '@adapters/db/kvCache'
 import type {
 	AddTechnicianResponse,
 	DeleteTechnicianResponse,
@@ -32,7 +29,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 				initials: data.initials,
 				name: data.name
 			})
-			kvCacheInvalidate(this.kv, CACHE_KEY)
+			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -49,7 +46,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			await this.db
 				.delete(schema.techniciansTable)
 				.where(eq(schema.techniciansTable.id, id))
-			kvCacheInvalidate(this.kv, CACHE_KEY)
+			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -130,7 +127,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 					name: data.name
 				})
 				.where(eq(schema.techniciansTable.id, data.id))
-			kvCacheInvalidate(this.kv, CACHE_KEY)
+			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
