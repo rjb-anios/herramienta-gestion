@@ -17,7 +17,12 @@ dashboard.use(
 
 		return await (
 			<Layout>
-				<DashboardLayout role={user.role}>{children}</DashboardLayout>
+				<DashboardLayout
+					name={user.name}
+					role={user.role}
+				>
+					{children}
+				</DashboardLayout>
 			</Layout>
 		)
 	})

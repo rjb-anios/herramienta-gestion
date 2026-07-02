@@ -1,7 +1,7 @@
 import type { FC } from 'hono/jsx'
 
-const WarehouseLayout: FC = async props => {
-	return await (
+const WarehouseLayout: FC = () => {
+	return (
 		<>
 			<div class='flex flex-col gap-12'>
 				<ul class='flex flex-col gap-4 mr-auto'>
@@ -16,9 +16,6 @@ const WarehouseLayout: FC = async props => {
 					</li>
 				</ul>
 			</div>
-			<section class='flex flex-col text-3xl pt-8 h-full justify-center'>
-				{props.children}
-			</section>
 		</>
 	)
 }

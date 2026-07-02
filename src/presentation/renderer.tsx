@@ -1,3 +1,4 @@
+// import ThemeController from '@presentation/components/reusables/ThemeController'
 import { jsxRenderer } from 'hono/jsx-renderer'
 import { Link, ViteClient } from 'vite-ssr-components/hono'
 
@@ -29,16 +30,16 @@ const renderer = jsxRenderer(async ({ children }) => {
 				<title>Herramienta de Gestión</title>
 			</head>
 			<body class='w-full h-dvh'>
-				<header class='h-1/12 flex min-h-[60px]'>
+				<header class='h-1/12 flex min-h-[60px] pt-[10px] px-8'>
 					<section class='m-auto'>
-						<h1 class='text-5xl h-fit w-fit max-[650px]:text-4xl max-[420px]:text-3xl'>
+						<h1 class='text-5xl h-fit w-fit max-[660px]:text-4xl max-[490px]:text-3xl'>
 							Herramienta de Gestión
 						</h1>
 					</section>
 				</header>
 				<main class='h-10/12 min-h-[450px] flex flex-col'>{children}</main>
 				<footer class='h-1/12 min-h-[60px] flex flex-col text-2xl border-t pt-4'>
-					<p class='mx-auto'>2026</p>
+					<p class='mx-auto'>RB - 2026</p>
 				</footer>
 			</body>
 		</html>
