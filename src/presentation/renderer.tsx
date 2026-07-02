@@ -1,4 +1,3 @@
-// import ThemeController from '@presentation/components/reusables/ThemeController'
 import { jsxRenderer } from 'hono/jsx-renderer'
 import { Link, ViteClient } from 'vite-ssr-components/hono'
 
