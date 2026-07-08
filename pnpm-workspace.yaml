@@ -2,3 +2,8 @@ allowBuilds:
   esbuild: true
   sharp: true
   workerd: true
+minimumReleaseAgeExclude:
+  - '@cloudflare/vite-plugin@1.43.2'
+  - daisyui@5.6.15
+  - miniflare@4.20260706.0
+  - wrangler@4.108.0
