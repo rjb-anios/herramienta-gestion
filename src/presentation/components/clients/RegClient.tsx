@@ -39,9 +39,9 @@ const RegClient: FC = async props => {
 					maxlength={8}
 					minlength={8}
 					name='phone'
-					placeholder='Teléfono (ej. 096123123)'
+					placeholder='Teléfono (ej. 96123123)'
 					required
-					type='text'
+					type='tel'
 				/>
 				<input
 					autocomplete='off'

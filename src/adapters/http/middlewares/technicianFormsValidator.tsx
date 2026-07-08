@@ -5,6 +5,7 @@ import RegTech from '@presentation/components/technician/RegTech'
 import z from 'zod'
 
 const regTechSchema = z.object({
+	email: z.email().trim(),
 	initials: z
 		.string()
 		.trim()
@@ -21,10 +22,17 @@ const regTechSchema = z.object({
 			{ error: 'Nombre: verifique números o caracteres especiales' }
 		)
 		.min(4, { error: 'Nombre debe tener mínimo 4 caracteres' })
-		.max(30, { error: 'Nombre debe tener un máximo de 30 caracteres' })
+		.max(30, { error: 'Nombre debe tener un máximo de 30 caracteres' }),
+	phone: z
+		.string()
+		.trim()
+		.regex(/^[0-9]{8}$/, { error: 'Teléfono: sólo se permiten números' })
+		.min(8, { error: 'Teléfono debe tener mínimo 8 caracteres' })
+		.max(8, { error: 'Teléfono debe tener un máximo de 8 caracteres' })
 })
 
 const editTechSchema = z.object({
+	email: optionalField(z.email().trim()),
 	id: z.uuid(),
 	initials: optionalField(
 		z
@@ -43,6 +51,13 @@ const editTechSchema = z.object({
 				{ error: 'Nombre: verifique números o caracteres especiales' }
 			)
 	),
+	phone: optionalField(
+		z
+			.string()
+			.trim()
+			.regex(/^[0-9]{8}$/, { error: 'Teléfono: sólo se permiten números' })
+	),
+	prevEmail: z.email().trim(),
 	prevInitials: z
 		.string()
 		.trim()
@@ -59,7 +74,13 @@ const editTechSchema = z.object({
 			{ error: 'Nombre: verifique números o caracteres especiales' }
 		)
 		.min(4, { error: 'Nombre debe tener mínimo 4 caracteres' })
-		.max(30, { error: 'Nombre debe tener un máximo de 30 caracteres' })
+		.max(30, { error: 'Nombre debe tener un máximo de 30 caracteres' }),
+	prevPhone: z
+		.string()
+		.trim()
+		.regex(/^[0-9]{8}$/, { error: 'Teléfono: sólo se permiten números' })
+		.min(8, { error: 'Teléfono debe tener mínimo 8 caracteres' })
+		.max(8, { error: 'Teléfono debe tener un máximo de 8 caracteres' })
 })
 
 export const regTechValidator = zValidator(

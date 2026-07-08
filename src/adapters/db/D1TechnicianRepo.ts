@@ -30,9 +30,11 @@ export class D1TechnicianRepo implements TechnicianRepo {
 		try {
 			await this.db.insert(schema.techniciansTable).values({
 				active: data.active ? 1 : 0,
+				email: data.email,
 				id: data.id,
 				initials: data.initials,
-				name: data.name
+				name: data.name,
+				phone: data.phone
 			})
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
@@ -160,12 +162,16 @@ export class D1TechnicianRepo implements TechnicianRepo {
 		data: EditTechnicianRequest
 	): Promise<EditTechnicianResponse> {
 		try {
+			const setData: Record<string, string> = {}
+
+			if (data.name !== undefined) setData.name = data.name
+			if (data.initials !== undefined) setData.initials = data.initials
+			if (data.email !== undefined) setData.email = data.email
+			if (data.phone !== undefined) setData.phone = data.phone
+
 			await this.db
 				.update(schema.techniciansTable)
-				.set({
-					initials: data.initials,
-					name: data.name
-				})
+				.set(setData)
 				.where(eq(schema.techniciansTable.id, data.id))
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 

@@ -2,6 +2,8 @@ export interface Technician {
 	id: string
 	name: string
 	initials: string
+	email: string
+	phone: string
 	active: boolean
 }
 export type AddTechnicianResponse =
@@ -15,6 +17,10 @@ export interface EditTechnicianRequest {
 	name?: string
 	prevInitials: string
 	initials?: string
+	prevEmail: string
+	email?: string
+	prevPhone: string
+	phone?: string
 }
 
 export type EditTechnicianResponse =

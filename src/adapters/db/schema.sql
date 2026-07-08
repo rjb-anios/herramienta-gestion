@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS "technicians" (
   "id" TEXT NOT NULL,
   "name" TEXT NOT NULL,
 	"initials" TEXT NOT NULL UNIQUE,
+  "email" TEXT NOT NULL,
+  "phone" TEXT NOT NULL,
   "active" INTEGER NOT NULL DEFAULT 1,
   PRIMARY KEY("id")
 );

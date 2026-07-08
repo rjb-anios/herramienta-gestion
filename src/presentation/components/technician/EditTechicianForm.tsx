@@ -79,6 +79,52 @@ const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
 					placeholder='Nuevas iniciales (ej. PP)'
 					type='text'
 				/>
+				<label class='flex flex-col'>
+					Correo actual
+					<input
+						autocomplete='off'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						name='prevEmail'
+						placeholder='Email (ej. tech@email.com)'
+						readonly
+						required
+						tabindex={-1}
+						type='text'
+						value={data.email}
+					/>
+				</label>
+				<input
+					autocomplete='off'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
+					name='email'
+					placeholder='Nuevo email (ej. tec123@email.com)'
+					type='email'
+				/>
+				<label class='flex flex-col'>
+					Teléfono actual
+					<input
+						autocomplete='off'
+						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
+						maxlength={8}
+						minlength={8}
+						name='prevPhone'
+					    placeholder='Teléfono (ej. 99000024)'
+						readonly
+						required
+						tabindex={-1}
+						type='text'
+						value={data.phone}
+					/>
+				</label>
+				<input
+					autocomplete='off'
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
+					maxlength={8}
+					minlength={8}
+					name='phone'
+					placeholder='Nuevo teléfono (ej. 99000001)'
+					type='tel'
+				/>
 				{children}
 				<button
 					class='h-[40px] w-[150px] p-2 border mx-auto hover:cursor-pointer'

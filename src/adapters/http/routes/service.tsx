@@ -366,7 +366,7 @@ service.get('/technicians/register', async c => {
 /// Registra técnico
 
 service.post('/technicians/register', regTechValidator, async c => {
-	const { name, initials } = c.req.valid('form')
+	const { name, initials, email, phone } = c.req.valid('form')
 
 	const {
 		commands: { addTechnician }
@@ -374,8 +374,10 @@ service.post('/technicians/register', regTechValidator, async c => {
 
 	const res = await addTechnician.execute({
 		active: true,
+		email,
 		initials,
-		name
+		name,
+		phone
 	})
 
 	if (res.type === 'InitialsInUse') {
@@ -396,7 +398,7 @@ service.post('/technicians/register', regTechValidator, async c => {
 		)
 	}
 
-	return c.redirect('/dashboard/service/technicians/register', 303)
+	return c.redirect('/dashboard/service', 303)
 })
 
 /// Obtiene la lista de técnicos registrados
@@ -496,7 +498,8 @@ service.get('/technicians/all/edit/:id', async c => {
 /// Edita técnico
 
 service.post('/technicians/all/edit/:id', editTechValidator, async c => {
-	const { id, prevInitials, initials, prevName, name } = c.req.valid('form')
+	const { id, prevInitials, initials, prevName, name, prevEmail, email, prevPhone, phone } =
+		c.req.valid('form')
 
 	const {
 		commands: { editTechnician }
@@ -507,7 +510,11 @@ service.post('/technicians/all/edit/:id', editTechValidator, async c => {
 		initials,
 		name,
 		prevInitials,
-		prevName
+		prevName,
+		email,
+		prevEmail,
+		phone,
+		prevPhone
 	})
 
 	if (res.type === 'NoHasChanges') {

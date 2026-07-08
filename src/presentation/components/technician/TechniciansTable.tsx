@@ -17,11 +17,13 @@ const TechniciansTable: FC<
 			<table class='text-3xl w-full min-w-[890px] max-w-[1440px] mx-auto'>
 				<thead class='w-full border-b p-3'>
 					<tr class='h-[40px]'>
-						<th class='w-2/6 border-x'>Nombre</th>
-						<th class='w-2/6 border-x'>Iniciales</th>
-						<th class='w-1/6 border-x'>Estado</th>
+						<th class='w-3/12 border-x px-[10px]'>Nombre</th>
+						<th class='w-1/12 border-x px-[10px]'>Iniciales</th>
+						<th class='w-3/12 border-x px-[10px]'>Correo</th>
+						<th class='w-2/12 border-x px-[10px]'>Teléfono</th>
+						<th class='w-1/12 border-x px-[10px]'>Estado</th>
 						{ROLES[role].level >= ROLES.A.level && (
-							<th class='w-1/6 border-x'>Opción</th>
+							<th class='w-1/12 border-x px-[10px]'>Opción</th>
 						)}
 					</tr>
 				</thead>
@@ -29,10 +31,11 @@ const TechniciansTable: FC<
 					{arrTech.map(async e => {
 						return await (
 							<tr class='h-[40px]'>
-								<td class='w-2/6 border-x truncate px-[10px]'>{e.name}</td>
-								<td class='w-2/6 border-x truncate px-[10px]'>{e.initials}</td>
-								<td class='w-1/6 border-x truncate px-[10px]'>
-									{e.active ? (
+								<td class='w-3/12 border-x truncate px-[10px]'>{e.name}</td>
+								<td class='w-1/12 border-x truncate px-[10px]'>{e.initials}</td>
+								<td class='w-3/12 border-x truncate px-[10px]'>{e.email}</td>
+								<td class='w-2/12 border-x truncate px-[10px]'>{e.phone}</td>
+								<td class='w-1/12 border-x truncate px-[10px]'>{e.active ? (
 										<span class='text-green-700'>Activo</span>
 									) : (
 										<span class='text-red-700'>Inactivo</span>

@@ -102,7 +102,7 @@ const EditClientForm: FC<PropsWithChildren<{ data: Client }>> = async ({
 					minlength={8}
 					name='phone'
 					placeholder='Nuevo teléfono (ej. 99321321)'
-					type='text'
+					type='tel'
 				/>
 				<label class='flex flex-col'>
 					Correo actual

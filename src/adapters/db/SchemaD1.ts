@@ -34,9 +34,11 @@ export const machinesTable = sqliteTable(
 
 export const techniciansTable = sqliteTable('technicians', {
 	active: integer().notNull().default(1),
+	email: text().notNull(),
 	id: text().notNull().primaryKey(),
 	initials: text().notNull().unique(),
-	name: text().notNull()
+	name: text().notNull(),
+	phone: text().notNull()
 })
 
 export const visitsTable = sqliteTable(
