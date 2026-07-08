@@ -43,6 +43,21 @@ export interface VisitToDisplay {
 	hours: number
 }
 
+export interface EditVisitRequest {
+	id: string
+	prevDescription: string
+	description?: string
+	prevFuture: string | undefined
+	future?: string
+	prevHours: number
+	hours?: number
+}
+
+export type EditVisitResponse =
+	| { type: 'Success' }
+	| { type: 'NoHasChanges' }
+	| { type: 'Error'; message: string }
+
 export type AddVisitResponse =
 	| { type: 'Success' }
 	| { type: 'Error'; message: string }

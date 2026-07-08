@@ -1,3 +1,4 @@
+import { ROLES } from '@core/entities/Role'
 import type { User } from '@core/entities/User'
 import Back from '@presentation/components/reusables/Back'
 import type { FC, PropsWithChildren } from 'hono/jsx'
@@ -86,23 +87,8 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 						disabled
 						name='prevRole'
 						tabindex={-1}
-						value={data.role}
 					>
-						{data.role === 'A' ? (
-							<option
-								selected
-								value={data.role}
-							>
-								Administrador
-							</option>
-						) : (
-							<option
-								selected
-								value={data.role}
-							>
-								Usuario
-							</option>
-						)}
+						<option>{ROLES[data.role].label}</option>
 					</select>
 				</label>
 				<input
@@ -118,6 +104,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 				>
 					<option value=''>Seleccione nuevo rol</option>
 					<option value='A'>Administrador</option>
+					<option value='t'>Técnico</option>
 					<option value='u'>Usuario</option>
 				</select>
 				<label class='flex flex-col gap-7'>

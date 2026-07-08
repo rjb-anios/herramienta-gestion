@@ -8,6 +8,7 @@ type Route =
 	| 'clients/equipment/all'
 	| 'service'
 	| 'service/technicians/all'
+	| 'service/visits/all'
 	| 'warehouse'
 	| 'warehouse/all'
 
@@ -17,6 +18,7 @@ type Title =
 	| 'Editar equipo'
 	| 'Eliminar equipo'
 	| 'Asignar equipo'
+	| 'Mover equipo'
 	| 'Clientes'
 	| 'Registrar cliente'
 	| 'Editar cliente'
@@ -28,10 +30,10 @@ type Title =
 	| 'Técnicos'
 	| 'Registrar técnico'
 	| 'Editar técnico'
-	| 'Eliminar técnico'
+	| 'Cambiar estado'
 	| 'Visitas'
 	| 'Registrar visita'
-	| 'Mover equipo'
+	| 'Editar visita'
 
 const Back: FC<PropsWithChildren<{ route: Route; title: Title }>> = ({
 	route,

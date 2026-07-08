@@ -1,16 +1,21 @@
-const TTL = 300
-
 export async function kvCacheGet<T>(
 	kv: KVNamespace,
 	key: string,
-	fetch: () => Promise<T>
+	fetch: () => Promise<T>,
+	ttl = 300
 ): Promise<T> {
 	const cached = await kv.get(key)
-	if (cached) return JSON.parse(cached) as T
+	if (cached) {
+		try {
+			return JSON.parse(cached) as T
+		} catch {
+			await kv.delete(key).catch(() => {})
+		}
+	}
 
 	const data = await fetch()
 
-	await kv.put(key, JSON.stringify(data), { expirationTtl: TTL })
+	await kv.put(key, JSON.stringify(data), { expirationTtl: ttl })
 
 	return data
 }

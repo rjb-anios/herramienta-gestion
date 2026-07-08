@@ -1,6 +1,10 @@
+import type { Role } from '@core/entities/Role'
+import { ROLES } from '@core/entities/Role'
 import type { FC } from 'hono/jsx'
 
-const WarehouseLayout: FC = () => {
+const WarehouseLayout: FC<{ role: Role }> = ({ role }) => {
+	const isAdmin = ROLES[role].level >= ROLES.A.level
+
 	return (
 		<>
 			<div class='flex flex-col gap-12'>
@@ -9,11 +13,13 @@ const WarehouseLayout: FC = () => {
 					<li class='w-fit h-fit'>
 						<a href='/dashboard/warehouse/all'>Consultar equipos en depósito</a>
 					</li>
-					<li class='w-fit h-fit'>
-						<a href='/dashboard/warehouse/register'>
-							Ingresar equipo a depósito
-						</a>
-					</li>
+					{isAdmin && (
+						<li class='w-fit h-fit'>
+							<a href='/dashboard/warehouse/register'>
+								Ingresar equipo a depósito
+							</a>
+						</li>
+					)}
 				</ul>
 			</div>
 		</>

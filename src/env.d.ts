@@ -19,7 +19,7 @@ import type {
 import type { Role } from '@core/entities/Role'
 import type {
 	AddTechnicianResponse,
-	DeleteTechnicianResponse,
+	ToggleActiveResponse,
 	EditTechnicianRequest,
 	EditTechnicianResponse,
 	FindTechnicianResponse,
@@ -39,6 +39,8 @@ import type {
 } from '@core/entities/User'
 import type {
 	AddVisitResponse,
+	EditVisitRequest,
+	EditVisitResponse,
 	FindVisitsResponse,
 	GetAvailableYearsResponse,
 	Visit
@@ -142,8 +144,8 @@ export interface Env {
 				addTechnician: {
 					execute(data: Omit<Technician, 'id'>): Promise<AddTechnicianResponse>
 				}
-				deleteTechnician: {
-					execute(id: string): Promise<DeleteTechnicianResponse>
+				deactivateTechnician: {
+					execute(id: string): Promise<ToggleActiveResponse>
 				}
 				editTechnician: {
 					execute(data: EditTechnicianRequest): Promise<EditTechnicianResponse>
@@ -151,6 +153,7 @@ export interface Env {
 			}
 			queries: {
 				findAllTechnicians: { execute(): Promise<FindTechnicianResponse> }
+				findActiveTechnicians: { execute(): Promise<FindTechnicianResponse> }
 				findTechnicianById: {
 					execute(id: string): Promise<FindTechnicianResponse>
 				}
@@ -162,10 +165,14 @@ export interface Env {
 				addVisit: {
 					execute(data: Omit<Visit, 'id'>): Promise<AddVisitResponse>
 				}
+				editVisit: {
+					execute(data: EditVisitRequest): Promise<EditVisitResponse>
+				}
 			}
 			queries: {
 				getAvailableYears: { execute(): Promise<GetAvailableYearsResponse> }
 				findVisits: { execute(year: string): Promise<FindVisitsResponse> }
+				findVisitById: { execute(id: string): Promise<FindVisitsResponse> }
 			}
 		}
 

@@ -2,6 +2,7 @@ export interface Technician {
 	id: string
 	name: string
 	initials: string
+	active: boolean
 }
 export type AddTechnicianResponse =
 	| { type: 'Success' }
@@ -21,7 +22,7 @@ export type EditTechnicianResponse =
 	| { type: 'NoHasChanges' }
 	| { type: 'Error'; message: string }
 
-export type DeleteTechnicianResponse =
+export type ToggleActiveResponse =
 	| { type: 'Success' }
 	| { type: 'Error'; message: string }
 

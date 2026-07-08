@@ -38,19 +38,23 @@ dashboard.get('/', async c => {
 })
 
 dashboard.get('/service', async c => {
-	return await c.render(<ServiceLayout />)
+	const { role } = c.get('jwtPayload')
+	return await c.render(<ServiceLayout role={role} />)
 })
 
 dashboard.get('/clients', async c => {
-	return await c.render(<ClientsLayout />)
+	const { role } = c.get('jwtPayload')
+	return await c.render(<ClientsLayout role={role} />)
 })
 
 dashboard.get('/warehouse', async c => {
-	return await c.render(<WarehouseLayout />)
+	const { role } = c.get('jwtPayload')
+	return await c.render(<WarehouseLayout role={role} />)
 })
 
 dashboard.get('/users', async c => {
-	return await c.render(<UsersLayout />)
+	const { role } = c.get('jwtPayload')
+	return await c.render(<UsersLayout role={role} />)
 })
 
 export default dashboard

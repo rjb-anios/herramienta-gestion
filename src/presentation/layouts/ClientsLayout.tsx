@@ -1,6 +1,10 @@
+import type { Role } from '@core/entities/Role'
+import { ROLES } from '@core/entities/Role'
 import type { FC } from 'hono/jsx'
 
-const ClientsLayout: FC = () => {
+const ClientsLayout: FC<{ role: Role }> = ({ role }) => {
+	const userLevel = ROLES[role].level
+
 	return (
 		<>
 			<div class='flex flex-col gap-12'>
@@ -9,9 +13,11 @@ const ClientsLayout: FC = () => {
 					<li class='w-fit h-fit'>
 						<a href='/dashboard/clients/all'>Consultar clientes</a>
 					</li>
-					<li class='w-fit h-fit'>
-						<a href='/dashboard/clients/register'>Registrar cliente</a>
-					</li>
+					{userLevel >= ROLES.A.level && (
+						<li class='w-fit h-fit'>
+							<a href='/dashboard/clients/register'>Registrar cliente</a>
+						</li>
+					)}
 				</ul>
 				<ul class='flex flex-col gap-4 mr-auto'>
 					<h3 class='w-fit h-fit text-4xl'>Equipos</h3>
@@ -20,11 +26,13 @@ const ClientsLayout: FC = () => {
 							Consultar equipos asignados
 						</a>
 					</li>
-					<li class='w-fit h-fit'>
-						<a href='/dashboard/clients/equipment/assign'>
-							Asignar equipo a cliente
-						</a>
-					</li>
+					{userLevel >= ROLES.t.level && (
+						<li class='w-fit h-fit'>
+							<a href='/dashboard/clients/equipment/assign'>
+								Asignar equipo a cliente
+							</a>
+						</li>
+					)}
 				</ul>
 			</div>
 		</>

@@ -20,6 +20,7 @@ warehouse.get('/all', async c => {
 	} = c.get('machineCases')
 
 	const res = await findAllWarehouseMachines.execute()
+	const { role } = c.get('jwtPayload')
 
 	if (res.type === 'Error') {
 		return await c.render(
@@ -47,7 +48,12 @@ warehouse.get('/all', async c => {
 		)
 	}
 
-	return await c.render(<WarehouseMachinesTable arrMachine={res.machines} />)
+	return await c.render(
+		<WarehouseMachinesTable
+			arrMachine={res.machines}
+			role={role}
+		/>
+	)
 })
 
 /// Obtiene formulario de registro de equipos
@@ -141,59 +147,60 @@ warehouse.post(
 	},
 	editMachineValidator,
 	async c => {
-	const {
-		prevManufacturer,
-		manufacturer,
-		prevModel,
-		model,
-		prevSerial_number: prevSerialNumber,
-		serial_number: serialNumber
-	} = c.req.valid('form')
+		const {
+			prevManufacturer,
+			manufacturer,
+			prevModel,
+			model,
+			prevSerial_number: prevSerialNumber,
+			serial_number: serialNumber
+		} = c.req.valid('form')
 
-	const {
-		commands: { editMachine }
-	} = c.get('machineCases')
+		const {
+			commands: { editMachine }
+		} = c.get('machineCases')
 
-	const id = c.req.param('id')
+		const id = c.req.param('id')
 
-	const res = await editMachine.execute({
-		id,
-		manufacturer,
-		model,
-		prevManufacturer,
-		prevModel,
-		prevSerial_number: prevSerialNumber,
-		serial_number: serialNumber
-	})
+		const res = await editMachine.execute({
+			id,
+			manufacturer,
+			model,
+			prevManufacturer,
+			prevModel,
+			prevSerial_number: prevSerialNumber,
+			serial_number: serialNumber
+		})
 
-	if (res.type === 'NoHasChanges') {
-		return await c.render(
-			<>
-				<Back
-					route='warehouse/all'
-					title='Editar equipo'
-				/>
-				<p class='w-fit text-3xl m-auto block text-center'>
-					No actualizó ningún dato
-				</p>
-			</>
-		)
+		if (res.type === 'NoHasChanges') {
+			return await c.render(
+				<>
+					<Back
+						route='warehouse/all'
+						title='Editar equipo'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>
+						No actualizó ningún dato
+					</p>
+				</>
+			)
+		}
+
+		if (res.type === 'Error') {
+			return await c.render(
+				<>
+					<Back
+						route='warehouse/all'
+						title='Editar equipo'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+				</>
+			)
+		}
+
+		return c.redirect('/dashboard/warehouse/all', 303)
 	}
-
-	if (res.type === 'Error') {
-		return await c.render(
-			<>
-				<Back
-					route='warehouse/all'
-					title='Editar equipo'
-				/>
-				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
-			</>
-		)
-	}
-
-	return c.redirect('/dashboard/warehouse/all', 303)
-})
+)
 
 //// Elimina un equipo
 

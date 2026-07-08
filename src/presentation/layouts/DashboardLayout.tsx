@@ -2,11 +2,6 @@ import type { Role } from '@core/entities/Role'
 import { ROLES } from '@core/entities/Role'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
-const roleLabel: Record<Role, string> = {
-	A: 'Administrador',
-	u: 'Usuario'
-}
-
 const DashboardLayout: FC<
 	PropsWithChildren<{ role: Role; name: string }>
 > = async ({ children, role, name }) => {
@@ -14,7 +9,7 @@ const DashboardLayout: FC<
 		<>
 			<div class='flex justify-between items-center h-[35px] px-10 pb-[7.5px] text-xl max-[490px]:text-lg'>
 				<span class='truncate'>
-					{name} · <i>{roleLabel[role]}</i>
+					{name} · <i>{ROLES[role].label}</i>
 				</span>
 			</div>
 			<nav class='flex h-[45px] border-y text-4xl max-[660px]:text-3xl max-[490px]:text-2xl max-[380px]:text-xl px-10'>
@@ -39,7 +34,7 @@ const DashboardLayout: FC<
 					>
 						Depósito
 					</a>
-					{ROLES[role] >= ROLES.A && (
+					{ROLES[role].level >= ROLES.A.level && (
 						<>
 							|
 							<a

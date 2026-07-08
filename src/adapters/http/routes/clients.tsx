@@ -22,6 +22,7 @@ clients.get('/all', async c => {
 	} = c.get('clientCases')
 
 	const res = await findAllClients.execute()
+	const { role } = c.get('jwtPayload')
 
 	if (res.type === 'Error') {
 		return await c.render(
@@ -49,7 +50,12 @@ clients.get('/all', async c => {
 		)
 	}
 
-	return await c.render(<ClientsTable arrClient={res.clients} />)
+	return await c.render(
+		<ClientsTable
+			arrClient={res.clients}
+			role={role}
+		/>
+	)
 })
 
 /// Obtiene formulario para registrar cliente
@@ -262,6 +268,7 @@ clients.get('/equipment/all', async c => {
 	} = c.get('machineCases')
 
 	const resMach = await findAllMachinesWithClientName.execute()
+	const { role } = c.get('jwtPayload')
 
 	if (resMach.type === 'Error') {
 		return await c.render(
@@ -289,7 +296,12 @@ clients.get('/equipment/all', async c => {
 		)
 	}
 
-	return await c.render(<MachinesTable arrMachine={resMach.machines} />)
+	return await c.render(
+		<MachinesTable
+			arrMachine={resMach.machines}
+			role={role}
+		/>
+	)
 })
 
 /// Obtiene la lista de equipos asignados a un cliente particular

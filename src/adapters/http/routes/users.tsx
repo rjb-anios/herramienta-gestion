@@ -20,6 +20,7 @@ users.get('/all', async c => {
 	} = c.get('userCases')
 
 	const res = await findAllUsers.execute()
+	const { role } = c.get('jwtPayload')
 
 	if (res.type === 'Error') {
 		return await c.render(
@@ -27,7 +28,12 @@ users.get('/all', async c => {
 		)
 	}
 
-	return await c.render(<UsersTable arrUser={res.users} />)
+	return await c.render(
+		<UsersTable
+			arrUser={res.users}
+			role={role}
+		/>
+	)
 })
 
 /// Obtiene formulario de registro de usuario

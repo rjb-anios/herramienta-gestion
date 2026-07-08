@@ -1,13 +1,15 @@
 import * as schema from '@adapters/db/SchemaD1'
 import type {
 	AddVisitResponse,
+	EditVisitRequest,
+	EditVisitResponse,
 	FindVisitsResponse,
 	GetAvailableYearsResponse,
 	Visit,
 	VisitToDisplay
 } from '@core/entities/Visit'
 import type { VisitRepo } from '@core/ports/VisitRepo'
-import { and, desc, gte, lte, sql } from 'drizzle-orm'
+import { and, desc, eq, gte, lte, sql } from 'drizzle-orm'
 import type { DrizzleD1Database } from 'drizzle-orm/d1'
 
 export class D1VisitRepo implements VisitRepo {
@@ -54,6 +56,29 @@ export class D1VisitRepo implements VisitRepo {
 		} catch (error: any) {
 			console.error('Error al registrar visita: ', error.message)
 			return { message: 'Registrar visita: error desconocido', type: 'Error' }
+		}
+	}
+
+	/// Editar una visita
+
+	async editVisit(data: EditVisitRequest): Promise<EditVisitResponse> {
+		try {
+			const setData: Record<string, string | number> = {}
+
+			if (data.description !== undefined) setData.description = data.description
+			if (data.future !== undefined) setData.future = data.future
+			if (data.hours !== undefined) setData.hours = data.hours
+
+			await this.db
+				.update(schema.visitsTable)
+				.set(setData)
+				.where(eq(schema.visitsTable.id, data.id))
+
+			return { type: 'Success' }
+		} catch (error: any) {
+			console.log('Error al editar visita: ', error.message)
+
+			return { message: 'Editar visita: error desconocido', type: 'Error' }
 		}
 	}
 
@@ -132,6 +157,61 @@ export class D1VisitRepo implements VisitRepo {
 
 			return {
 				message: 'Consultar visitas por año: error desconocido',
+				type: 'Error'
+			}
+		}
+	}
+
+	async findVisitById(id: string): Promise<FindVisitsResponse> {
+		try {
+			const res = await this.db.query.visitsTable.findMany({
+				where: eq(schema.visitsTable.id, id),
+				with: {
+					client: {
+						columns: { id: true, name: true }
+					},
+					machines: {
+						with: {
+							machine: {
+								columns: { id: true, model: true, serial_number: true }
+							}
+						}
+					},
+					technicians: {
+						with: {
+							technician: {
+								columns: { initials: true }
+							}
+						}
+					}
+				}
+			})
+
+			if (res.length === 0) return { type: 'NotVisits' }
+
+			const visit = res[0]
+
+			return {
+				type: 'Success',
+				visits: [
+					{
+						client: visit.client.name,
+						concept: visit.concept,
+						date: visit.date,
+						description: visit.description,
+						future: visit.future ?? undefined,
+						hours: Number(visit.hours),
+						id: visit.id,
+						machines: visit.machines.map(m => m.machine),
+						technicians: visit.technicians.map(t => t.technician.initials)
+					}
+				]
+			}
+		} catch (error: any) {
+			console.log('Error al buscar visita por ID: ', error.message)
+
+			return {
+				message: 'Buscar visita: error desconocido',
 				type: 'Error'
 			}
 		}

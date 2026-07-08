@@ -169,6 +169,7 @@ export class D1MachineRepo implements MachineRepo {
 				.set({ id_client: clientId })
 				.where(eq(schema.machinesTable.id, machineId))
 			await this.invalidateAll()
+			await kvCacheInvalidate(this.kv, `machines:by-client:${clientId}`)
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -185,11 +186,19 @@ export class D1MachineRepo implements MachineRepo {
 		machineId: string
 	): Promise<AddOrDeleteMachineResponse> {
 		try {
+			const machine = await this.findMachine(machineId)
+			const oldClientId =
+				machine.type === 'Success' ? machine.machine.id_client : null
+
 			await this.db
 				.update(schema.machinesTable)
 				.set({ id_client: null })
 				.where(eq(schema.machinesTable.id, machineId))
 			await this.invalidateAll()
+
+			if (oldClientId) {
+				await kvCacheInvalidate(this.kv, `machines:by-client:${oldClientId}`)
+			}
 
 			return { type: 'Success' }
 		} catch (error: any) {
@@ -348,7 +357,8 @@ export class D1MachineRepo implements MachineRepo {
 						type: 'Error'
 					}
 				}
-			}
+			},
+			30
 		)
 	}
 }

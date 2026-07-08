@@ -22,7 +22,7 @@ const regUserSchema = z
 			.trim()
 			.min(8, { error: 'Contraseña debe tener mínimo 8 caracteres' })
 			.max(16, { error: 'Contraseña debe tener máximo 16 caracteres' }),
-		role: z.enum(['A', 'u'], { error: 'Rol inválido' }),
+		role: z.enum(['A', 't', 'u'], { error: 'Rol inválido' }),
 		username: z
 			.string()
 			.trim()
@@ -82,7 +82,7 @@ const editUserSchema = z
 			)
 			.min(4, { error: 'Nombre debe tener mínimo 4 caracteres' })
 			.max(30, { error: 'Nombre debe tener un máximo de 30 caracteres' }),
-		prevRole: z.enum(['A', 'u'], { error: 'Rol inválido' }),
+		prevRole: z.enum(['A', 't', 'u'], { error: 'Rol inválido' }),
 		prevUsername: z
 			.string({ error: 'Usuario: debe pasar una cadena de texto' })
 			.trim()
@@ -91,7 +91,7 @@ const editUserSchema = z
 			})
 			.min(4, { error: 'Usuario debe tener mínimo 5 caracteres' })
 			.max(16, { error: 'Usuario debe tener un máximo de 16 caracteres' }),
-		role: z.enum(['A', 'u'], { error: 'Rol inválido' }),
+		role: z.enum(['A', 't', 'u'], { error: 'Rol inválido' }),
 		username: optionalField(
 			z
 				.string({ error: 'Usuario: debe pasar una cadena de texto' })

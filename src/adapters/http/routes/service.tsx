@@ -6,11 +6,15 @@ import {
 	editTechValidator,
 	regTechValidator
 } from '@adapters/http/middlewares/technicianFormsValidator'
-import { regVisitValidator } from '@adapters/http/middlewares/visitFormsValidator'
+import {
+	editVisitValidator,
+	regVisitValidator
+} from '@adapters/http/middlewares/visitFormsValidator'
 import Back from '@presentation/components/reusables/Back'
 import EditTechnicianForm from '@presentation/components/technician/EditTechicianForm'
 import RegTech from '@presentation/components/technician/RegTech'
 import TechniciansTable from '@presentation/components/technician/TechniciansTable'
+import EditVisitForm from '@presentation/components/visits/EditVisitForm'
 import RegVisit from '@presentation/components/visits/RegVisit'
 import VisitsTable from '@presentation/components/visits/VisitsTable'
 import { Hono } from 'hono'
@@ -82,6 +86,123 @@ service.get('/visits/all/:year', async c => {
 	return c.json(visitsByYear)
 })
 
+/// Obtiene el formulario de edición de la visita seleccionada
+
+service.get('/visits/all/:year/edit/:id', async c => {
+	const year = c.req.param('year')
+	const id = c.req.param('id')
+
+	if (!isValidYear(year) || !isValidUUID(id)) {
+		return c.redirect('/dashboard/service/visits/all', 303)
+	}
+
+	const {
+		queries: { findVisitById }
+	} = c.get('visitCases')
+
+	const res = await findVisitById.execute(id)
+
+	if (res.type === 'NotVisits') {
+		return await c.render(
+			<>
+				<Back
+					route='service/visits/all'
+					title='Editar visita'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>
+					La visita que intenta editar no existe
+				</p>
+			</>
+		)
+	}
+
+	if (res.type === 'Error') {
+		return await c.render(
+			<>
+				<Back
+					route='service/visits/all'
+					title='Editar visita'
+				/>
+				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+			</>
+		)
+	}
+
+	if (res.type === 'Success') {
+		const visit = res.visits[0]
+
+		return await c.render(<EditVisitForm visit={visit} />)
+	}
+})
+
+/// Edita la visita
+
+service.post(
+	'/visits/all/:year/edit/:id',
+	async (c, next) => {
+		const id = c.req.param('id')
+		if (!isValidUUID(id)) {
+			return c.redirect('/dashboard/service/visits/all', 303)
+		}
+		await next()
+	},
+	editVisitValidator,
+	async c => {
+		const { description, future } = c.req.valid('form')
+
+		const {
+			queries: { findVisitById },
+			commands: { editVisit }
+		} = c.get('visitCases')
+
+		const id = c.req.param('id')
+		const current = await findVisitById.execute(id)
+
+		if (current.type !== 'Success') {
+			return c.redirect('/dashboard/service/visits/all', 303)
+		}
+
+		const visit = current.visits[0]
+
+		const res = await editVisit.execute({
+			description,
+			future: future || undefined,
+			id,
+			prevDescription: visit.description,
+			prevFuture: visit.future ?? '',
+			prevHours: visit.hours
+		})
+
+		if (res.type === 'NoHasChanges') {
+			return await c.render(
+				<>
+					<Back
+						route='service/visits/all'
+						title='Editar visita'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>
+						No actualizó ningún dato
+					</p>
+				</>
+			)
+		}
+
+		if (res.type === 'Error') {
+			return await c.render(
+				<>
+					<Back
+						route='service/visits/all'
+						title='Editar visita'
+					/>
+					<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
+				</>
+			)
+		}
+
+		return c.redirect(`/dashboard/service/visits/all`, 303)
+	}
+)
+
 /// Obtiene formulario para registrar una nueva visita
 
 service.get('/visits/register', async c => {
@@ -140,10 +261,10 @@ service.get('/visits/register', async c => {
 	}
 
 	const {
-		queries: { findAllTechnicians }
+		queries: { findActiveTechnicians }
 	} = c.get('technicianCases')
 
-	const technicians = await findAllTechnicians.execute()
+	const technicians = await findActiveTechnicians.execute()
 
 	if (technicians.type === 'NoHasTechnicians') {
 		return await c.render(
@@ -252,6 +373,7 @@ service.post('/technicians/register', regTechValidator, async c => {
 	} = c.get('technicianCases')
 
 	const res = await addTechnician.execute({
+		active: true,
 		initials,
 		name
 	})
@@ -313,7 +435,13 @@ service.get('/technicians/all', async c => {
 	}
 
 	if (res.type === 'Success') {
-		return await c.render(<TechniciansTable arrTech={res.technician} />)
+		const { role } = c.get('jwtPayload')
+		return await c.render(
+			<TechniciansTable
+				arrTech={res.technician}
+				role={role}
+			/>
+		)
 	}
 })
 
@@ -411,9 +539,9 @@ service.post('/technicians/all/edit/:id', editTechValidator, async c => {
 	return c.redirect('/dashboard/service/technicians/all', 303)
 })
 
-/// Borrar técnico
+/// Activar / Desactivar técnico
 
-service.post('/technicians/all/delete/:id', async c => {
+service.post('/technicians/all/toggle-active/:id', async c => {
 	const id = c.req.param('id')
 
 	if (!isValidUUID(id)) {
@@ -421,17 +549,17 @@ service.post('/technicians/all/delete/:id', async c => {
 	}
 
 	const {
-		commands: { deleteTechnician }
+		commands: { deactivateTechnician }
 	} = c.get('technicianCases')
 
-	const res = await deleteTechnician.execute(id)
+	const res = await deactivateTechnician.execute(id)
 
 	if (res.type === 'Error') {
 		return await c.render(
 			<>
 				<Back
 					route='service/technicians/all'
-					title='Eliminar técnico'
+					title='Cambiar estado'
 				/>
 				<p class='w-fit text-3xl m-auto block text-center'>{res.message}</p>
 			</>

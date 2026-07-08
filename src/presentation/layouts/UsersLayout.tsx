@@ -1,6 +1,10 @@
+import type { Role } from '@core/entities/Role'
+import { ROLES } from '@core/entities/Role'
 import type { FC } from 'hono/jsx'
 
-const UsersLayout: FC = () => {
+const UsersLayout: FC<{ role: Role }> = ({ role }) => {
+	const isAdmin = ROLES[role].level >= ROLES.A.level
+
 	return (
 		<>
 			<div class='flex flex-col gap-12'>
@@ -9,9 +13,11 @@ const UsersLayout: FC = () => {
 					<li class='w-fit h-fit'>
 						<a href='/dashboard/users/all'>Consultar usuarios</a>
 					</li>
-					<li class='w-fit h-fit'>
-						<a href='/dashboard/users/register'>Registrar usuario</a>
-					</li>
+					{isAdmin && (
+						<li class='w-fit h-fit'>
+							<a href='/dashboard/users/register'>Registrar usuario</a>
+						</li>
+					)}
 				</ul>
 			</div>
 		</>

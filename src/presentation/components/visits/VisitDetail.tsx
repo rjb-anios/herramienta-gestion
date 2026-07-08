@@ -87,6 +87,13 @@ const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
 							<p class='w-fit text-justify'>{visit.future}</p>
 						</div>
 					)}
+					<div>
+						<a
+							href={`/dashboard/service/visits/all/${dayjs(visit.date).format('YYYY')}/edit/${visit.id}`}
+						>
+							Editar
+						</a>
+					</div>
 				</div>
 			</div>
 		</dialog>

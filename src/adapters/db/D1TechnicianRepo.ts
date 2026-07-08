@@ -2,17 +2,21 @@ import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
 import type {
 	AddTechnicianResponse,
-	DeleteTechnicianResponse,
+	ToggleActiveResponse,
 	EditTechnicianRequest,
 	EditTechnicianResponse,
 	FindTechnicianResponse,
 	Technician
 } from '@core/entities/Technician'
 import type { TechnicianRepo } from '@core/ports/TechnicianRepo'
-import { eq } from 'drizzle-orm'
+import { asc, eq } from 'drizzle-orm'
 import type { DrizzleD1Database } from 'drizzle-orm/d1'
 
 const CACHE_KEY = 'technicians:all'
+
+function mapRow(row: any): Technician {
+	return { ...row, active: row.active === 1 }
+}
 
 export class D1TechnicianRepo implements TechnicianRepo {
 	constructor(
@@ -25,6 +29,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 	async addTechnician(data: Technician): Promise<AddTechnicianResponse> {
 		try {
 			await this.db.insert(schema.techniciansTable).values({
+				active: data.active ? 1 : 0,
 				id: data.id,
 				initials: data.initials,
 				name: data.name
@@ -39,20 +44,31 @@ export class D1TechnicianRepo implements TechnicianRepo {
 		}
 	}
 
-	/// Eliminar técnico
+	/// Desactivar técnico (no se elimina, se marca como inactivo)
 
-	async deleteTechnician(id: string): Promise<DeleteTechnicianResponse> {
+	async toggleActive(id: string): Promise<ToggleActiveResponse> {
 		try {
+			const current = await this.findById(id)
+			if (current.type !== 'Success') {
+				return { type: 'Error', message: 'El técnico no existe' }
+			}
+
+			const newState = current.technician[0].active ? 0 : 1
+
 			await this.db
-				.delete(schema.techniciansTable)
+				.update(schema.techniciansTable)
+				.set({ active: newState })
 				.where(eq(schema.techniciansTable.id, id))
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
 		} catch (error: any) {
-			console.log('Error al eliminar técnico: ', error.message)
+			console.log('Error al cambiar estado del técnico: ', error.message)
 
-			return { message: 'Eliminar técnico: error desconocido', type: 'Error' }
+			return {
+				message: 'Cambiar estado: error desconocido',
+				type: 'Error'
+			}
 		}
 	}
 
@@ -62,13 +78,14 @@ export class D1TechnicianRepo implements TechnicianRepo {
 				const res = await this.db
 					.select()
 					.from(schema.techniciansTable)
+					.orderBy(asc(schema.techniciansTable.name))
 					.execute()
 
 				if (res.length === 0) {
 					return { type: 'NoHasTechnicians' }
 				}
 
-				return { technician: res, type: 'Success' }
+				return { technician: res.map(mapRow), type: 'Success' }
 			} catch (error: any) {
 				console.log('Error al buscar técnicos: ', error.message)
 				return {
@@ -77,6 +94,29 @@ export class D1TechnicianRepo implements TechnicianRepo {
 				}
 			}
 		})
+	}
+
+	async findActive(): Promise<FindTechnicianResponse> {
+		try {
+			const res = await this.db
+				.select()
+				.from(schema.techniciansTable)
+				.where(eq(schema.techniciansTable.active, 1))
+				.orderBy(asc(schema.techniciansTable.name))
+				.execute()
+
+			if (res.length === 0) {
+				return { type: 'NoHasTechnicians' }
+			}
+
+			return { technician: res.map(mapRow), type: 'Success' }
+		} catch (error: any) {
+			console.log('Error al buscar técnicos activos: ', error.message)
+			return {
+				message: 'Buscar técnicos activos: error desconocido',
+				type: 'Error'
+			}
+		}
 	}
 
 	async findById(id: string): Promise<FindTechnicianResponse> {
@@ -91,7 +131,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 				return { type: 'NotExists' }
 			}
 
-			return { technician: res, type: 'Success' }
+			return { technician: res.map(mapRow), type: 'Success' }
 		} catch (error: any) {
 			console.log('Error al buscar técnico: ', error.message)
 			return { message: 'Buscar técnico: error desconocido', type: 'Error' }
@@ -134,22 +174,6 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			console.log('Error al editar técnico: ', error.message)
 
 			return { message: 'Editar técnico: error desconocido', type: 'Error' }
-		}
-	}
-
-	async hasVisits(id: string): Promise<boolean> {
-		try {
-			const res = await this.db
-				.select({ id: schema.visitsTable.id })
-				.from(schema.visitsTable)
-				.where(eq(schema.visitsTable.id_technician, id))
-				.limit(1)
-				.execute()
-
-			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar visitas del técnico: ', error.message)
-			return false
 		}
 	}
 }

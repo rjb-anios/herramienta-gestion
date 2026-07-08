@@ -33,6 +33,7 @@ export const machinesTable = sqliteTable(
 )
 
 export const techniciansTable = sqliteTable('technicians', {
+	active: integer().notNull().default(1),
 	id: text().notNull().primaryKey(),
 	initials: text().notNull().unique(),
 	name: text().notNull()
@@ -98,7 +99,7 @@ export const usersTable = sqliteTable('users', {
 	id: text().notNull().primaryKey(),
 	name: text().notNull(),
 	password: text().notNull(),
-	role: text({ enum: ['A', 'u'] }).notNull(),
+	role: text({ enum: ['A', 't', 'u'] }).notNull(),
 	username: text().notNull().unique()
 })
 

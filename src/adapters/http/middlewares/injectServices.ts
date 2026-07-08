@@ -27,8 +27,9 @@ import { FindAllMachinesByClientQuery } from '@core/use-cases/machine/queries/Fi
 import { FindAllWarehouseMachinesQuery } from '@core/use-cases/machine/queries/FindAllWarehouseMachines.query'
 import { FindMachineQuery } from '@core/use-cases/machine/queries/FindMachine.query'
 import { AddTechnicianCommand } from '@core/use-cases/technician/commands/AddTechnician.command'
-import { DeleteTechnicianCommand } from '@core/use-cases/technician/commands/DeleteTechnician.command'
+import { DeactivateTechnicianCommand } from '@core/use-cases/technician/commands/DeactivateTechnician.command'
 import { EditTechnicianCommand } from '@core/use-cases/technician/commands/EditTechnician.command'
+import { FindActiveTechniciansQuery } from '@core/use-cases/technician/queries/FindActiveTechnicians.query'
 import {
 	FindAllTechniciansQuery,
 	FindTechnicianByIdQuery
@@ -43,6 +44,8 @@ import { FindAllUsersQuery } from '@core/use-cases/user/queries/FindAllUsers.que
 import { FindTokenQuery } from '@core/use-cases/user/queries/FindToken.query'
 import { FindUserQuery } from '@core/use-cases/user/queries/FindUser.query'
 import { AddVisitCommand } from '@core/use-cases/visits/commands/AddVisit.command'
+import { EditVisitCommand } from '@core/use-cases/visits/commands/EditVisit.command'
+import { FindVisitByIdQuery } from '@core/use-cases/visits/queries/FindVisitById.query'
 import { FindVisitsQuery } from '@core/use-cases/visits/queries/FindVisits.query'
 import { GetAvailableYearsQuery } from '@core/use-cases/visits/queries/GetAvailableYears.query'
 import { drizzle } from 'drizzle-orm/d1'
@@ -119,12 +122,13 @@ const injectServices = createMiddleware<Env>(async (c, next) => {
 	c.set('technicianCases', {
 		commands: {
 			addTechnician: new AddTechnicianCommand(technicianRepo),
-			deleteTechnician: new DeleteTechnicianCommand(technicianRepo),
+			deactivateTechnician: new DeactivateTechnicianCommand(technicianRepo),
 			editTechnician: new EditTechnicianCommand(technicianRepo)
 		},
 		queries: {
 			findAllTechnicians: new FindAllTechniciansQuery(technicianRepo),
-			findTechnicianById: new FindTechnicianByIdQuery(technicianRepo)
+			findTechnicianById: new FindTechnicianByIdQuery(technicianRepo),
+			findActiveTechnicians: new FindActiveTechniciansQuery(technicianRepo)
 		}
 	})
 
@@ -132,9 +136,11 @@ const injectServices = createMiddleware<Env>(async (c, next) => {
 
 	c.set('visitCases', {
 		commands: {
-			addVisit: new AddVisitCommand(visitRepo)
+			addVisit: new AddVisitCommand(visitRepo),
+			editVisit: new EditVisitCommand(visitRepo)
 		},
 		queries: {
+			findVisitById: new FindVisitByIdQuery(visitRepo),
 			findVisits: new FindVisitsQuery(visitRepo),
 			getAvailableYears: new GetAvailableYearsQuery(visitRepo)
 		}

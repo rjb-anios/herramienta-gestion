@@ -68,6 +68,7 @@ const RegUserLayout: FC<{
 					>
 						<option value=''>Seleccione rol</option>
 						<option value='A'>Administrador</option>
+						<option value='t'>Técnico</option>
 						<option value='u'>Usuario</option>
 					</select>
 				)}

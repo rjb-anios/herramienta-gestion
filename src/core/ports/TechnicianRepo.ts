@@ -1,6 +1,6 @@
 import type {
 	AddTechnicianResponse,
-	DeleteTechnicianResponse,
+	ToggleActiveResponse,
 	EditTechnicianRequest,
 	EditTechnicianResponse,
 	FindTechnicianResponse,
@@ -10,7 +10,7 @@ import type {
 export interface TechnicianRepo {
 	addTechnician: (technician: Technician) => Promise<AddTechnicianResponse>
 
-	deleteTechnician: (id: string) => Promise<DeleteTechnicianResponse>
+	toggleActive: (id: string) => Promise<ToggleActiveResponse>
 
 	editTechnician: (
 		data: EditTechnicianRequest
@@ -18,9 +18,9 @@ export interface TechnicianRepo {
 
 	findAll: () => Promise<FindTechnicianResponse>
 
+	findActive: () => Promise<FindTechnicianResponse>
+
 	findById: (id: string) => Promise<FindTechnicianResponse>
 
 	existsById: (id: string) => Promise<boolean>
-
-	hasVisits: (id: string) => Promise<boolean>
 }

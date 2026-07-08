@@ -1,13 +1,13 @@
 import type { Client } from '@core/entities/Client'
+import { ROLES, type Role } from '@core/entities/Role'
 import Back from '@presentation/components/reusables/Back'
 import DeleteModal from '@presentation/components/reusables/DeleteModal'
 import Dots from '@presentation/components/reusables/Dots'
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
-const ClientsTable: FC<PropsWithChildren<{ arrClient: Client[] }>> = async ({
-	children,
-	arrClient
-}) => {
+const ClientsTable: FC<
+	PropsWithChildren<{ arrClient: Client[]; role: Role }>
+> = async ({ children, arrClient, role }) => {
 	return await (
 		<div class='flex flex-col gap-10 h-full w-full mx-auto pb-12 overflow-auto'>
 			<Back
@@ -22,7 +22,9 @@ const ClientsTable: FC<PropsWithChildren<{ arrClient: Client[] }>> = async ({
 						<th class='w-3/12 border-x'>Contacto</th>
 						<th class='w-1/12 border-x'>Teléfono</th>
 						<th class='w-3/12 border-x'>Correo</th>
-						<th class='w-1/12 border-x'>Opción</th>
+						{ROLES[role].level >= ROLES.A.level && (
+							<th class='w-1/12 border-x'>Opción</th>
+						)}
 					</tr>
 				</thead>
 				<tbody class='w-full text-center p-3'>
@@ -33,38 +35,45 @@ const ClientsTable: FC<PropsWithChildren<{ arrClient: Client[] }>> = async ({
 								<td class='w-3/12 border-x truncate px-[10px]'>{e.contact}</td>
 								<td class='w-1/12 border-x truncate px-[10px]'>{e.phone}</td>
 								<td class='w-3/12 border-x truncate px-[10px]'>{e.email}</td>
-								<td class='w-1/12 border-x truncate px-[10px]'>
-									<Dots id={e.id} />
-									<ul
-										class='dropdown dropdown-center dropdown-top menu w-fit text-2xl p-3 bg-base-100 border shadow-sm'
-										id={e.id}
-										popover='auto'
-									>
-										<li class='cursor-pointer'>
-											<a href={`/dashboard/clients/all/edit/${e.id}`}>Editar</a>
-										</li>
-										<li class='cursor-pointer'>
-											<button
-												data-dialog-id={`${e.id}-cl26`}
-												type='button'
+								{ROLES[role].level >= ROLES.A.level && (
+									<>
+										<td class='w-1/12 border-x truncate px-[10px]'>
+											<Dots id={e.id} />
+											<ul
+												class='dropdown dropdown-center dropdown-top menu w-fit text-2xl p-3 bg-base-100 border shadow-sm'
+												id={e.id}
+												popover='auto'
 											>
-												Eliminar
-											</button>
-										</li>
-									</ul>
-								</td>
-								<td>
-									<dialog
-										class='backdrop:bg-black/50 m-auto'
-										id={`${e.id}-cl26`}
-									>
-										<DeleteModal
-											id={e.id}
-											name={e.name}
-											route='clients/all'
-										/>
-									</dialog>
-								</td>
+												<li class='cursor-pointer'>
+													<a href={`/dashboard/clients/all/edit/${e.id}`}>
+														Editar
+													</a>
+												</li>
+												<li class='cursor-pointer'>
+													<button
+														data-dialog-id={`${e.id}-cl26`}
+														type='button'
+													>
+														Eliminar
+													</button>
+												</li>
+											</ul>
+										</td>
+										<td>
+											<dialog
+												class='backdrop:bg-black/50 m-auto'
+												id={`${e.id}-cl26`}
+											>
+												<DeleteModal
+													id={e.id}
+													mode='delete'
+													name={e.name}
+													route='clients/all'
+												/>
+											</dialog>
+										</td>
+									</>
+								)}
 							</tr>
 						)
 					})}

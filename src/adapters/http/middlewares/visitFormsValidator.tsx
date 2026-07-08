@@ -62,11 +62,16 @@ const regVisitSchema = z
 			if (typeof val === 'string') return [val]
 			return val
 		}, z.array(z.uuid())),
-		technician: z.preprocess(val => {
-			if (!val) return []
-			if (typeof val === 'string') return [val]
-			return val
-		}, z.array(z.uuid()).min(1, { message: 'Debe seleccionar al menos un técnico' }))
+		technician: z.preprocess(
+			val => {
+				if (!val) return []
+				if (typeof val === 'string') return [val]
+				return val
+			},
+			z
+				.array(z.uuid())
+				.min(1, { message: 'Debe seleccionar al menos un técnico' })
+		)
 	})
 	.superRefine((data, ctx) => {
 		const requiresEquipment =
@@ -82,6 +87,73 @@ const regVisitSchema = z
 			})
 		}
 	})
+
+const editVisitSchema = z.object({
+	description: optionalField(
+		z
+			.string()
+			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
+			.refine(
+				val =>
+					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+						val
+					),
+				{
+					message:
+						'Descripción: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
+				}
+			)
+			.refine(val => val.length >= 6, {
+				message: 'Descripción debe tener mínimo 6 caracteres'
+			})
+			.refine(val => val.length <= 650, {
+				message: 'Descripción debe tener máximo 650 caracteres'
+			})
+	),
+	future: optionalField(
+		z
+			.string()
+			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
+			.refine(
+				val =>
+					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+						val
+					),
+				{
+					message:
+						'Futuro: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
+				}
+			)
+			.refine(val => val.length >= 6, {
+				message: 'Futuro debe tener mínimo 6 caracteres'
+			})
+			.refine(val => val.length <= 650, {
+				message: 'Futuro debe tener máximo 650 caracteres'
+			})
+	)
+})
+
+export const editVisitValidator = zValidator(
+	'form',
+	editVisitSchema,
+	async (result, c) => {
+		if (!result.success) {
+			const errorMessages = result.error.issues.map(i => i.message)
+
+			return await c.render(
+				<>
+					<Back
+						route='service/visits/all'
+						title='Editar visita'
+					/>
+					{errorMessages.map(text => (
+						<p class='w-fit text-3xl m-auto block my-[10px]'>{text}</p>
+					))}
+				</>
+			)
+		}
+	}
+)
 
 export const regVisitValidator = zValidator(
 	'form',
