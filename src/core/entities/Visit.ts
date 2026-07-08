@@ -49,8 +49,6 @@ export interface EditVisitRequest {
 	description?: string
 	prevFuture: string | undefined
 	future?: string
-	prevHours: number
-	hours?: number
 }
 
 export type EditVisitResponse =

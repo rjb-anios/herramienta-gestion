@@ -11,21 +11,17 @@ export class EditVisitCommand {
 		const normPrevFuture = data.prevFuture || undefined
 		const hasFuture =
 			data.future !== undefined && data.future !== normPrevFuture
-		const hasHours =
-			data.hours !== undefined && Number(data.hours) !== Number(data.prevHours)
 
-		if (!hasDescription && !hasFuture && !hasHours) {
+		if (!hasDescription && !hasFuture) {
 			return { type: 'NoHasChanges' }
 		}
 
 		return await this.visitRepo.editVisit({
 			description: hasDescription ? data.description : undefined,
 			future: hasFuture ? data.future : undefined,
-			hours: hasHours ? Number(data.hours) : undefined,
 			id: data.id,
 			prevDescription: data.prevDescription,
-			prevFuture: data.prevFuture,
-			prevHours: data.prevHours
+			prevFuture: data.prevFuture
 		})
 	}
 }

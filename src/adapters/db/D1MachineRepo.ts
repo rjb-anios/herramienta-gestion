@@ -138,6 +138,8 @@ export class D1MachineRepo implements MachineRepo {
 		}
 	}
 
+	/// Registrar máquina en depósito
+	 
 	async regMachine(data: Machine): Promise<AddOrDeleteMachineResponse> {
 		try {
 			await this.db.insert(schema.machinesTable).values({
@@ -158,6 +160,8 @@ export class D1MachineRepo implements MachineRepo {
 			}
 		}
 	}
+
+	/// Asignar máquina a cliente
 
 	async assignToClient(
 		machineId: string,
@@ -181,6 +185,8 @@ export class D1MachineRepo implements MachineRepo {
 			}
 		}
 	}
+
+	/// Desasignar máquina a cliente
 
 	async unassignFromClient(
 		machineId: string
@@ -211,6 +217,8 @@ export class D1MachineRepo implements MachineRepo {
 		}
 	}
 
+	/// Buscar todos los equipos en depósito
+
 	async findAllWarehouse(): Promise<FindAllMachinesResponse> {
 		return kvCacheGet<FindAllMachinesResponse>(
 			this.kv,
@@ -237,6 +245,8 @@ export class D1MachineRepo implements MachineRepo {
 		)
 	}
 
+	/// Veirifica si existe alguna máquina en depósito
+
 	async existsAnyMachine(): Promise<boolean> {
 		try {
 			const res = await this.db
@@ -252,6 +262,8 @@ export class D1MachineRepo implements MachineRepo {
 			return false
 		}
 	}
+
+	/// Buscar máquinas con nombre de cliente al cual está asignada
 
 	async findAllMachinesWithClientName(): Promise<FindAllMachinesWithClientNameResponse> {
 		return kvCacheGet<FindAllMachinesWithClientNameResponse>(
@@ -292,6 +304,8 @@ export class D1MachineRepo implements MachineRepo {
 		)
 	}
 
+	/// Buscar todas las máquinas
+
 	async findAllMachines(): Promise<FindAllMachinesResponse> {
 		return kvCacheGet<FindAllMachinesResponse>(
 			this.kv,
@@ -316,6 +330,8 @@ export class D1MachineRepo implements MachineRepo {
 			}
 		)
 	}
+
+	///  Busca si una máquina particular ha sido intervenida en visitas técnicas
 
 	async hasVisits(id: string): Promise<boolean> {
 		try {
@@ -358,7 +374,7 @@ export class D1MachineRepo implements MachineRepo {
 					}
 				}
 			},
-			30
+			60
 		)
 	}
 }

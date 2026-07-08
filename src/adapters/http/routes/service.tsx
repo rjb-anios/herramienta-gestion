@@ -169,8 +169,7 @@ service.post(
 			future: future || undefined,
 			id,
 			prevDescription: visit.description,
-			prevFuture: visit.future ?? '',
-			prevHours: visit.hours
+			prevFuture: visit.future ?? ''
 		})
 
 		if (res.type === 'NoHasChanges') {

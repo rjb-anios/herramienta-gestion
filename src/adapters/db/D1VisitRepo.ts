@@ -67,8 +67,6 @@ export class D1VisitRepo implements VisitRepo {
 
 			if (data.description !== undefined) setData.description = data.description
 			if (data.future !== undefined) setData.future = data.future
-			if (data.hours !== undefined) setData.hours = data.hours
-
 			await this.db
 				.update(schema.visitsTable)
 				.set(setData)

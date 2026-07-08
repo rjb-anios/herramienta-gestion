@@ -127,7 +127,7 @@ export class D1ClientRepo implements ClientRepo {
 		})
 	}
 
-	/// Verificar si existe un cliente con el mismo nombre
+	/// Verificar si existen equipos asociados a un cliente
 
 	async hasMachines(id: string): Promise<boolean> {
 		try {
@@ -145,6 +145,8 @@ export class D1ClientRepo implements ClientRepo {
 		}
 	}
 
+	/// Verificar si existen visitas asociadas a un cliente
+
 	async hasVisits(id: string): Promise<boolean> {
 		try {
 			const res = await this.db
@@ -160,6 +162,8 @@ export class D1ClientRepo implements ClientRepo {
 			return false
 		}
 	}
+
+	/// Verifica nombre de cliente
 
 	async existsByName(name: string): Promise<boolean> {
 		try {
@@ -177,7 +181,7 @@ export class D1ClientRepo implements ClientRepo {
 		}
 	}
 
-	// Verificar si existe al menos un cliente
+	/// Verificar si existe al menos un cliente
 
 	async existsAnyClient(): Promise<boolean> {
 		try {
