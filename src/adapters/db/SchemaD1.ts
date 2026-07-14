@@ -57,7 +57,8 @@ export const visitsTable = sqliteTable(
 			.references(() => clientsTable.id),
 		id_technician: text()
 			.notNull()
-			.references(() => techniciansTable.id)
+			.references(() => techniciansTable.id),
+		sector: text().notNull()
 	},
 	table => [
 		index('visits_index_0').on(table.id_client, table.date),

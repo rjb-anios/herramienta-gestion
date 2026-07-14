@@ -27,7 +27,8 @@ export class D1VisitRepo implements VisitRepo {
 				hours: Number(data.hours),
 				id: data.id,
 				id_client: data.id_client,
-				id_technician: data.id_technicians[0]
+				id_technician: data.id_technicians[0],
+				sector: data.sector ?? ''
 			})
 
 			const relations = []
@@ -67,6 +68,7 @@ export class D1VisitRepo implements VisitRepo {
 
 			if (data.description !== undefined) setData.description = data.description
 			if (data.future !== undefined) setData.future = data.future
+			if (data.sector !== undefined) setData.sector = data.sector
 			await this.db
 				.update(schema.visitsTable)
 				.set(setData)
@@ -143,6 +145,7 @@ export class D1VisitRepo implements VisitRepo {
 				hours: Number(v.hours),
 				id: v.id,
 				machines: v.machines.map(m => m.machine),
+				sector: v.sector ?? undefined,
 				technicians: v.technicians.map(t => t.technician.initials)
 			}))
 
@@ -201,6 +204,7 @@ export class D1VisitRepo implements VisitRepo {
 						hours: Number(visit.hours),
 						id: visit.id,
 						machines: visit.machines.map(m => m.machine),
+						sector: visit.sector ?? undefined,
 						technicians: visit.technicians.map(t => t.technician.initials)
 					}
 				]

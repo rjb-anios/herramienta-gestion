@@ -1,3 +1,4 @@
+import type { Role } from '@core/entities/Role'
 import type { EditUserRequest } from '@core/entities/User'
 
 export interface MergedEditUserData {
@@ -6,8 +7,8 @@ export interface MergedEditUserData {
 	username: string
 	prevName: string
 	name: string
-	prevRole: 'A' | 'u'
-	role: 'A' | 'u'
+	prevRole: Role
+	role: Role
 }
 
 export function mergeUserData(request: EditUserRequest): {

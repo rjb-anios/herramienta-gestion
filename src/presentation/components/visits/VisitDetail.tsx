@@ -40,6 +40,14 @@ const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
 							</h3>
 							<h4>{visit.client}</h4>
 						</div>
+						{visit.sector !== '' && (
+							<div class='w-fit flex flex-col gap-2'>
+								<h3 class='w-fit'>
+									<strong>Sector</strong>
+								</h3>
+								<p class='w-fit text-justify'>{visit.sector}</p>
+							</div>
+						)}
 						<div class='w-fit flex flex-col gap-2'>
 							<h3 class='w-fit'>
 								<strong>Concepto</strong>

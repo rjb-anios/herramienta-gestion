@@ -1,27 +1,17 @@
 import type { EditVisitRequest, EditVisitResponse } from '@core/entities/Visit'
 import type { VisitRepo } from '@core/ports/VisitRepo'
+import { mergeVisitData } from '@core/use-cases/visits/mergeVisitData'
 
 export class EditVisitCommand {
 	constructor(private readonly visitRepo: VisitRepo) {}
 
 	async execute(data: EditVisitRequest): Promise<EditVisitResponse> {
-		const hasDescription =
-			data.description !== undefined &&
-			data.description !== data.prevDescription
-		const normPrevFuture = data.prevFuture || undefined
-		const hasFuture =
-			data.future !== undefined && data.future !== normPrevFuture
+		const { hasChanges, data: mergedData } = mergeVisitData(data)
 
-		if (!hasDescription && !hasFuture) {
+		if (!hasChanges) {
 			return { type: 'NoHasChanges' }
 		}
 
-		return await this.visitRepo.editVisit({
-			description: hasDescription ? data.description : undefined,
-			future: hasFuture ? data.future : undefined,
-			id: data.id,
-			prevDescription: data.prevDescription,
-			prevFuture: data.prevFuture
-		})
+		return await this.visitRepo.editVisit(mergedData)
 	}
 }

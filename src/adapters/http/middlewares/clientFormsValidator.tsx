@@ -9,7 +9,7 @@ const regClientSchema = z.object({
 		.string()
 		.trim()
 		.regex(
-			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
 			{ error: 'Contacto: verifique números o caracteres especiales' }
 		)
 		.min(4, { error: 'Contacto debe tener mínimo 4 caracteres' })
@@ -38,7 +38,7 @@ const editClientSchema = z.object({
 			.string()
 			.trim()
 			.regex(
-				/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+				/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
 				{ error: 'Contacto: verifique números o caracteres especiales' }
 			)
 	),
@@ -63,7 +63,7 @@ const editClientSchema = z.object({
 		.string()
 		.trim()
 		.regex(
-			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
 			{ error: 'Contacto: verifique números o caracteres especiales' }
 		)
 		.min(4, { error: 'Contacto debe tener mínimo 4 caracteres' })

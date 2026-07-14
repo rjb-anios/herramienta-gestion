@@ -24,14 +24,14 @@ export function mergeTechnicianData(request: EditTechnicianRequest): {
 	if (!hasName && !hasInitials && !hasEmail && !hasPhone) {
 		return {
 			data: {
+				email: request.prevEmail,
 				id: request.id,
 				initials: request.prevInitials,
 				name: request.prevName,
+				phone: request.prevPhone,
+				prevEmail: request.prevEmail,
 				prevInitials: request.prevInitials,
 				prevName: request.prevName,
-				email: request.prevEmail,
-				prevEmail: request.prevEmail,
-				phone: request.prevPhone,
 				prevPhone: request.prevPhone
 			},
 			hasChanges: false
@@ -40,14 +40,14 @@ export function mergeTechnicianData(request: EditTechnicianRequest): {
 
 	return {
 		data: {
+			email: hasEmail ? request.email! : request.prevEmail,
 			id: request.id,
 			initials: hasInitials ? request.initials! : request.prevInitials,
 			name: hasName ? request.name! : request.prevName,
+			phone: hasPhone ? request.phone! : request.prevPhone,
+			prevEmail: request.prevEmail,
 			prevInitials: request.prevInitials,
 			prevName: request.prevName,
-			email: hasEmail ? request.email! : request.prevEmail,
-			prevEmail: request.prevEmail,
-			phone: hasPhone ? request.phone! : request.prevPhone,
 			prevPhone: request.prevPhone
 		},
 		hasChanges: true

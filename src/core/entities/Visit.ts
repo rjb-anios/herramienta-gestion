@@ -29,6 +29,7 @@ export interface Visit {
 	description: string
 	future: string | undefined
 	hours: number
+	sector: string | undefined
 }
 
 export interface VisitToDisplay {
@@ -41,6 +42,7 @@ export interface VisitToDisplay {
 	technicians: string[]
 	future: string | undefined
 	hours: number
+	sector: string | undefined
 }
 
 export interface EditVisitRequest {
@@ -49,6 +51,8 @@ export interface EditVisitRequest {
 	description?: string
 	prevFuture: string | undefined
 	future?: string
+	prevSector: string | undefined
+	sector?: string
 }
 
 export type EditVisitResponse =

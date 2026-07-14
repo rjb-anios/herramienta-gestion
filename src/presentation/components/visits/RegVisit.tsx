@@ -81,6 +81,15 @@ const RegVisit = ({
 					))}
 				</select>
 
+				{/* Sector */}
+
+				<input
+					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
+					name='sector'
+					placeholder='Sector (ej. Laboratorio, Urgencias)'
+					type='text'
+				/>
+
 				{/* Concepto de visita */}
 
 				<select
@@ -126,7 +135,7 @@ const RegVisit = ({
 					</div>
 				)}
 
-			{/* Selección de técnico */}
+				{/* Selección de técnico */}
 
 				<div class='min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'>
 					<p class='text-gray-500 mb-2'>Técnicos participantes:</p>

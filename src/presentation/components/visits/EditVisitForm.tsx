@@ -42,6 +42,16 @@ const EditVisitForm: FC<PropsWithChildren<{ visit: VisitToDisplay }>> = async ({
 					value={visit.id}
 				/>
 				<label class='flex flex-col'>
+					Sector
+					<input
+						class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
+						name='sector'
+						placeholder='(opcional)'
+						type='text'
+						value={visit.sector}
+					/>
+				</label>
+				<label class='flex flex-col'>
 					Descripción
 					<textarea
 						class='textarea wrap-break-word whitespace-pre-wrap overflow-y-auto text-3xl h-[150px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate resize-none'
@@ -54,20 +64,19 @@ const EditVisitForm: FC<PropsWithChildren<{ visit: VisitToDisplay }>> = async ({
 						{visit.description}
 					</textarea>
 				</label>
-				{visit.future && (
-					<label class='flex flex-col'>
-						Tareas a futuro
-						<textarea
-							class='textarea wrap-break-word whitespace-pre-wrap overflow-y-auto text-3xl h-[150px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate resize-none'
-							maxlength={650}
-							minlength={6}
-							name='future'
-							wrap='soft'
-						>
-							{visit.future}
-						</textarea>
-					</label>
-				)}
+				<label class='flex flex-col'>
+					Tareas a futuro
+					<textarea
+						class='textarea wrap-break-word whitespace-pre-wrap overflow-y-auto text-3xl h-[150px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate resize-none'
+						maxlength={650}
+						minlength={6}
+						name='future'
+						placeholder='(opcional)'
+						wrap='soft'
+					>
+						{visit.future}
+					</textarea>
+				</label>
 				{children}
 				<button
 					class='h-[40px] w-[150px] p-2 border mx-auto hover:cursor-pointer'

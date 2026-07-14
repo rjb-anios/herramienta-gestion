@@ -62,6 +62,17 @@ const regVisitSchema = z
 			if (typeof val === 'string') return [val]
 			return val
 		}, z.array(z.uuid())),
+		sector: optionalField(
+			z
+				.string()
+				.trim()
+				.regex(
+					/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,18}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+					{
+						error: 'Sector: Sólo se permiten los caracteres especiales . -'
+					}
+				)
+		),
 		technician: z.preprocess(
 			val => {
 				if (!val) return []
@@ -130,6 +141,17 @@ const editVisitSchema = z.object({
 			.refine(val => val.length <= 650, {
 				message: 'Futuro debe tener máximo 650 caracteres'
 			})
+	),
+	sector: optionalField(
+		z
+			.string()
+			.trim()
+			.regex(
+				/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,18}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+				{
+					error: 'Sector: Sólo se permiten los caracteres especiales . -'
+				}
+			)
 	)
 })
 

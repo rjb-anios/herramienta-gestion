@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS "visits" (
   "hours" INTEGER NOT NULL,
   "description" TEXT NOT NULL,
   "future" TEXT NOT NULL,
+  "sector" TEXT NOT NULL,
   PRIMARY KEY("id"),
   FOREIGN KEY ("id_client") REFERENCES "clients"("id") ON UPDATE NO ACTION ON DELETE NO ACTION,
   FOREIGN KEY ("id_technician") REFERENCES "technicians"("id") ON UPDATE NO ACTION ON DELETE NO ACTION

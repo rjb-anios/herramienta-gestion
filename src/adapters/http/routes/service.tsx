@@ -148,7 +148,7 @@ service.post(
 	},
 	editVisitValidator,
 	async c => {
-		const { description, future } = c.req.valid('form')
+		const { description, future, sector } = c.req.valid('form')
 
 		const {
 			queries: { findVisitById },
@@ -166,10 +166,12 @@ service.post(
 
 		const res = await editVisit.execute({
 			description,
-			future: future || undefined,
+			future: future ?? undefined,
 			id,
 			prevDescription: visit.description,
-			prevFuture: visit.future ?? ''
+			prevFuture: visit.future ?? '',
+			prevSector: visit.sector ?? '',
+			sector: sector ?? undefined
 		})
 
 		if (res.type === 'NoHasChanges') {
@@ -323,7 +325,8 @@ service.post('/visits/register', regVisitValidator, async c => {
 		concept,
 		description,
 		future,
-		hours
+		hours,
+		sector
 	} = c.req.valid('form')
 
 	const {
@@ -338,7 +341,8 @@ service.post('/visits/register', regVisitValidator, async c => {
 		hours: Number(hours),
 		id_client: client,
 		id_machine: machine,
-		id_technicians: technician
+		id_technicians: technician,
+		sector
 	})
 
 	if (res.type === 'Error') {
@@ -497,22 +501,31 @@ service.get('/technicians/all/edit/:id', async c => {
 /// Edita técnico
 
 service.post('/technicians/all/edit/:id', editTechValidator, async c => {
-	const { id, prevInitials, initials, prevName, name, prevEmail, email, prevPhone, phone } =
-		c.req.valid('form')
+	const {
+		id,
+		prevInitials,
+		initials,
+		prevName,
+		name,
+		prevEmail,
+		email,
+		prevPhone,
+		phone
+	} = c.req.valid('form')
 
 	const {
 		commands: { editTechnician }
 	} = c.get('technicianCases')
 
 	const res = await editTechnician.execute({
+		email,
 		id,
 		initials,
 		name,
+		phone,
+		prevEmail,
 		prevInitials,
 		prevName,
-		email,
-		prevEmail,
-		phone,
 		prevPhone
 	})
 
