@@ -1,26 +1,27 @@
 {
 	"dependencies": {
-		"@hono/zod-validator": "0.8.0",
-		"@tailwindcss/vite": "4.3.2",
+		"@cantoo/pdf-lib": "2.7.4",
+		"@hono/zod-validator": "0.9.0",
+		"@tailwindcss/vite": "4.3.3",
 		"bcryptjs": "3.0.3",
-		"daisyui": "5.6.18",
+		"daisyui": "5.7.0",
 		"dayjs": "1.11.21",
 		"drizzle-orm": "0.45.2",
-		"hono": "4.12.30",
-		"tailwindcss": "4.3.2",
+		"hono": "4.12.31",
+		"tailwindcss": "4.3.3",
 		"zod": "4.4.3"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.3",
-		"@cloudflare/vite-plugin": "1.44.0",
+		"@biomejs/biome": "2.5.4",
+		"@cloudflare/vite-plugin": "1.45.1",
 		"@types/node": "26.1.1",
 		"drizzle-kit": "0.31.10",
-		"vite": "8.1.4",
+		"vite": "8.1.5",
 		"vite-ssr-components": "0.6.1",
-		"wrangler": "4.110.0"
+		"wrangler": "4.112.0"
 	},
 	"name": "herramienta",
-	"packageManager": "pnpm@11.13.0",
+	"packageManager": "pnpm@11.15.1",
 	"scripts": {
 		"build": "vite build",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings",

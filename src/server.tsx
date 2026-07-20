@@ -3,6 +3,7 @@ import injectServices from '@adapters/http/middlewares/injectServices'
 import clients from '@adapters/http/routes/clients'
 import dashboard from '@adapters/http/routes/dashboard'
 import login from '@adapters/http/routes/login'
+// import prueba from '@adapters/http/routes/prueba'
 import register from '@adapters/http/routes/register'
 import service from '@adapters/http/routes/service'
 import users from '@adapters/http/routes/users'
@@ -10,16 +11,8 @@ import warehouse from '@adapters/http/routes/warehouse'
 import { ROLES } from '@core/entities/Role'
 import NotFound from '@presentation/components/reusables/NotFound'
 import renderer from '@presentation/renderer'
-import { createMiddleware } from 'hono/factory'
 import { Hono } from 'hono'
 import type { Env } from 'src/env'
-
-const requireMinLevel = (minLevel: number) =>
-	createMiddleware<Env>(async (c, next) => {
-		const { role } = c.get('jwtPayload')
-		if (ROLES[role].level < minLevel) return c.text('No autorizado', 403)
-		await next()
-	})
 
 const app = new Hono<Env>()
 
@@ -41,12 +34,14 @@ app.use(renderer)
 app.route('/', login)
 app.route('/register', register)
 
+// app.route('/prueba', prueba)
+
 app.use('/dashboard/*', auth)
 
 app.on('POST', '/dashboard/*', async (c, next) => {
 	const { role } = c.get('jwtPayload')
 	const path = c.req.path
-		const userLevel = ROLES[role].level
+	const userLevel = ROLES[role].level
 
 	if (
 		path.startsWith('/dashboard/service/visits/') ||

@@ -139,7 +139,7 @@ export class D1MachineRepo implements MachineRepo {
 	}
 
 	/// Registrar máquina en depósito
-	 
+
 	async regMachine(data: Machine): Promise<AddOrDeleteMachineResponse> {
 		try {
 			await this.db.insert(schema.machinesTable).values({

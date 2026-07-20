@@ -126,9 +126,9 @@ const injectServices = createMiddleware<Env>(async (c, next) => {
 			editTechnician: new EditTechnicianCommand(technicianRepo)
 		},
 		queries: {
+			findActiveTechnicians: new FindActiveTechniciansQuery(technicianRepo),
 			findAllTechnicians: new FindAllTechniciansQuery(technicianRepo),
-			findTechnicianById: new FindTechnicianByIdQuery(technicianRepo),
-			findActiveTechnicians: new FindActiveTechniciansQuery(technicianRepo)
+			findTechnicianById: new FindTechnicianByIdQuery(technicianRepo)
 		}
 	})
 

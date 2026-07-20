@@ -2,11 +2,11 @@ import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
 import type {
 	AddTechnicianResponse,
-	ToggleActiveResponse,
 	EditTechnicianRequest,
 	EditTechnicianResponse,
 	FindTechnicianResponse,
-	Technician
+	Technician,
+	ToggleActiveResponse
 } from '@core/entities/Technician'
 import type { TechnicianRepo } from '@core/ports/TechnicianRepo'
 import { asc, eq } from 'drizzle-orm'
@@ -52,7 +52,7 @@ export class D1TechnicianRepo implements TechnicianRepo {
 		try {
 			const current = await this.findById(id)
 			if (current.type !== 'Success') {
-				return { type: 'Error', message: 'El técnico no existe' }
+				return { message: 'El técnico no existe', type: 'Error' }
 			}
 
 			const newState = current.technician[0].active ? 0 : 1

@@ -8,7 +8,6 @@ import type {
 	RegisterUserData,
 	RegisterUserResponse,
 	TokenData,
-	User,
 	UserPrivateData
 } from '@core/entities/User'
 import type { UserRepo } from '@core/ports/UserRepo'
