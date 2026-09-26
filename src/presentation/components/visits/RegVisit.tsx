@@ -2,7 +2,7 @@ import type { Client } from '@core/entities/Client'
 import type { Machine } from '@core/entities/Machine'
 import type { Technician } from '@core/entities/Technician'
 import { CONCEPT_VALUES, VISIT_CONCEPTS } from '@core/entities/Visit'
-import { fetchWithCache } from '@presentation/cache'
+import { clearCache, fetchWithCache } from '@presentation/cache'
 import Back from '@presentation/components/reusables/Back'
 import { API } from '@presentation/config'
 import { Encoding, Signature } from 'autopen'
@@ -178,6 +178,7 @@ const RegVisit = ({
 			<form
 				class='min-w-[300px] w-full max-w-[500px] h-fit m-auto flex flex-col gap-5'
 				method='post'
+				onSubmit={() => clearCache()}
 			>
 				{children}
 

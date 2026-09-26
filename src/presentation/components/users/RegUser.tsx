@@ -20,7 +20,7 @@ const RegUserLayout: FC<{
 					autocomplete='off'
 					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={16}
-					minlength={5}
+					minlength={4}
 					name='username'
 					placeholder='Usuario (ej. juanperez1)'
 					required

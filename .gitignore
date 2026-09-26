@@ -16,6 +16,9 @@ dist-server/
 node_modules/
 .wrangler
 
+# generated
+worker-configuration.d.ts
+
 # env
 .env
 .env.production

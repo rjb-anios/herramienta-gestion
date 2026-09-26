@@ -7,6 +7,10 @@ interface CacheEntry<T> {
 
 const cache = new Map<string, CacheEntry<unknown>>()
 
+export function clearCache(): void {
+	cache.clear()
+}
+
 export async function fetchWithCache<T>(url: string): Promise<T> {
 	const cached = cache.get(url)
 	if (cached !== undefined && Date.now() < cached.expiresAt) {

@@ -186,10 +186,5 @@ export interface Env {
 		}
 	}
 
-	Bindings: {
-		KV: KVNamespace
-		DB: D1Database
-		AT_SECRET: SecretsStoreSecret
-		RT_SECRET: SecretsStoreSecret
-	}
+	Bindings: CloudflareBindings
 }

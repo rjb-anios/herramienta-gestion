@@ -11,7 +11,7 @@ const LoginLayout: FC = async props => {
 					autocomplete='on'
 					class='h-[45px] w-[300px] border-b-2 px-[10px] outline-none mx-auto'
 					maxlength={16}
-					minlength={5}
+					minlength={4}
 					name='username'
 					placeholder='Usuario (ej. juanperez1)'
 					required

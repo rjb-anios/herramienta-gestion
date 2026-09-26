@@ -36,7 +36,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 						autocomplete='off'
 						class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
 						maxlength={16}
-						minlength={5}
+						minlength={4}
 						name='prevUsername'
 						placeholder='Usuario (ej. juanperez1)'
 						readonly
@@ -50,7 +50,7 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					autocomplete='on'
 					class='input text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					maxlength={16}
-					minlength={5}
+					minlength={4}
 					name='username'
 					placeholder='Nuevo usuario (ej. juansoto1)'
 					type='text'
@@ -80,17 +80,12 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					placeholder='Nuevo nombre (ej. Juan Soto)'
 					type='text'
 				/>
-				<label class='flex flex-col'>
+				<div class='flex flex-col'>
 					Rol actual
-					<select
-						class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto read-only:text-gray-600 truncate'
-						disabled
-						name='prevRole'
-						tabindex={-1}
-					>
-						<option>{ROLES[data.role].label}</option>
-					</select>
-				</label>
+					<p class='h-[45px] min-w-[300px] w-full max-w-[500px] border-t px-[10px] outline-none mx-auto text-gray-600 truncate'>
+						{ROLES[data.role].label}
+					</p>
+				</div>
 				<input
 					hidden
 					name='prevRole'

@@ -14,10 +14,11 @@ Stack: Cloudflare Workers + Hono + Vite, D1 (SQLite) con Drizzle ORM, KV, Tailwi
 
 ## Puesta en marcha
 
-1. Instalar dependencias:
+1. Instalar dependencias y generar los tipos de Cloudflare (requerido para `pnpm check`):
 
    ```sh
    pnpm install
+   pnpm cf-typegen
    ```
 
 2. Crear `.dev.vars` en la raíz (solo desarrollo local):
@@ -59,7 +60,7 @@ Stack: Cloudflare Workers + Hono + Vite, D1 (SQLite) con Drizzle ORM, KV, Tailwi
 | `pnpm lint` / `pnpm lint:fix` | Biome check / autofix |
 | `pnpm migrate:local` / `pnpm migrate:remote` | Aplicar migraciones D1 |
 | `pnpm clean` | Elimina `dist/` (ver Seguridad) |
-| `pnpm cf-typegen` | Regenera `worker-configuration.d.ts` |
+| `pnpm cf-typegen` | Regenera `worker-configuration.d.ts` (generado, no versionado; reejecutar al cambiar bindings) |
 
 ## Base de datos y KV
 
