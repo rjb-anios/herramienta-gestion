@@ -52,16 +52,16 @@ const EditVisitForm: FC<PropsWithChildren<{ visit: VisitToDisplay }>> = async ({
 					/>
 				</label>
 				<label class='flex flex-col'>
-					Descripción
+					Descripción de tareas realizadas (opcional)
 					<textarea
 						class='textarea wrap-break-word whitespace-pre-wrap overflow-y-auto text-3xl h-[150px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate resize-none'
 						maxlength={650}
 						minlength={6}
-						name='description'
-						required
+						name='task_description'
+						placeholder='(opcional)'
 						wrap='soft'
 					>
-						{visit.description}
+						{visit.task_description}
 					</textarea>
 				</label>
 				<label class='flex flex-col'>

@@ -148,7 +148,7 @@ service.post(
 	},
 	editVisitValidator,
 	async c => {
-		const { description, future, sector } = c.req.valid('form')
+		const { task_description, future, sector } = c.req.valid('form')
 
 		const {
 			queries: { findVisitById },
@@ -165,13 +165,13 @@ service.post(
 		const visit = current.visits[0]
 
 		const res = await editVisit.execute({
-			description,
 			future: future ?? undefined,
 			id,
-			prevDescription: visit.register_description,
 			prevFuture: visit.future ?? '',
 			prevSector: visit.sector ?? '',
-			sector: sector ?? undefined
+			prevTaskDescription: visit.task_description ?? '',
+			sector: sector ?? undefined,
+			task_description: task_description ?? undefined
 		})
 
 		if (res.type === 'NoHasChanges') {
@@ -314,18 +314,6 @@ service.get('/visits/register', async c => {
 	}
 })
 
-/// Generar PDF de visita para imprimir
-
-service.post('/visits/gen-pdf', async c => {
-	const v = await c.req.json()
-
-	console.log(v)
-
-	if (!v) return c.text('Mal ahí lidel')
-
-	return c.text('Bien ahí mi lidel')
-})
-
 /// Registra la visita
 
 service.post('/visits/register', regVisitValidator, async c => {
@@ -348,22 +336,6 @@ service.post('/visits/register', regVisitValidator, async c => {
 	const {
 		commands: { addVisit }
 	} = c.get('visitCases')
-
-	console.log({
-		client,
-		clientSignature,
-		clientSigner,
-		concept,
-		date,
-		future,
-		hours,
-		machine,
-		register_description,
-		sector,
-		task_description,
-		technician,
-		technicianSignature
-	})
 
 	const res = await addVisit.execute({
 		client_signature: clientSignature,

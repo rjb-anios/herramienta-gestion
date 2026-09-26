@@ -40,7 +40,7 @@ const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
 							</h3>
 							<h4>{visit.client}</h4>
 						</div>
-						{visit.sector !== '' && (
+						{visit.sector && (
 							<div class='w-fit flex flex-col gap-2'>
 								<h3 class='w-fit'>
 									<strong>Sector</strong>
@@ -83,11 +83,19 @@ const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
 					)}
 					<div class='w-fit flex flex-col gap-2'>
 						<h3 class='w-fit'>
-							<strong>Descripción</strong>
+							<strong>Descripción de registro</strong>
 						</h3>
-						<p class='w-fit text-justify'>{visit.description}</p>
+						<p class='w-fit text-justify'>{visit.register_description}</p>
 					</div>
-					{visit.future !== '' && (
+					{visit.task_description && (
+						<div class='w-fit flex flex-col gap-2'>
+							<h3 class='w-fit'>
+								<strong>Tareas realizadas</strong>
+							</h3>
+							<p class='w-fit text-justify'>{visit.task_description}</p>
+						</div>
+					)}
+					{visit.future && (
 						<div class='w-fit flex flex-col gap-2'>
 							<h3 class='w-fit'>
 								<strong>Tareas a futuro</strong>

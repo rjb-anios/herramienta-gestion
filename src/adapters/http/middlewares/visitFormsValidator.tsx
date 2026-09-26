@@ -7,7 +7,9 @@ import z from 'zod'
 const regVisitSchema = z
 	.object({
 		client: z.uuid(),
-		clientSignature: z.string(),
+		clientSignature: z
+			.string()
+			.max(200_000, { error: 'Firma de cliente: formato inválido' }),
 		clientSigner: z
 			.string()
 			.trim()
@@ -89,7 +91,7 @@ const regVisitSchema = z
 				.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
 				.refine(
 					val =>
-						/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,848}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+						/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,648}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
 							val
 						),
 					{
@@ -101,7 +103,7 @@ const regVisitSchema = z
 					message: 'Descripción de tareas debe tener mínimo 6 caracteres'
 				})
 				.refine(val => val.length <= 650, {
-					message: 'Descripción de tareas debe tener máximo 850 caracteres'
+					message: 'Descripción de tareas debe tener máximo 650 caracteres'
 				})
 		),
 		technician: z.preprocess(
@@ -114,7 +116,9 @@ const regVisitSchema = z
 				.array(z.uuid())
 				.min(1, { message: 'Debe seleccionar al menos un técnico' })
 		),
-		technicianSignature: z.string()
+		technicianSignature: z
+			.string()
+			.max(200_000, { error: 'Firma de técnico: formato inválido' })
 	})
 	.superRefine((data, ctx) => {
 		const requiresEquipment =
@@ -132,27 +136,6 @@ const regVisitSchema = z
 	})
 
 const editVisitSchema = z.object({
-	description: optionalField(
-		z
-			.string()
-			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
-			.refine(
-				val =>
-					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,648}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
-						val
-					),
-				{
-					message:
-						'Descripción: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
-				}
-			)
-			.refine(val => val.length >= 6, {
-				message: 'Descripción debe tener mínimo 6 caracteres'
-			})
-			.refine(val => val.length <= 650, {
-				message: 'Descripción debe tener máximo 650 caracteres'
-			})
-	),
 	future: optionalField(
 		z
 			.string()
@@ -184,6 +167,27 @@ const editVisitSchema = z.object({
 					error: 'Sector: Sólo se permiten los caracteres especiales . -'
 				}
 			)
+	),
+	task_description: optionalField(
+		z
+			.string()
+			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
+			.refine(
+				val =>
+					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,648}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+						val
+					),
+				{
+					message:
+						'Descripción de tareas: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
+				}
+			)
+			.refine(val => val.length >= 6, {
+				message: 'Descripción de tareas debe tener mínimo 6 caracteres'
+			})
+			.refine(val => val.length <= 650, {
+				message: 'Descripción de tareas debe tener máximo 650 caracteres'
+			})
 	)
 })
 

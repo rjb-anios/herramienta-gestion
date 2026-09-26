@@ -19,12 +19,6 @@ export async function generateRegVisitPDF(
 	const technicianData = form.getTextField('email_telefono_tecnico')
 	const visitDate = form.getTextField('fecha_visita')
 	const description = form.getTextField('descripcion')
-	const allFields = form.getFields()
-	const codesMachines = allFields.filter(e => {
-		return e.getName().includes('codigo')
-	})
-
-	console.log(codesMachines)
 
 	description.enableMultiline()
 

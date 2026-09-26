@@ -34,7 +34,8 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 					v.client.includes(query) ||
 					v.technicians.some(t => t.includes(query)) ||
 					(VISIT_CONCEPTS[v.concept]?.label ?? v.concept).includes(query) ||
-					v.description.includes(query)
+					v.register_description.includes(query) ||
+					(v.task_description?.includes(query) ?? false)
 			)
 		: visits
 

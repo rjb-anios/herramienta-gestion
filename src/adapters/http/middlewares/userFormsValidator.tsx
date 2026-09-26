@@ -111,8 +111,6 @@ export const regUserValidator = zValidator(
 	regUserSchema,
 	async (result, c) => {
 		if (!result.success) {
-			console.log(result.data)
-
 			const errorMessages = result.error.issues.map(i => i.message)
 
 			const { queries } = (c as any).get('userCases')

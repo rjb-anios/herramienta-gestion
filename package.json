@@ -18,6 +18,7 @@
 		"@types/node": "26.6.2",
 		"drizzle-kit": "0.31.10",
 		"signature_pad": "5.1.4",
+		"typescript": "^7.0.2",
 		"vite": "8.3.0",
 		"vite-ssr-components": "0.8.0",
 		"wrangler": "4.135.0"
@@ -29,7 +30,12 @@
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
 		"deploy": "$npm_execpath run build && wrangler deploy",
 		"dev": "vite",
-		"preview": "$npm_execpath run build && vite preview"
+		"lint": "biome check src",
+		"lint:fix": "biome check --write src",
+		"migrate:local": "wrangler d1 migrations apply herramienta-db --local",
+		"migrate:remote": "wrangler d1 migrations apply herramienta-db --remote",
+		"preview": "$npm_execpath run build && vite preview",
+		"typecheck": "tsc --noEmit"
 	},
 	"type": "module"
 }

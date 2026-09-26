@@ -1,16 +1,15 @@
 {
 	"compilerOptions": {
-		"baseUrl": "./",
-		"ignoreDeprecations": "6.0", //Se colocó esto para evitar alerta de error de propiedad baseUrl deprecada.
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx",
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
 		"paths": {
-			"@adapters/*": ["src/adapters/*"],
-			"@core/*": ["src/core/*"],
-			"@presentation/*": ["src/presentation/*"]
+			"@adapters/*": ["./src/adapters/*"],
+			"@core/*": ["./src/core/*"],
+			"@presentation/*": ["./src/presentation/*"],
+			"src/*": ["./src/*"]
 		},
 		"skipLibCheck": true,
 		"strict": true,

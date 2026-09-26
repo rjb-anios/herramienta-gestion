@@ -29,7 +29,6 @@ export class D1VisitRepo implements VisitRepo {
 				id: data.id,
 				id_client: data.id_client,
 				id_technician: data.id_technicians[0],
-				is_signed: 0,
 				register_description: data.register_description,
 				sector: data.sector ?? '',
 				task_description: data.task_description ?? '',
@@ -69,11 +68,16 @@ export class D1VisitRepo implements VisitRepo {
 
 	/*
 
-	OJO:
-	Sólo se podrá editar:
+OJO:
 
-	*Futuro
-	*Descripción de tareas (Diferente a la descripción de registro)
+Sólo se podrá editar:
+
+* Descripción de tareas (task_description)
+* Futuro
+* Sector
+
+La descripción de registro (register_description) es inmutable:
+es la que se imprime en el PDF de la visita.
 
 */
 
@@ -81,7 +85,8 @@ export class D1VisitRepo implements VisitRepo {
 		try {
 			const setData: Record<string, string | number> = {}
 
-			if (data.description !== undefined) setData.description = data.description
+			if (data.task_description !== undefined)
+				setData.task_description = data.task_description
 			if (data.future !== undefined) setData.future = data.future
 			if (data.sector !== undefined) setData.sector = data.sector
 			await this.db

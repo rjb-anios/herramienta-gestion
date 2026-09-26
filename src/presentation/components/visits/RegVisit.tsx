@@ -1,19 +1,11 @@
 import type { Client } from '@core/entities/Client'
-import type { Machine, MachineToPrintRegVisit } from '@core/entities/Machine'
-import type {
-	Technician,
-	TechnicianToPrintRegVisit
-} from '@core/entities/Technician'
-import {
-	CONCEPT_VALUES,
-	VISIT_CONCEPTS,
-	type VisitToPrint
-} from '@core/entities/Visit'
+import type { Machine } from '@core/entities/Machine'
+import type { Technician } from '@core/entities/Technician'
+import { CONCEPT_VALUES, VISIT_CONCEPTS } from '@core/entities/Visit'
 import { fetchWithCache } from '@presentation/cache'
 import Back from '@presentation/components/reusables/Back'
 import { API } from '@presentation/config'
 import { Encoding, Signature } from 'autopen'
-import dayjs from 'dayjs'
 import type { Child } from 'hono/jsx'
 import { useEffect, useRef, useState } from 'hono/jsx'
 import type { JSX } from 'hono/jsx/jsx-runtime'
@@ -42,8 +34,6 @@ const RegVisit = ({
 	const [machines, setMachines] = useState<Machine[]>([])
 	const [concept, setConcept] = useState<string>('')
 
-	const [contactSelectedClient, setContactSelectedClient] = useState<string>('')
-
 	const equipmentRequired =
 		concept === 'mantec' || concept === 'sertec' || concept === 'inst'
 
@@ -58,101 +48,6 @@ const RegVisit = ({
 			setMachines(data)
 		} catch (error) {
 			console.error('Error buscando máquinas: ', error)
-		}
-	}
-
-	const capturePrintableInputFields = () => {
-		console.log('se ejecutó')
-
-		const clientInp = document.querySelector('select[name="client"]')
-
-		const dateInp =
-			document.querySelector<HTMLInputElement>('input[name="date"]')
-
-		const sectorInp = document.querySelector<HTMLInputElement>(
-			'input[name="sector"]'
-		)
-		const regDescInp = document.querySelector<HTMLTextAreaElement>(
-			'textarea[name="register_description"]'
-		)
-		const tSignInp = document.querySelector<HTMLInputElement>(
-			'input[name="technicianSignature"]'
-		)
-		const cSignInp = document.querySelector<HTMLInputElement>(
-			'input[name="clientSignature"]'
-		)
-		const clientSignerInp = document.querySelector<HTMLInputElement>(
-			'input[name="clientSigner"]'
-		)
-		const techInp = document.querySelectorAll<HTMLInputElement>(
-			'input[name="technician"]'
-		)
-		const machInp = document.querySelectorAll<HTMLInputElement>(
-			'input[name="machine"]'
-		)
-
-		if (
-			clientInp instanceof HTMLSelectElement &&
-			dateInp instanceof HTMLInputElement &&
-			sectorInp instanceof HTMLInputElement &&
-			regDescInp instanceof HTMLTextAreaElement &&
-			tSignInp instanceof HTMLInputElement &&
-			cSignInp instanceof HTMLInputElement &&
-			clientSignerInp instanceof HTMLInputElement &&
-			techInp instanceof HTMLInputElement &&
-			machInp instanceof HTMLInputElement
-		) {
-			console.log('NO falló')
-
-			const aT: TechnicianToPrintRegVisit[] = []
-			const aM: MachineToPrintRegVisit[] = []
-
-			techInp.forEach(e => {
-				if (e.checked) {
-					aT.push({
-						email: e.dataset.email ?? '',
-						name: e.dataset.name ?? '',
-						phone: e.dataset.phone ?? ''
-					})
-				}
-			})
-
-			machInp.forEach(e => {
-				if (e.checked) {
-					aM.push({
-						manufacturer: e.dataset.manufacturer ?? '',
-						model: e.dataset.model ?? '',
-						serial_number: e.dataset.serial ?? ''
-					})
-				}
-			})
-
-			return {
-				client: clientInp.options[clientInp.selectedIndex].text,
-				client_signature: cSignInp.value,
-				client_signer: clientSignerInp.value,
-				contact_client: contactSelectedClient,
-				date: dayjs(dateInp.value).format('DD/MM/YYYY'),
-				machines: aM,
-				register_description: regDescInp.value,
-				sector: sectorInp.value ?? '',
-				technician_signature: tSignInp.value,
-				technicians: aT
-			}
-		}
-
-		console.log('falló')
-
-		return {
-			clientInp,
-			clientSignerInp,
-			cSignInp,
-			dateInp,
-			machInp,
-			regDescInp,
-			sectorInp,
-			techInp,
-			tSignInp
 		}
 	}
 
@@ -303,18 +198,11 @@ const RegVisit = ({
 				<select
 					class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					name='client'
-					onChange={e => {
-						const select = e.target as HTMLSelectElement
-						const selectedOption = select.selectedOptions[0]
-						const contactName = selectedOption?.dataset.contact || ''
-						loadMachines(select.value)
-						setContactSelectedClient(contactName)
-					}}
+					onChange={e => loadMachines((e.target as HTMLSelectElement).value)}
 				>
 					<option value=''>Seleccione un cliente</option>
 					{arrClient.map(e => (
 						<option
-							data-contact={e.contact}
 							key={e.id}
 							value={e.id}
 						>
@@ -422,7 +310,7 @@ const RegVisit = ({
 
 				<textarea
 					class='textarea wrap-break-word whitespace-pre-wrap overflow-y-auto text-3xl h-[150px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate resize-none'
-					maxlength={850}
+					maxlength={650}
 					minlength={6}
 					name='task_description'
 					placeholder='Tareas realizadas (opcional)'
@@ -523,33 +411,6 @@ const RegVisit = ({
 					>
 						Registrar
 					</button>
-					<form
-						onSubmit={async e => {
-							e.preventDefault()
-
-							const visitToPrint = capturePrintableInputFields()
-
-							console.log(visitToPrint)
-
-							const res = await fetch('/dashboard/service/visits/gen-pdf', {
-								body: JSON.stringify(visitToPrint),
-								headers: { 'Content-Type': 'application/json' },
-								method: 'post'
-							})
-
-							if (!res.ok)
-								return alert('Falló envío de datos para generación de PDF')
-
-							return alert('Si sirvió mi lidel')
-						}}
-					>
-						<button
-							class='h-[40px] w-[150px] p-2 border mx-auto hover:cursor-pointer text-black bg-amber-500'
-							type='submit'
-						>
-							Imprimir
-						</button>
-					</form>
 				</div>
 			</form>
 		</>

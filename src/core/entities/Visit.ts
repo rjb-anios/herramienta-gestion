@@ -62,8 +62,8 @@ export interface VisitToPrint {
 
 export interface EditVisitRequest {
 	id: string
-	prevDescription: string
-	description?: string
+	prevTaskDescription: string
+	task_description?: string
 	prevFuture: string | undefined
 	future?: string
 	prevSector: string | undefined
