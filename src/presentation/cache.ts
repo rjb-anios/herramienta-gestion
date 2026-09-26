@@ -13,7 +13,13 @@ export async function fetchWithCache<T>(url: string): Promise<T> {
 		return cached.data as T
 	}
 
-	const data = await fetch(url).then(r => r.json<T>())
+	const res = await fetch(url)
+
+	if (!res.ok) {
+		throw new Error(`Error ${res.status} al consultar ${url}`)
+	}
+
+	const data = await res.json<T>()
 	cache.set(url, { data, expiresAt: Date.now() + TTL })
 	return data
 }

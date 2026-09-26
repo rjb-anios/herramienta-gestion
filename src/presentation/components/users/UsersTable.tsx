@@ -35,7 +35,7 @@ const UsersTable: FC<
 								<td class='w-1/6 border-x truncate'>{ROLES[e.role].label}</td>
 								{ROLES[role].level >= ROLES.A.level && (
 									<>
-										<td class='w-1/6 border-x truncate'>
+										<td class='w-1/12 border-x truncate'>
 											<Dots id={e.id} />
 											<ul
 												class='dropdown dropdown-center dropdown-top menu w-fit text-2xl p-3 bg-base-100 border shadow-sm'
@@ -56,8 +56,6 @@ const UsersTable: FC<
 													</button>
 												</li>
 											</ul>
-										</td>
-										<td>
 											<dialog
 												class='backdrop:bg-black/50 m-auto'
 												id={`${e.id}-usr26`}

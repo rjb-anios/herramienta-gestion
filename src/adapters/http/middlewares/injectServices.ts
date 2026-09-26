@@ -99,7 +99,7 @@ const injectServices = createMiddleware<Env>(async (c, next) => {
 
 	c.set('machineCases', {
 		commands: {
-			assignMachine: new AssignMachineCommand(machineRepo),
+			assignMachine: new AssignMachineCommand(machineRepo, clientRepo),
 			deleteMachine: new DeleteMachineCommand(machineRepo),
 			editMachine: new EditMachineCommand(machineRepo),
 			regMachine: new RegMachineCommand(machineRepo),

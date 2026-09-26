@@ -1,3 +1,4 @@
+import { ROLES, type Role } from '@core/entities/Role'
 import { VISIT_CONCEPTS } from '@core/entities/Visit'
 import Back from '@presentation/components/reusables/Back'
 import Dots from '@presentation/components/reusables/Dots'
@@ -12,13 +13,20 @@ const PAGE_SIZE = 20
 
 interface AvailableYears {
 	years: number[]
+	role?: Role
 	children?: Child
 }
 
-const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
+const VisitsTable = ({
+	children,
+	years = [],
+	role
+}: AvailableYears): JSX.Element => {
 	const [selectedYear, setSelectedYear] = useState<number | null>(null)
 	const [query, setQuery] = useState('')
 	const [page, setPage] = useState(0)
+
+	const canEdit = role !== undefined && ROLES[role].level >= ROLES.t.level
 
 	const { visits, isLoading, fetchByYear } = useVisits()
 
@@ -123,7 +131,10 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 							</tr>
 						) : (
 							pageItems.map(e => (
-								<tr class='h-[40px]'>
+								<tr
+									class='h-[40px]'
+									key={e.id}
+								>
 									<td class='w-2/6 border-x truncate'>
 										{dayjs(e.date).format('DD-MM-YYYY')}
 									</td>
@@ -133,9 +144,10 @@ const VisitsTable = ({ children, years = [] }: AvailableYears): JSX.Element => {
 									</td>
 									<td class='w-1/6 border-x truncate'>
 										<Dots dialogId={e.id} />
-									</td>
-									<td>
-										<VisitDetail visit={e} />
+										<VisitDetail
+											canEdit={canEdit}
+											visit={e}
+										/>
 									</td>
 								</tr>
 							))

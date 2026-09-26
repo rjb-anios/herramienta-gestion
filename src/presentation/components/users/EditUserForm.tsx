@@ -102,7 +102,9 @@ const EditUserForm: FC<PropsWithChildren<{ data: User }>> = async ({
 					class='select text-3xl h-[45px] min-w-[300px] w-full max-w-[500px] px-[10px] outline-none mx-auto truncate'
 					name='role'
 				>
-					<option value=''>Seleccione nuevo rol</option>
+					<option value={data.role}>
+						Mantener rol actual ({ROLES[data.role].label})
+					</option>
 					<option value='A'>Administrador</option>
 					<option value='t'>Técnico</option>
 					<option value='u'>Usuario</option>

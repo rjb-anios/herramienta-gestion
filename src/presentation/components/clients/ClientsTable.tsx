@@ -58,8 +58,6 @@ const ClientsTable: FC<
 													</button>
 												</li>
 											</ul>
-										</td>
-										<td>
 											<dialog
 												class='backdrop:bg-black/50 m-auto'
 												id={`${e.id}-cl26`}

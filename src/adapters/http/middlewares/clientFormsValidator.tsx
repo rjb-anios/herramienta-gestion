@@ -4,6 +4,12 @@ import RegClient from '@presentation/components/clients/RegClient'
 import Back from '@presentation/components/reusables/Back'
 import z from 'zod'
 
+const emailSchema = z
+	.string()
+	.trim()
+	.email({ error: 'Email: formato inválido' })
+	.max(254, { error: 'Email debe tener un máximo de 254 caracteres' })
+
 const regClientSchema = z.object({
 	contact: z
 		.string()
@@ -14,7 +20,7 @@ const regClientSchema = z.object({
 		)
 		.min(4, { error: 'Contacto debe tener mínimo 4 caracteres' })
 		.max(30, { error: 'Contacto debe tener un máximo de 30 caracteres' }),
-	email: z.email().trim(),
+	email: emailSchema,
 	name: z
 		.string()
 		.trim()
@@ -42,7 +48,7 @@ const editClientSchema = z.object({
 				{ error: 'Contacto: verifique números o caracteres especiales' }
 			)
 	),
-	email: optionalField(z.email().trim()),
+	email: optionalField(emailSchema),
 	id: z.uuid(),
 	name: optionalField(
 		z
@@ -68,7 +74,7 @@ const editClientSchema = z.object({
 		)
 		.min(4, { error: 'Contacto debe tener mínimo 4 caracteres' })
 		.max(30, { error: 'Contacto debe tener un máximo de 30 caracteres' }),
-	prevEmail: z.email().trim(),
+	prevEmail: emailSchema,
 	prevName: z
 		.string()
 		.trim()

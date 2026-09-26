@@ -6,9 +6,13 @@ import type { JSX } from 'hono/jsx/jsx-runtime'
 
 interface VisitDetailProps {
 	visit: VisitToDisplay
+	canEdit?: boolean
 }
 
-const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
+const VisitDetail = ({
+	visit,
+	canEdit = false
+}: VisitDetailProps): JSX.Element => {
 	return (
 		<dialog
 			class='backdrop:bg-black/50 m-auto'
@@ -103,13 +107,15 @@ const VisitDetail = ({ visit }: VisitDetailProps): JSX.Element => {
 							<p class='w-fit text-justify'>{visit.future}</p>
 						</div>
 					)}
-					<div>
-						<a
-							href={`/dashboard/service/visits/all/${dayjs(visit.date).format('YYYY')}/edit/${visit.id}`}
-						>
-							Editar
-						</a>
-					</div>
+					{canEdit && (
+						<div>
+							<a
+								href={`/dashboard/service/visits/all/${dayjs(visit.date).format('YYYY')}/edit/${visit.id}`}
+							>
+								Editar
+							</a>
+						</div>
+					)}
 				</div>
 			</div>
 		</dialog>

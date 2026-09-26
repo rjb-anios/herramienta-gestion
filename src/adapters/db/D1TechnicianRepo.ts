@@ -140,18 +140,18 @@ export class D1TechnicianRepo implements TechnicianRepo {
 		}
 	}
 
-	async existsById(id: string): Promise<boolean> {
+	async existsByInitials(initials: string): Promise<boolean> {
 		try {
 			const res = await this.db
 				.select({ id: schema.techniciansTable.id })
 				.from(schema.techniciansTable)
-				.where(eq(schema.techniciansTable.id, id))
+				.where(eq(schema.techniciansTable.initials, initials))
 				.limit(1)
 				.execute()
 
 			return res.length > 0
 		} catch (error: any) {
-			console.log('Error al verificar técnico: ', error.message)
+			console.log('Error al verificar iniciales de técnico: ', error.message)
 			return false
 		}
 	}

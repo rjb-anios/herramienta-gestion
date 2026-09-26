@@ -57,13 +57,18 @@ service.get('/visits/all', async c => {
 		)
 	}
 
+	const { role } = c.get('jwtPayload')
+
 	return await c.render(
 		<div
 			class='hono-island flex flex-col gap-8'
 			data-component='VisitsTable'
-			data-props={JSON.stringify({ years: res.years })}
+			data-props={JSON.stringify({ role, years: res.years })}
 		>
-			<VisitsTable years={res.years} />
+			<VisitsTable
+				role={role}
+				years={res.years}
+			/>
 		</div>
 	)
 })

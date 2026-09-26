@@ -4,12 +4,18 @@ import Back from '@presentation/components/reusables/Back'
 import RegTech from '@presentation/components/technician/RegTech'
 import z from 'zod'
 
+const emailSchema = z
+	.string()
+	.trim()
+	.email({ error: 'Email: formato inválido' })
+	.max(254, { error: 'Email debe tener un máximo de 254 caracteres' })
+
 const regTechSchema = z.object({
-	email: z.email().trim(),
+	email: emailSchema,
 	initials: z
 		.string()
 		.trim()
-		.regex(/^[A-Z]{2,3}$/, {
+		.regex(/^[A-ZÁÉÍÓÚÑ]{2,3}$/, {
 			error: 'Iniciales: Sólo permite letras mayúsculas'
 		})
 		.min(2, { error: 'Iniciales debe tener mínimo 2 caracteres' })
@@ -18,7 +24,7 @@ const regTechSchema = z.object({
 		.string()
 		.trim()
 		.regex(
-			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
 			{ error: 'Nombre: verifique números o caracteres especiales' }
 		)
 		.min(4, { error: 'Nombre debe tener mínimo 4 caracteres' })
@@ -32,7 +38,7 @@ const regTechSchema = z.object({
 })
 
 const editTechSchema = z.object({
-	email: optionalField(z.email().trim()),
+	email: optionalField(emailSchema),
 	id: z.uuid(),
 	initials: optionalField(
 		z
@@ -57,11 +63,11 @@ const editTechSchema = z.object({
 			.trim()
 			.regex(/^[0-9]{8}$/, { error: 'Teléfono: sólo se permiten números' })
 	),
-	prevEmail: z.email().trim(),
+	prevEmail: emailSchema,
 	prevInitials: z
 		.string()
 		.trim()
-		.regex(/^[A-Z]{2,3}$/, {
+		.regex(/^[A-ZÁÉÍÓÚÑ]{2,3}$/, {
 			error: 'Iniciales: Sólo permite letras mayúsculas'
 		})
 		.min(2, { error: 'Iniciales debe tener mínimo 2 caracteres' })
@@ -70,7 +76,7 @@ const editTechSchema = z.object({
 		.string()
 		.trim()
 		.regex(
-			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
 			{ error: 'Nombre: verifique números o caracteres especiales' }
 		)
 		.min(4, { error: 'Nombre debe tener mínimo 4 caracteres' })

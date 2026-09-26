@@ -15,10 +15,17 @@ export function mergeMachineData(request: EditMachineRequest): {
 	data: MergedEditMachineData
 } {
 	const hasManufacturer =
-		request.manufacturer !== undefined && request.manufacturer !== ''
-	const hasModel = request.model !== undefined && request.model !== ''
+		request.manufacturer !== undefined &&
+		request.manufacturer !== '' &&
+		request.manufacturer !== request.prevManufacturer
+	const hasModel =
+		request.model !== undefined &&
+		request.model !== '' &&
+		request.model !== request.prevModel
 	const hasSerialNumber =
-		request.serial_number !== undefined && request.serial_number !== ''
+		request.serial_number !== undefined &&
+		request.serial_number !== '' &&
+		request.serial_number !== request.prevSerial_number
 
 	if (!hasManufacturer && !hasModel && !hasSerialNumber) {
 		return {

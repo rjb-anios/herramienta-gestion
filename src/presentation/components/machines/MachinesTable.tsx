@@ -49,7 +49,7 @@ const MachinesTable: FC<
 											>
 												<li class='cursor-pointer w-fit'>
 													<button
-														class='w-c'
+														class='w-fit'
 														data-dialog-id={`${e.id}-mc26`}
 														type='button'
 													>
@@ -57,8 +57,6 @@ const MachinesTable: FC<
 													</button>
 												</li>
 											</ul>
-										</td>
-										<td>
 											<dialog
 												class='backdrop:bg-black/50 m-auto'
 												id={`${e.id}-mc26`}

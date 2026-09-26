@@ -8,8 +8,8 @@ const regMachineSchema = z.object({
 		.string()
 		.trim()
 		.regex(
-			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,38}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
-			{ error: 'Fabricante: verifique números o caracteres especiales' }
+			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9][a-zA-ZñÑáéíóúÁÉÍÓÚ0-9.\- ]{2,38}[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9]$/,
+			{ error: 'Fabricante: verifique caracteres especiales' }
 		)
 		.min(4, { error: 'Fabricante debe tener mínimo 4 caracteres' })
 		.max(40, { error: 'Fabricante debe tener un máximo de 40 caracteres' }),
@@ -57,8 +57,8 @@ const editMachineSchema = z.object({
 		.string()
 		.trim()
 		.regex(
-			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,38}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
-			{ error: 'Fabricante: verifique números o caracteres especiales' }
+			/^[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9][a-zA-ZñÑáéíóúÁÉÍÓÚ0-9.\- ]{2,38}[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9]$/,
+			{ error: 'Fabricante: verifique caracteres especiales' }
 		)
 		.min(4, { error: 'Fabricante debe tener mínimo 4 caracteres' })
 		.max(40, { error: 'Fabricante debe tener un máximo de 40 caracteres' }),

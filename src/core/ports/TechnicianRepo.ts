@@ -22,5 +22,5 @@ export interface TechnicianRepo {
 
 	findById: (id: string) => Promise<FindTechnicianResponse>
 
-	existsById: (id: string) => Promise<boolean>
+	existsByInitials: (initials: string) => Promise<boolean>
 }

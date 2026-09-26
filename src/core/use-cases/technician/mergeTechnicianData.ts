@@ -16,10 +16,22 @@ export function mergeTechnicianData(request: EditTechnicianRequest): {
 	hasChanges: boolean
 	data: MergedEditTechnicianData
 } {
-	const hasName = request.name !== undefined && request.name !== ''
-	const hasInitials = request.initials !== undefined && request.initials !== ''
-	const hasEmail = request.email !== undefined && request.email !== ''
-	const hasPhone = request.phone !== undefined && request.phone !== ''
+	const hasName =
+		request.name !== undefined &&
+		request.name !== '' &&
+		request.name !== request.prevName
+	const hasInitials =
+		request.initials !== undefined &&
+		request.initials !== '' &&
+		request.initials !== request.prevInitials
+	const hasEmail =
+		request.email !== undefined &&
+		request.email !== '' &&
+		request.email !== request.prevEmail
+	const hasPhone =
+		request.phone !== undefined &&
+		request.phone !== '' &&
+		request.phone !== request.prevPhone
 
 	if (!hasName && !hasInitials && !hasEmail && !hasPhone) {
 		return {

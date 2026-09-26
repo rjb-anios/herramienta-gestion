@@ -43,7 +43,7 @@ const TechniciansTable: FC<
 								</td>
 								{ROLES[role].level >= ROLES.A.level && (
 									<>
-										<td class='w-1/6 border-x truncate px-[10px]'>
+										<td class='w-1/12 border-x truncate px-[10px]'>
 											<Dots id={e.id} />
 											<ul
 												class='dropdown dropdown-center dropdown-top menu w-fit text-2xl p-3 bg-base-100 border shadow-sm'
@@ -66,8 +66,6 @@ const TechniciansTable: FC<
 													</button>
 												</li>
 											</ul>
-										</td>
-										<td>
 											<dialog
 												class='backdrop:bg-black/50 m-auto'
 												id={`${e.id}-tog26`}

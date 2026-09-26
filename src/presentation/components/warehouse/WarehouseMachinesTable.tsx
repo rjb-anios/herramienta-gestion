@@ -54,8 +54,6 @@ const WarehouseMachinesTable: FC<
 												</button>
 											</li>
 										</ul>
-									</td>
-									<td>
 										<dialog
 											class='backdrop:bg-black/50 m-auto'
 											id={`${m.id}-wrmc26`}

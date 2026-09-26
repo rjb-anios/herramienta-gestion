@@ -10,6 +10,12 @@ export class EditUserCommand {
 	) {}
 
 	async execute(data: EditUserRequest): Promise<EditUserResponse> {
+		const userExists = await this.userRepo.existsById(data.id)
+
+		if (!userExists) {
+			return { message: 'El usuario no existe', type: 'Error' }
+		}
+
 		const {
 			hasChanges,
 			usernameChanged,

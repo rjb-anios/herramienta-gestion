@@ -16,10 +16,22 @@ export function mergeClientData(request: EditClientRequest): {
 	hasChanges: boolean
 	data: MergedEditClientData
 } {
-	const hasName = request.name !== undefined && request.name !== ''
-	const hasContact = request.contact !== undefined && request.contact !== ''
-	const hasPhone = request.phone !== undefined && request.phone !== ''
-	const hasEmail = request.email !== undefined && request.email !== ''
+	const hasName =
+		request.name !== undefined &&
+		request.name !== '' &&
+		request.name !== request.prevName
+	const hasContact =
+		request.contact !== undefined &&
+		request.contact !== '' &&
+		request.contact !== request.prevContact
+	const hasPhone =
+		request.phone !== undefined &&
+		request.phone !== '' &&
+		request.phone !== request.prevPhone
+	const hasEmail =
+		request.email !== undefined &&
+		request.email !== '' &&
+		request.email !== request.prevEmail
 
 	if (!hasName && !hasContact && !hasPhone && !hasEmail) {
 		return {

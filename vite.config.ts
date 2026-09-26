@@ -5,7 +5,7 @@ import ssrPlugin from 'vite-ssr-components/plugin'
 
 export default defineConfig({
 	build: {
-		assetsDir: './dist',
+		assetsDir: 'assets',
 		outDir: './dist',
 		rollupOptions: {
 			input: './src/client.tsx',

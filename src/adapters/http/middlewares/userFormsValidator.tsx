@@ -5,6 +5,13 @@ import RegUser from '@presentation/components/users/RegUser'
 import LoginLayout from '@presentation/layouts/LoginLayout'
 import z from 'zod'
 
+const usernameSchema = z
+	.string()
+	.trim()
+	.regex(/^[a-zñ][a-zñ0-9]{3,15}$/, {
+		error: 'Usuario: sólo letras minúsculas y números (4 a 16 caracteres)'
+	})
+
 const regUserSchema = z
 	.object({
 		confirmPassword: z.string(),
@@ -23,14 +30,7 @@ const regUserSchema = z
 			.min(8, { error: 'Contraseña debe tener mínimo 8 caracteres' })
 			.max(16, { error: 'Contraseña debe tener máximo 16 caracteres' }),
 		role: z.enum(['A', 't', 'u'], { error: 'Rol inválido' }),
-		username: z
-			.string()
-			.trim()
-			.regex(/^[a-zñ][a-zñ0-9]{4,16}$/, {
-				error: 'Usuario sólo permite letras minúsculas y números'
-			})
-			.min(4, { error: 'Usuario debe tener mínimo 4 caracteres' })
-			.max(16, { error: 'Usuario debe tener un máximo de 16 caracteres' })
+		username: usernameSchema
 	})
 	.refine(data => data.password === data.confirmPassword, {
 		error: 'Las contraseñas deben coincidir',
@@ -43,14 +43,7 @@ const loginSchema = z.object({
 		.trim()
 		.min(8, { error: 'Contraseña debe tener mínimo 8 caracteres' })
 		.max(16, { error: 'Contraseña debe tener máximo 16 caracteres' }),
-	username: z
-		.string()
-		.trim()
-		.regex(/^[a-zñ][a-zñ0-9]{4,16}$/, {
-			error: 'Usuario sólo permite letras minúsculas y números'
-		})
-		.min(4, { error: 'Usuario debe tener mínimo 5 caracteres' })
-		.max(16, { error: 'Usuario debe tener un máximo de 16 caracteres' })
+	username: usernameSchema
 })
 
 const editUserSchema = z
@@ -83,23 +76,9 @@ const editUserSchema = z
 			.min(4, { error: 'Nombre debe tener mínimo 4 caracteres' })
 			.max(30, { error: 'Nombre debe tener un máximo de 30 caracteres' }),
 		prevRole: z.enum(['A', 't', 'u'], { error: 'Rol inválido' }),
-		prevUsername: z
-			.string({ error: 'Usuario: debe pasar una cadena de texto' })
-			.trim()
-			.regex(/^[a-zñ][a-zñ0-9]{4,16}$/, {
-				error: 'Usuario sólo permite letras minúsculas y números'
-			})
-			.min(4, { error: 'Usuario debe tener mínimo 5 caracteres' })
-			.max(16, { error: 'Usuario debe tener un máximo de 16 caracteres' }),
+		prevUsername: usernameSchema,
 		role: z.enum(['A', 't', 'u'], { error: 'Rol inválido' }),
-		username: optionalField(
-			z
-				.string({ error: 'Usuario: debe pasar una cadena de texto' })
-				.trim()
-				.regex(/^[a-zñ][a-zñ0-9]{4,16}$/, {
-					error: 'Usuario sólo permite letras minúsculas y números'
-				})
-		)
+		username: optionalField(usernameSchema)
 	})
 	.refine(data => !data.password || data.password === data.confirmPassword, {
 		error: 'Las contraseñas deben coincidir',
