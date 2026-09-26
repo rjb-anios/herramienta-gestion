@@ -39,5 +39,7 @@ export interface UserRepo {
 		expiry: string
 	}) => Promise<void>
 
-	deleteRefreshToken: (tokenId: string) => Promise<void>
+	deleteRefreshToken: (tokenId: string) => Promise<boolean>
+
+	deleteRefreshTokensByUser: (userId: string) => Promise<void>
 }

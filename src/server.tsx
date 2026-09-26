@@ -21,7 +21,7 @@ app.use('*', async (c, next) => {
 	c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
 	c.header(
 		'Content-Security-Policy',
-		"default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
+		"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; object-src 'none'; form-action 'self'; frame-ancestors 'none'"
 	)
 	await next()
 })
@@ -36,10 +36,38 @@ app.route('/register', register)
 
 app.use('/dashboard/*', auth)
 
+app.on('GET', '/dashboard/*', async (c, next) => {
+	const { role } = c.get('jwtPayload')
+	const path = c.req.path
+	const userLevel = ROLES[role]?.level ?? 0
+
+	const isTechAllowedGet =
+		path === '/dashboard/service/visits/register' ||
+		path.startsWith('/dashboard/clients/equipment/assign') ||
+		/^\/dashboard\/service\/visits\/all\/\d{4}\/edit\//.test(path)
+
+	if (isTechAllowedGet && userLevel >= ROLES.t.level) return await next()
+
+	const isAdminOnlyGet =
+		path.startsWith('/dashboard/users') ||
+		path === '/dashboard/clients/register' ||
+		path.startsWith('/dashboard/clients/all/edit/') ||
+		path === '/dashboard/warehouse/register' ||
+		path.startsWith('/dashboard/warehouse/all/edit/') ||
+		path === '/dashboard/service/technicians/register' ||
+		path.startsWith('/dashboard/service/technicians/all/edit/')
+
+	if (isAdminOnlyGet && userLevel < ROLES.A.level) {
+		return c.text('No autorizado', 403)
+	}
+
+	return await next()
+})
+
 app.on('POST', '/dashboard/*', async (c, next) => {
 	const { role } = c.get('jwtPayload')
 	const path = c.req.path
-	const userLevel = ROLES[role].level
+	const userLevel = ROLES[role]?.level ?? 0
 
 	if (
 		path.startsWith('/dashboard/service/visits/') ||

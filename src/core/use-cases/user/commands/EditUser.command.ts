@@ -31,6 +31,8 @@ export class EditUserCommand {
 			}
 		}
 
+		const roleChanged = data.role !== undefined && data.role !== data.prevRole
+
 		const updateData = {
 			...mergedData,
 			...(hasPassword && {
@@ -38,6 +40,12 @@ export class EditUserCommand {
 			})
 		}
 
-		return await this.userRepo.editUser(updateData)
+		const res = await this.userRepo.editUser(updateData)
+
+		if (res.type === 'Success' && (roleChanged || hasPassword)) {
+			await this.userRepo.deleteRefreshTokensByUser(data.id)
+		}
+
+		return res
 	}
 }

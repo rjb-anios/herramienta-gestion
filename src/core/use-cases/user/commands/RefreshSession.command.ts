@@ -15,8 +15,11 @@ export class RefreshSessionCommand {
 		newRfToken: string
 		expRYF: string
 	} | null> {
-		// 1. Delete the old refresh token
-		await this.userRepo.deleteRefreshToken(oldTokenId)
+		// 1. Revocar el token viejo de forma atómica (un solo uso):
+		// si otro request ya lo usó, no se emite un nuevo par
+		const revoked = await this.userRepo.deleteRefreshToken(oldTokenId)
+
+		if (!revoked) return null
 
 		// 2. Generate a new refresh token
 		const newRefreshToken = await this.tokenManager.generateRefreshToken(user)

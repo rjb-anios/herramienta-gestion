@@ -277,16 +277,40 @@ export class D1UserRepo implements UserRepo {
 		)
 	}
 
-	async deleteRefreshToken(tokenId: string): Promise<void> {
+	async deleteRefreshToken(tokenId: string): Promise<boolean> {
 		try {
-			await this.db
+			const res = await this.db
 				.delete(schema.refreshTokensTable)
 				.where(eq(schema.refreshTokensTable.id_token, tokenId))
 
-			this.kv.delete(`auth_token:${tokenId}`).catch(() => {})
+			await this.kv.delete(`auth_token:${tokenId}`).catch(() => {})
+
+			return (res.meta.changes ?? 0) > 0
 		} catch (error: any) {
 			console.log('Error al eliminar refresh token: ', error.message)
 			throw error
+		}
+	}
+
+	// Eliminar todos los refresh tokens de un usuario (revoca todas sus sesiones)
+
+	async deleteRefreshTokensByUser(userId: string): Promise<void> {
+		try {
+			const tokensToDelete = await this.db
+				.select({ id_token: schema.refreshTokensTable.id_token })
+				.from(schema.refreshTokensTable)
+				.where(eq(schema.refreshTokensTable.id_user, userId))
+				.execute()
+
+			await this.db
+				.delete(schema.refreshTokensTable)
+				.where(eq(schema.refreshTokensTable.id_user, userId))
+
+			await Promise.allSettled(
+				tokensToDelete.map(t => this.kv.delete(`auth_token:${t.id_token}`))
+			)
+		} catch (error: any) {
+			console.log('Error al eliminar sesiones del usuario: ', error.message)
 		}
 	}
 
