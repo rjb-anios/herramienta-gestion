@@ -29,6 +29,7 @@
 		"build": "vite build",
 		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
 		"check": "pnpm typecheck && pnpm lint",
+		"clean": "rm -rf dist",
 		"deploy": "$npm_execpath run build && wrangler deploy",
 		"dev": "vite",
 		"lint": "biome check src",

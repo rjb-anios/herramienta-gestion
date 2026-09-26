@@ -24,7 +24,7 @@
 	"main": "./src/server.tsx",
 	"name": "herramienta",
 	"observability": {
-		"enabled": false,
+		"enabled": true,
 		"head_sampling_rate": 1,
 		"logs": {
 			"enabled": true,
@@ -33,7 +33,7 @@
 			"persist": true
 		},
 		"traces": {
-			"enabled": false,
+			"enabled": true,
 			"head_sampling_rate": 1,
 			"persist": true
 		}
