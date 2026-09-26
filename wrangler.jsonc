@@ -15,6 +15,14 @@
 			"migrations_dir": "drizzle/migrations"
 		}
 	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "LOGIN_RATE_LIMITER",
+				"class_name": "LoginRateLimiter"
+			}
+		]
+	},
 	"kv_namespaces": [
 		{
 			"binding": "KV",
@@ -22,6 +30,12 @@
 		}
 	],
 	"main": "./src/server.tsx",
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": ["LoginRateLimiter"]
+		}
+	],
 	"name": "herramienta",
 	"observability": {
 		"enabled": true,

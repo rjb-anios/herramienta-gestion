@@ -21,7 +21,7 @@ interface Payload extends JWTPayload {
 export class JwtTokenManager implements TokenManager {
 	async generateAccessToken(payload: TokenPayload): Promise<string> {
 		return await sign(
-			{ exp: dayjs.utc().add(15, 'minutes').unix(), ...payload },
+			{ exp: dayjs.utc().add(5, 'minutes').unix(), ...payload },
 			await env.AT_SECRET.get(),
 			'HS512'
 		)

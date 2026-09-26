@@ -62,7 +62,7 @@ const auth = createMiddleware<Env>(async (c, next) => {
 	}
 
 	const acCookie = cookieService.generateCookie('ac_token', tokens.newAcToken, {
-		maxAge: 60 * 15
+		maxAge: 60 * 5
 	})
 
 	const rfCookie = cookieService.generateCookie('rf_token', tokens.newRfToken, {

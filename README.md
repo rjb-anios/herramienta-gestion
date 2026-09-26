@@ -93,6 +93,8 @@ La autorización se valida en el Worker (`src/server.tsx`); ocultar botones en l
 - No commitear `.env` ni `.dev.vars` (están en `.gitignore`).
 - No compartir ni publicar la carpeta `dist/`: al construir, el plugin de Vite copia `.dev.vars` a `dist/herramienta/.dev.vars` para el preview local. Usa `pnpm clean` si la distribuyes.
 - Los logs de error de los adaptadores usan `console.error` y quedan visibles en la observabilidad del Worker (logs y traces habilitados en `wrangler.jsonc`).
+- Login limitado a 5 intentos cada 15 minutos por IP con el Durable Object `LoginRateLimiter` (conteo atómico, migración `v1` en `wrangler.jsonc`).
+- Los access tokens duran 5 minutos; al cambiar rol o contraseña se revocan los refresh tokens, así que el cambio surte efecto en ese plazo.
 
 ## Estado
 

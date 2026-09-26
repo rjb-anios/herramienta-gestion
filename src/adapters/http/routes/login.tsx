@@ -64,7 +64,7 @@ login.post('/', loginRateLimiter, loginValidator, async c => {
 
 	const cookieService = c.get('cookieService')
 
-	// Generar access token (15 min)
+	// Generar access token (5 min)
 	const acToken = await tokenManager.generateAccessToken({
 		id: res.user.id,
 		name: res.user.name,
@@ -72,7 +72,7 @@ login.post('/', loginRateLimiter, loginValidator, async c => {
 	})
 
 	const acCookie = cookieService.generateCookie('ac_token', acToken, {
-		maxAge: 60 * 15
+		maxAge: 60 * 5
 	})
 
 	const rfCookie = cookieService.generateCookie('rf_token', res.user.rfToken, {

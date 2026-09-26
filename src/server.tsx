@@ -15,6 +15,8 @@ import type { Env } from 'src/env'
 
 const app = new Hono<Env>()
 
+export { LoginRateLimiter } from '@adapters/durable/LoginRateLimiter'
+
 app.use('*', async (c, next) => {
 	c.header('X-Content-Type-Options', 'nosniff')
 	c.header('X-Frame-Options', 'DENY')
