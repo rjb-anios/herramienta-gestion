@@ -54,16 +54,14 @@ const RegVisit = ({
 	const clearSignature = (s: 't' | 'c') => {
 		if (s === 't') {
 			padTechnicianRef.current?.clear()
-			;(
-				document.getElementById('technicianSignatureData') as HTMLInputElement
-			).value = ''
+			const input = document.getElementById('technicianSignatureData')
+			if (input instanceof HTMLInputElement) input.value = ''
 		}
 
 		if (s === 'c') {
 			padClientRef.current?.clear()
-			;(
-				document.getElementById('clientSignatureData') as HTMLInputElement
-			).value = ''
+			const input = document.getElementById('clientSignatureData')
+			if (input instanceof HTMLInputElement) input.value = ''
 		}
 	}
 

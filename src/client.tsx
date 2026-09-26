@@ -2,7 +2,7 @@ import RegVisit from '@presentation/components/visits/RegVisit'
 import VisitsTable from '@presentation/components/visits/VisitsTable'
 import { render } from 'hono/jsx/dom'
 
-const COMPONENTS: Record<string, any> = {
+const COMPONENTS = {
 	RegVisit,
 	VisitsTable
 }
@@ -17,7 +17,7 @@ const hydrate = (): void => {
 		const rawProps = root.dataset.props
 
 		if (name !== undefined && name in COMPONENTS) {
-			const Component = COMPONENTS[name]
+			const Component = COMPONENTS[name as keyof typeof COMPONENTS]
 			const props = JSON.parse(rawProps ?? '{}')
 
 			render(<Component {...props} />, root)

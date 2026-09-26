@@ -19,10 +19,7 @@ import { EditMachineCommand } from '@core/use-cases/machine/commands/EditMachine
 import { RegMachineCommand } from '@core/use-cases/machine/commands/RegMachine.command'
 import { UnassignMachineCommand } from '@core/use-cases/machine/commands/UnassignMachine.command'
 import { ExistsAnyMachineQuery } from '@core/use-cases/machine/queries/ExistsAnyMachine.query'
-import {
-	FindAllMachinesQuery,
-	FindAllMachinesWithClientNameQuery
-} from '@core/use-cases/machine/queries/FindAllMachines.query'
+import { FindAllMachinesWithClientNameQuery } from '@core/use-cases/machine/queries/FindAllMachines.query'
 import { FindAllMachinesByClientQuery } from '@core/use-cases/machine/queries/FindAllMachinesByClient.query'
 import { FindAllWarehouseMachinesQuery } from '@core/use-cases/machine/queries/FindAllWarehouseMachines.query'
 import { FindMachineQuery } from '@core/use-cases/machine/queries/FindMachine.query'
@@ -107,7 +104,6 @@ const injectServices = createMiddleware<Env>(async (c, next) => {
 		},
 		queries: {
 			existsAnyMachine: new ExistsAnyMachineQuery(machineRepo),
-			findAllMachines: new FindAllMachinesQuery(machineRepo),
 			findAllMachinesByClient: new FindAllMachinesByClientQuery(machineRepo),
 			findAllMachinesWithClientName: new FindAllMachinesWithClientNameQuery(
 				machineRepo

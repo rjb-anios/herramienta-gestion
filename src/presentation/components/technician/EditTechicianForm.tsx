@@ -108,7 +108,7 @@ const EditTechnicianForm: FC<PropsWithChildren<{ data: Technician }>> = async ({
 						maxlength={8}
 						minlength={8}
 						name='prevPhone'
-					    placeholder='Teléfono (ej. 99000024)'
+						placeholder='Teléfono (ej. 99000024)'
 						readonly
 						required
 						tabindex={-1}

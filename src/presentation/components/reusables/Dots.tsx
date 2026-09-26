@@ -1,8 +1,9 @@
 import type { FC, PropsWithChildren } from 'hono/jsx'
 
-const Dots: FC<
-	PropsWithChildren<{ id?: string; dialogId?: string }>
-> = ({ id, dialogId }) => {
+const Dots: FC<PropsWithChildren<{ id?: string; dialogId?: string }>> = ({
+	id,
+	dialogId
+}) => {
 	return (
 		<button
 			class='btn outline-none shadow-none cursor-pointer'

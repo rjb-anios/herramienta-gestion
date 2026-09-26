@@ -62,7 +62,6 @@ const UsersTable: FC<
 											>
 												<DeleteModal
 													id={e.id}
-													mode='delete'
 													name={e.name}
 													route='users/all'
 												/>

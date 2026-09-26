@@ -1,4 +1,5 @@
 import * as schema from '@adapters/db/SchemaD1'
+import { getErrorMessage } from '@adapters/external/errorTools'
 import type {
 	AddVisitResponse,
 	EditVisitRequest,
@@ -58,8 +59,8 @@ export class D1VisitRepo implements VisitRepo {
 			await this.db.batch([insertVisit, ...relations])
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.error('Error al registrar visita: ', error.message)
+		} catch (error) {
+			console.error('Error al registrar visita: ', getErrorMessage(error))
 			return { message: 'Registrar visita: error desconocido', type: 'Error' }
 		}
 	}
@@ -95,8 +96,8 @@ es la que se imprime en el PDF de la visita.
 				.where(eq(schema.visitsTable.id, data.id))
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al editar visita: ', error.message)
+		} catch (error) {
+			console.error('Error al editar visita: ', getErrorMessage(error))
 
 			return { message: 'Editar visita: error desconocido', type: 'Error' }
 		}
@@ -116,8 +117,11 @@ es la que se imprime en el PDF de la visita.
 				.execute()
 
 			return { type: 'Success', years: res.map(e => e.year) }
-		} catch (error: any) {
-			console.log('Error al obtener años de visitas: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al obtener años de visitas: ',
+				getErrorMessage(error)
+			)
 
 			return { message: 'Obtener años: error desconocido', type: 'Error' }
 		}
@@ -171,10 +175,10 @@ es la que se imprime en el PDF de la visita.
 			}))
 
 			return { type: 'Success', visits: formattedVisits }
-		} catch (error: any) {
-			console.log(
+		} catch (error) {
+			console.error(
 				'Error al obtener lista general de visitas por año: ',
-				error.message
+				getErrorMessage(error)
 			)
 
 			return {
@@ -231,8 +235,8 @@ es la que se imprime en el PDF de la visita.
 					}
 				]
 			}
-		} catch (error: any) {
-			console.log('Error al buscar visita por ID: ', error.message)
+		} catch (error) {
+			console.error('Error al buscar visita por ID: ', getErrorMessage(error))
 
 			return {
 				message: 'Buscar visita: error desconocido',

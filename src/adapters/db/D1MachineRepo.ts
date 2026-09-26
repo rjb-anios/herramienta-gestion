@@ -1,5 +1,6 @@
 import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
+import { getErrorMessage } from '@adapters/external/errorTools'
 import type {
 	AddOrDeleteMachineResponse,
 	EditMachineRequest,
@@ -21,7 +22,6 @@ export class D1MachineRepo implements MachineRepo {
 
 	private get cacheKeys() {
 		return {
-			all: 'machines:all',
 			assigned: 'machines:assigned',
 			warehouse: 'machines:warehouse'
 		}
@@ -30,30 +30,6 @@ export class D1MachineRepo implements MachineRepo {
 	private async invalidateAll() {
 		const keys = Object.values(this.cacheKeys)
 		await kvCacheInvalidate(this.kv, ...keys)
-	}
-
-	/// Asociar una máquina a un cliente particular
-
-	async addMachine(data: Machine): Promise<AddOrDeleteMachineResponse> {
-		try {
-			await this.db.insert(schema.machinesTable).values({
-				id: data.id,
-				id_client: data.id_client,
-				manufacturer: data.manufacturer,
-				model: data.model,
-				serial_number: data.serial_number
-			})
-			await this.invalidateAll()
-
-			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error a agregar un equipo a cliente: ', error.message)
-
-			return {
-				message: 'Agregar equipo: error desconocido',
-				type: 'Error'
-			}
-		}
 	}
 
 	/// Eliminar una máquina asociada a un cliente
@@ -66,8 +42,8 @@ export class D1MachineRepo implements MachineRepo {
 			await this.invalidateAll()
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al eliminar equipo: ', error.message)
+		} catch (error) {
+			console.error('Error al eliminar equipo: ', getErrorMessage(error))
 
 			return { message: 'Eliminar equipo: error desconocido', type: 'Error' }
 		}
@@ -88,8 +64,8 @@ export class D1MachineRepo implements MachineRepo {
 			}
 
 			return { machine: res[0], type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al buscar equipo: ', error.message)
+		} catch (error) {
+			console.error('Error al buscar equipo: ', getErrorMessage(error))
 
 			return { message: 'Buscar equipo: error desconocido', type: 'Error' }
 		}
@@ -110,8 +86,8 @@ export class D1MachineRepo implements MachineRepo {
 			await this.invalidateAll()
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al editar equipo: ', error.message)
+		} catch (error) {
+			console.error('Error al editar equipo: ', getErrorMessage(error))
 
 			return { message: 'Editar equipo: error desconocido', type: 'Error' }
 		}
@@ -129,10 +105,10 @@ export class D1MachineRepo implements MachineRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log(
+		} catch (error) {
+			console.error(
 				'Error al verificar número de serie de equipo: ',
-				error.message
+				getErrorMessage(error)
 			)
 			return false
 		}
@@ -152,8 +128,11 @@ export class D1MachineRepo implements MachineRepo {
 			await this.invalidateAll()
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al registrar equipo en depósito: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al registrar equipo en depósito: ',
+				getErrorMessage(error)
+			)
 			return {
 				message: 'Registrar equipo en depósito: error desconocido',
 				type: 'Error'
@@ -176,8 +155,11 @@ export class D1MachineRepo implements MachineRepo {
 			await kvCacheInvalidate(this.kv, `machines:by-client:${clientId}`)
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al asignar equipo a cliente: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al asignar equipo a cliente: ',
+				getErrorMessage(error)
+			)
 
 			return {
 				message: 'Asignar equipo: error desconocido',
@@ -207,8 +189,8 @@ export class D1MachineRepo implements MachineRepo {
 			}
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al desasignar equipo: ', error.message)
+		} catch (error) {
+			console.error('Error al desasignar equipo: ', getErrorMessage(error))
 
 			return {
 				message: 'Desasignar equipo: error desconocido',
@@ -233,8 +215,11 @@ export class D1MachineRepo implements MachineRepo {
 						.execute()
 
 					return { machines: res, type: 'Success' }
-				} catch (error: any) {
-					console.log('Error al buscar equipos en depósito: ', error.message)
+				} catch (error) {
+					console.error(
+						'Error al buscar equipos en depósito: ',
+						getErrorMessage(error)
+					)
 
 					return {
 						message: 'Buscar depósito: error desconocido',
@@ -256,8 +241,11 @@ export class D1MachineRepo implements MachineRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar si existen equipos: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar si existen equipos: ',
+				getErrorMessage(error)
+			)
 
 			return false
 		}
@@ -289,10 +277,10 @@ export class D1MachineRepo implements MachineRepo {
 						.execute()
 
 					return { machines: res, type: 'Success' }
-				} catch (error: any) {
-					console.log(
+				} catch (error) {
+					console.error(
 						'Error al buscar la lista de equipos con cliente: ',
-						error.message
+						getErrorMessage(error)
 					)
 
 					return {
@@ -304,34 +292,7 @@ export class D1MachineRepo implements MachineRepo {
 		)
 	}
 
-	/// Buscar todas las máquinas
-
-	async findAllMachines(): Promise<FindAllMachinesResponse> {
-		return kvCacheGet<FindAllMachinesResponse>(
-			this.kv,
-			this.cacheKeys.all,
-			async () => {
-				try {
-					const res = await this.db
-						.select()
-						.from(schema.machinesTable)
-						.orderBy(asc(schema.machinesTable.manufacturer))
-						.execute()
-
-					return { machines: res, type: 'Success' }
-				} catch (error: any) {
-					console.log('Error al buscar la lista de equipos: ', error.message)
-
-					return {
-						message: 'Buscar equipos: error desconocido',
-						type: 'Error'
-					}
-				}
-			}
-		)
-	}
-
-	///  Busca si una máquina particular ha sido intervenida en visitas técnicas
+	/// Buscar si una máquina particular ha sido intervenida en visitas técnicas
 
 	async hasVisits(id: string): Promise<boolean> {
 		try {
@@ -343,8 +304,11 @@ export class D1MachineRepo implements MachineRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar uso del equipo: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar uso del equipo: ',
+				getErrorMessage(error)
+			)
 			return false
 		}
 	}
@@ -365,8 +329,11 @@ export class D1MachineRepo implements MachineRepo {
 						.execute()
 
 					return { machines: res, type: 'Success' }
-				} catch (error: any) {
-					console.log('Error al buscar equipos por cliente: ', error.message)
+				} catch (error) {
+					console.error(
+						'Error al buscar equipos por cliente: ',
+						getErrorMessage(error)
+					)
 
 					return {
 						message: 'Buscar equipos por cliente: error desconocido',

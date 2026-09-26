@@ -9,15 +9,11 @@ import type {
 } from '@core/entities/Machine'
 
 export interface MachineRepo {
-	addMachine: (data: Machine) => Promise<AddOrDeleteMachineResponse>
-
 	deleteMachine: (id: string) => Promise<AddOrDeleteMachineResponse>
 
 	editMachine: (data: EditMachineRequest) => Promise<EditMachineResponse>
 
 	findMachine: (id: string) => Promise<FindMachineResponse>
-
-	findAllMachines: () => Promise<FindAllMachinesResponse>
 
 	findAllMachinesByClient: (id: string) => Promise<FindAllMachinesResponse>
 
@@ -38,7 +34,5 @@ export interface MachineRepo {
 		clientId: string
 	) => Promise<AddOrDeleteMachineResponse>
 
-	unassignFromClient: (
-		machineId: string
-	) => Promise<AddOrDeleteMachineResponse>
+	unassignFromClient: (machineId: string) => Promise<AddOrDeleteMachineResponse>
 }

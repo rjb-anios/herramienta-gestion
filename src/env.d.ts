@@ -19,11 +19,11 @@ import type {
 import type { Role } from '@core/entities/Role'
 import type {
 	AddTechnicianResponse,
-	ToggleActiveResponse,
 	EditTechnicianRequest,
 	EditTechnicianResponse,
 	FindTechnicianResponse,
-	Technician
+	Technician,
+	ToggleActiveResponse
 } from '@core/entities/Technician'
 import type {
 	DeleteUserResponse,
@@ -125,7 +125,6 @@ export interface Env {
 			}
 			queries: {
 				findMachine: { execute(id: string): Promise<FindMachineResponse> }
-				findAllMachines: { execute(): Promise<FindAllMachinesResponse> }
 				findAllMachinesWithClientName: {
 					execute(): Promise<FindAllMachinesWithClientNameResponse>
 				}

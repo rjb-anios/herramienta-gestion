@@ -1,5 +1,6 @@
 import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
+import { getErrorMessage } from '@adapters/external/errorTools'
 import type {
 	AddTechnicianResponse,
 	EditTechnicianRequest,
@@ -14,7 +15,7 @@ import type { DrizzleD1Database } from 'drizzle-orm/d1'
 
 const CACHE_KEY = 'technicians:all'
 
-function mapRow(row: any): Technician {
+function mapRow(row: typeof schema.techniciansTable.$inferSelect): Technician {
 	return { ...row, active: row.active === 1 }
 }
 
@@ -39,8 +40,8 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al agregar un técnico: ', error.message)
+		} catch (error) {
+			console.error('Error al agregar un técnico: ', getErrorMessage(error))
 
 			return { message: 'Agregar técnico: error desconocido', type: 'Error' }
 		}
@@ -64,8 +65,11 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al cambiar estado del técnico: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al cambiar estado del técnico: ',
+				getErrorMessage(error)
+			)
 
 			return {
 				message: 'Cambiar estado: error desconocido',
@@ -88,8 +92,8 @@ export class D1TechnicianRepo implements TechnicianRepo {
 				}
 
 				return { technician: res.map(mapRow), type: 'Success' }
-			} catch (error: any) {
-				console.log('Error al buscar técnicos: ', error.message)
+			} catch (error) {
+				console.error('Error al buscar técnicos: ', getErrorMessage(error))
 				return {
 					message: 'Buscar técnicos: error desconocido',
 					type: 'Error'
@@ -112,8 +116,11 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			}
 
 			return { technician: res.map(mapRow), type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al buscar técnicos activos: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al buscar técnicos activos: ',
+				getErrorMessage(error)
+			)
 			return {
 				message: 'Buscar técnicos activos: error desconocido',
 				type: 'Error'
@@ -134,8 +141,8 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			}
 
 			return { technician: res.map(mapRow), type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al buscar técnico: ', error.message)
+		} catch (error) {
+			console.error('Error al buscar técnico: ', getErrorMessage(error))
 			return { message: 'Buscar técnico: error desconocido', type: 'Error' }
 		}
 	}
@@ -150,8 +157,11 @@ export class D1TechnicianRepo implements TechnicianRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar iniciales de técnico: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar iniciales de técnico: ',
+				getErrorMessage(error)
+			)
 			return false
 		}
 	}
@@ -176,8 +186,8 @@ export class D1TechnicianRepo implements TechnicianRepo {
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al editar técnico: ', error.message)
+		} catch (error) {
+			console.error('Error al editar técnico: ', getErrorMessage(error))
 
 			return { message: 'Editar técnico: error desconocido', type: 'Error' }
 		}

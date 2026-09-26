@@ -3,6 +3,8 @@ import { zValidator } from '@hono/zod-validator'
 import Back from '@presentation/components/reusables/Back'
 import RegUser from '@presentation/components/users/RegUser'
 import LoginLayout from '@presentation/layouts/LoginLayout'
+import type { Context } from 'hono'
+import type { Env } from 'src/env'
 import z from 'zod'
 
 const usernameSchema = z
@@ -92,7 +94,7 @@ export const regUserValidator = zValidator(
 		if (!result.success) {
 			const errorMessages = result.error.issues.map(i => i.message)
 
-			const { queries } = (c as any).get('userCases')
+			const { queries } = (c as Context<Env>).get('userCases')
 			const hasUsers = await queries.existsAnyUser.execute()
 
 			return await c.render(

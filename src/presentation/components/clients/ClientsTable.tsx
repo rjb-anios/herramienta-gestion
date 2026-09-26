@@ -64,7 +64,6 @@ const ClientsTable: FC<
 											>
 												<DeleteModal
 													id={e.id}
-													mode='delete'
 													name={e.name}
 													route='clients/all'
 												/>

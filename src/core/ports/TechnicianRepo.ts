@@ -1,10 +1,10 @@
 import type {
 	AddTechnicianResponse,
-	ToggleActiveResponse,
 	EditTechnicianRequest,
 	EditTechnicianResponse,
 	FindTechnicianResponse,
-	Technician
+	Technician,
+	ToggleActiveResponse
 } from '@core/entities/Technician'
 
 export interface TechnicianRepo {

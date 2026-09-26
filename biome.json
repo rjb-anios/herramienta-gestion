@@ -24,7 +24,8 @@
 		}
 	},
 	"files": {
-		"ignoreUnknown": false
+		"ignoreUnknown": false,
+		"includes": ["**", "!src/presentation/style.css"]
 	},
 	"html": {
 		"formatter": {

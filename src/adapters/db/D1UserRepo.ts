@@ -1,4 +1,5 @@
 import * as schema from '@adapters/db/SchemaD1'
+import { getErrorMessage } from '@adapters/external/errorTools'
 import type {
 	DeleteUserResponse,
 	EditUserRequest,
@@ -35,8 +36,8 @@ export class D1UserRepo implements UserRepo {
 			return {
 				type: 'Success'
 			}
-		} catch (error: any) {
-			console.log('Error al registrar usuario: ', error.message)
+		} catch (error) {
+			console.error('Error al registrar usuario: ', getErrorMessage(error))
 
 			return { message: 'Registrar usuario: error desconocido', type: 'Error' }
 		}
@@ -70,8 +71,8 @@ export class D1UserRepo implements UserRepo {
 			}
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al eliminar usuario: ', error.message)
+		} catch (error) {
+			console.error('Error al eliminar usuario: ', getErrorMessage(error))
 
 			return { message: 'Eliminar usuario: error desconocido', type: 'Error' }
 		}
@@ -92,8 +93,8 @@ export class D1UserRepo implements UserRepo {
 			if (res.length === 0) return false
 
 			return true
-		} catch (error: any) {
-			console.log('Error al buscar usuario por ID: ', error.message)
+		} catch (error) {
+			console.error('Error al buscar usuario por ID: ', getErrorMessage(error))
 			return false
 		}
 	}
@@ -113,8 +114,11 @@ export class D1UserRepo implements UserRepo {
 			if (res.length === 0) return false
 
 			return true
-		} catch (error: any) {
-			console.log('Error al verificar existencia de usuarios: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar existencia de usuarios: ',
+				getErrorMessage(error)
+			)
 			return false
 		}
 	}
@@ -155,8 +159,8 @@ export class D1UserRepo implements UserRepo {
 			})
 
 			return { expiry, token }
-		} catch (error: any) {
-			console.log('Error al buscar token: ', error.message)
+		} catch (error) {
+			console.error('Error al buscar token: ', getErrorMessage(error))
 
 			try {
 				const res = await this.db
@@ -217,8 +221,11 @@ export class D1UserRepo implements UserRepo {
 				.execute()
 
 			return { type: 'Success', users: res }
-		} catch (error: any) {
-			console.log('Error al obtener lista general de usuarios: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al obtener lista general de usuarios: ',
+				getErrorMessage(error)
+			)
 
 			return { message: 'Obtener usuarios: error desconocido', type: 'Error' }
 		}
@@ -247,8 +254,11 @@ export class D1UserRepo implements UserRepo {
 			}
 
 			return res[0]
-		} catch (error: any) {
-			console.log('Error al obtener datos del usuario: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al obtener datos del usuario: ',
+				getErrorMessage(error)
+			)
 			return null
 		}
 	}
@@ -286,8 +296,8 @@ export class D1UserRepo implements UserRepo {
 			await this.kv.delete(`auth_token:${tokenId}`).catch(() => {})
 
 			return (res.meta.changes ?? 0) > 0
-		} catch (error: any) {
-			console.log('Error al eliminar refresh token: ', error.message)
+		} catch (error) {
+			console.error('Error al eliminar refresh token: ', getErrorMessage(error))
 			throw error
 		}
 	}
@@ -309,8 +319,11 @@ export class D1UserRepo implements UserRepo {
 			await Promise.allSettled(
 				tokensToDelete.map(t => this.kv.delete(`auth_token:${t.id_token}`))
 			)
-		} catch (error: any) {
-			console.log('Error al eliminar sesiones del usuario: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al eliminar sesiones del usuario: ',
+				getErrorMessage(error)
+			)
 		}
 	}
 
@@ -331,8 +344,11 @@ export class D1UserRepo implements UserRepo {
 				.where(eq(schema.usersTable.id, data.id))
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al editar datos de usuario: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al editar datos de usuario: ',
+				getErrorMessage(error)
+			)
 
 			return { message: 'Editar usuario: error desconocido', type: 'Error' }
 		}
@@ -353,8 +369,11 @@ export class D1UserRepo implements UserRepo {
 			if (res.length === 0) return false
 
 			return true
-		} catch (error: any) {
-			console.log('Error al buscar usuario por nombre: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al buscar usuario por nombre: ',
+				getErrorMessage(error)
+			)
 			return false
 		}
 	}
@@ -380,8 +399,11 @@ export class D1UserRepo implements UserRepo {
 			}
 
 			return res[0]
-		} catch (error: any) {
-			console.log('Error al obtener datos del usuario: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al obtener datos del usuario: ',
+				getErrorMessage(error)
+			)
 			return null
 		}
 	}

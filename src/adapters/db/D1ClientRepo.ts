@@ -1,5 +1,6 @@
 import { kvCacheGet, kvCacheInvalidate } from '@adapters/db/kvCache'
 import * as schema from '@adapters/db/SchemaD1'
+import { getErrorMessage } from '@adapters/external/errorTools'
 import type {
 	AddOrDeleteClientResponse,
 	Client,
@@ -28,8 +29,8 @@ export class D1ClientRepo implements ClientRepo {
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al agregar cliente: ', error.message)
+		} catch (error) {
+			console.error('Error al agregar cliente: ', getErrorMessage(error))
 
 			return {
 				message: 'Agregar cliente: error desconocido',
@@ -48,8 +49,8 @@ export class D1ClientRepo implements ClientRepo {
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al eliminar cliente: ', error.message)
+		} catch (error) {
+			console.error('Error al eliminar cliente: ', getErrorMessage(error))
 
 			return {
 				message: 'Eliminar cliente: error desconocido',
@@ -69,8 +70,8 @@ export class D1ClientRepo implements ClientRepo {
 			await kvCacheInvalidate(this.kv, CACHE_KEY)
 
 			return { type: 'Success' }
-		} catch (error: any) {
-			console.log('Error al editar cliente: ', error.message)
+		} catch (error) {
+			console.error('Error al editar cliente: ', getErrorMessage(error))
 
 			return {
 				message: 'Editar cliente: error desconocido',
@@ -94,8 +95,8 @@ export class D1ClientRepo implements ClientRepo {
 			}
 
 			return { client: res[0], type: 'Exist' }
-		} catch (error: any) {
-			console.log('Error al buscar cliente: ', error.message)
+		} catch (error) {
+			console.error('Error al buscar cliente: ', getErrorMessage(error))
 
 			return {
 				message: 'Buscar cliente: error desconocido',
@@ -116,8 +117,11 @@ export class D1ClientRepo implements ClientRepo {
 					.execute()
 
 				return { clients: res, type: 'Success' }
-			} catch (error: any) {
-				console.log('Error al obtener todos los clientes: ', error.message)
+			} catch (error) {
+				console.error(
+					'Error al obtener todos los clientes: ',
+					getErrorMessage(error)
+				)
 
 				return {
 					message: 'Obtener clientes: error desconocido',
@@ -139,8 +143,11 @@ export class D1ClientRepo implements ClientRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar equipos del cliente: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar equipos del cliente: ',
+				getErrorMessage(error)
+			)
 			return false
 		}
 	}
@@ -157,8 +164,11 @@ export class D1ClientRepo implements ClientRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar visitas del cliente: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar visitas del cliente: ',
+				getErrorMessage(error)
+			)
 			return false
 		}
 	}
@@ -175,8 +185,11 @@ export class D1ClientRepo implements ClientRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar nombre de cliente: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar nombre de cliente: ',
+				getErrorMessage(error)
+			)
 			return false
 		}
 	}
@@ -192,8 +205,11 @@ export class D1ClientRepo implements ClientRepo {
 				.execute()
 
 			return res.length > 0
-		} catch (error: any) {
-			console.log('Error al verificar existencia de clientes: ', error.message)
+		} catch (error) {
+			console.error(
+				'Error al verificar existencia de clientes: ',
+				getErrorMessage(error)
+			)
 
 			return false
 		}

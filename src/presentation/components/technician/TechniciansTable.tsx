@@ -35,7 +35,8 @@ const TechniciansTable: FC<
 								<td class='w-1/12 border-x truncate px-[10px]'>{e.initials}</td>
 								<td class='w-3/12 border-x truncate px-[10px]'>{e.email}</td>
 								<td class='w-2/12 border-x truncate px-[10px]'>{e.phone}</td>
-								<td class='w-1/12 border-x truncate px-[10px]'>{e.active ? (
+								<td class='w-1/12 border-x truncate px-[10px]'>
+									{e.active ? (
 										<span class='text-green-700'>Activo</span>
 									) : (
 										<span class='text-red-700'>Inactivo</span>
