@@ -7,34 +7,25 @@ import z from 'zod'
 const regVisitSchema = z
 	.object({
 		client: z.uuid(),
+		clientSignature: z.string(),
+		clientSigner: z
+			.string()
+			.trim()
+			.regex(
+				/^[a-zA-ZñÑáéíóúÁÉÍÓÚ][a-zA-ZñÑáéíóúÁÉÍÓÚ.\- ]{2,28}[a-zA-ZñÑáéíóúÁÉÍÓÚ]$/,
+				{ error: 'Aclaración: verifique números o caracteres especiales' }
+			)
+			.min(4, { error: 'Aclaración debe tener mínimo 4 caracteres' })
+			.max(30, { error: 'Aclaración debe tener un máximo de 30 caracteres' }),
 		concept: z.enum(CONCEPT_VALUES, { error: 'Opción inválida' }),
 		date: z.iso.date(),
-		description: z
-			.string()
-			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
-			.refine(
-				val =>
-					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
-						val
-					),
-				{
-					message:
-						'Descripción: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
-				}
-			)
-			.refine(val => val.length >= 6, {
-				message: 'Descripción debe tener mínimo 6 caracteres'
-			})
-			.refine(val => val.length <= 650, {
-				message: 'Descripción debe tener máximo 650 caracteres'
-			}),
 		future: optionalField(
 			z
 				.string()
 				.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
 				.refine(
 					val =>
-						/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+						/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,648}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
 							val
 						),
 					{
@@ -62,6 +53,25 @@ const regVisitSchema = z
 			if (typeof val === 'string') return [val]
 			return val
 		}, z.array(z.uuid())),
+		register_description: z
+			.string()
+			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
+			.refine(
+				val =>
+					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,648}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+						val
+					),
+				{
+					message:
+						'Descripción de registro: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
+				}
+			)
+			.refine(val => val.length >= 6, {
+				message: 'Descripción de registro debe tener mínimo 6 caracteres'
+			})
+			.refine(val => val.length <= 650, {
+				message: 'Descripción de registro debe tener máximo 650 caracteres'
+			}),
 		sector: optionalField(
 			z
 				.string()
@@ -73,6 +83,27 @@ const regVisitSchema = z
 					}
 				)
 		),
+		task_description: optionalField(
+			z
+				.string()
+				.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
+				.refine(
+					val =>
+						/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,848}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+							val
+						),
+					{
+						message:
+							'Descripción de tareas: Sólo se permiten los caracteres especiales . , " \' () / - : % ; = _ $ ¿ ? # @ º'
+					}
+				)
+				.refine(val => val.length >= 6, {
+					message: 'Descripción de tareas debe tener mínimo 6 caracteres'
+				})
+				.refine(val => val.length <= 650, {
+					message: 'Descripción de tareas debe tener máximo 850 caracteres'
+				})
+		),
 		technician: z.preprocess(
 			val => {
 				if (!val) return []
@@ -82,7 +113,8 @@ const regVisitSchema = z
 			z
 				.array(z.uuid())
 				.min(1, { message: 'Debe seleccionar al menos un técnico' })
-		)
+		),
+		technicianSignature: z.string()
 	})
 	.superRefine((data, ctx) => {
 		const requiresEquipment =
@@ -106,7 +138,7 @@ const editVisitSchema = z.object({
 			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
 			.refine(
 				val =>
-					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,648}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
 						val
 					),
 				{
@@ -127,7 +159,7 @@ const editVisitSchema = z.object({
 			.transform(val => val.replace(/[\r\n]+/g, ' ').trim())
 			.refine(
 				val =>
-					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{6,650}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
+					/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º][a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º ]{4,648}[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,"'()/\-:%;=_$¿?#@º]$/.test(
 						val
 					),
 				{

@@ -6,6 +6,13 @@ export interface Technician {
 	phone: string
 	active: boolean
 }
+
+export interface TechnicianToPrintRegVisit {
+	name: string
+	email: string
+	phone: string
+}
+
 export type AddTechnicianResponse =
 	| { type: 'Success' }
 	| { type: 'InitialsInUse' }

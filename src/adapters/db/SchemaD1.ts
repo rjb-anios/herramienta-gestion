@@ -44,11 +44,12 @@ export const techniciansTable = sqliteTable('technicians', {
 export const visitsTable = sqliteTable(
 	'visits',
 	{
+		client_signature: text().notNull(),
+		client_signer: text().notNull(),
 		concept: text({
 			enum: CONCEPT_VALUES
 		}).notNull(),
 		date: text().notNull(),
-		description: text().notNull(),
 		future: text().notNull(),
 		hours: integer().notNull(),
 		id: text().notNull().primaryKey(),
@@ -58,7 +59,10 @@ export const visitsTable = sqliteTable(
 		id_technician: text()
 			.notNull()
 			.references(() => techniciansTable.id),
-		sector: text().notNull()
+		register_description: text().notNull(),
+		sector: text().notNull(),
+		task_description: text().notNull(),
+		technician_signature: text().notNull()
 	},
 	table => [
 		index('visits_index_0').on(table.id_client, table.date),

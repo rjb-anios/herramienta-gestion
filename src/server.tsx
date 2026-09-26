@@ -3,7 +3,6 @@ import injectServices from '@adapters/http/middlewares/injectServices'
 import clients from '@adapters/http/routes/clients'
 import dashboard from '@adapters/http/routes/dashboard'
 import login from '@adapters/http/routes/login'
-// import prueba from '@adapters/http/routes/prueba'
 import register from '@adapters/http/routes/register'
 import service from '@adapters/http/routes/service'
 import users from '@adapters/http/routes/users'
@@ -32,9 +31,8 @@ app.use(injectServices)
 app.use(renderer)
 
 app.route('/', login)
-app.route('/register', register)
 
-// app.route('/prueba', prueba)
+app.route('/register', register)
 
 app.use('/dashboard/*', auth)
 

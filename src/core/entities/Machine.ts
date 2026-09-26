@@ -6,6 +6,18 @@ export interface Machine {
 	id_client: string | null
 }
 
+export interface MachineToDisplay {
+	id: string
+	model: string
+	serial_number: string
+}
+
+export interface MachineToPrintRegVisit {
+	model: string
+	serial_number: string
+	manufacturer: string
+}
+
 export interface MachineWithClientName extends Machine {
 	client: string
 }

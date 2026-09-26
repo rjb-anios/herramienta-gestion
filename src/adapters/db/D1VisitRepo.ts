@@ -20,15 +20,20 @@ export class D1VisitRepo implements VisitRepo {
 	async addVisit(data: Visit): Promise<AddVisitResponse> {
 		try {
 			const insertVisit = this.db.insert(schema.visitsTable).values({
+				client_signature: data.client_signature,
+				client_signer: data.client_signer,
 				concept: data.concept,
 				date: data.date,
-				description: data.description,
 				future: data.future ?? '',
 				hours: Number(data.hours),
 				id: data.id,
 				id_client: data.id_client,
 				id_technician: data.id_technicians[0],
-				sector: data.sector ?? ''
+				is_signed: 0,
+				register_description: data.register_description,
+				sector: data.sector ?? '',
+				task_description: data.task_description ?? '',
+				technician_signature: data.technician_signature
 			})
 
 			const relations = []
@@ -61,6 +66,16 @@ export class D1VisitRepo implements VisitRepo {
 	}
 
 	/// Editar una visita
+
+	/*
+
+	OJO:
+	Sólo se podrá editar:
+
+	*Futuro
+	*Descripción de tareas (Diferente a la descripción de registro)
+
+*/
 
 	async editVisit(data: EditVisitRequest): Promise<EditVisitResponse> {
 		try {
@@ -140,12 +155,13 @@ export class D1VisitRepo implements VisitRepo {
 				client: v.client.name,
 				concept: v.concept,
 				date: v.date,
-				description: v.description,
 				future: v.future ?? undefined,
 				hours: Number(v.hours),
 				id: v.id,
 				machines: v.machines.map(m => m.machine),
+				register_description: v.register_description,
 				sector: v.sector ?? undefined,
+				task_description: v.task_description ?? undefined,
 				technicians: v.technicians.map(t => t.technician.initials)
 			}))
 
@@ -199,12 +215,13 @@ export class D1VisitRepo implements VisitRepo {
 						client: visit.client.name,
 						concept: visit.concept,
 						date: visit.date,
-						description: visit.description,
 						future: visit.future ?? undefined,
 						hours: Number(visit.hours),
 						id: visit.id,
 						machines: visit.machines.map(m => m.machine),
+						register_description: visit.register_description,
 						sector: visit.sector ?? undefined,
+						task_description: visit.task_description ?? undefined,
 						technicians: visit.technicians.map(t => t.technician.initials)
 					}
 				]

@@ -1,5 +1,5 @@
-import type { Role } from '@core/entities/Role'
 import { env } from 'cloudflare:workers'
+import type { Role } from '@core/entities/Role'
 import type {
 	RefreshTokenData,
 	TokenManager,

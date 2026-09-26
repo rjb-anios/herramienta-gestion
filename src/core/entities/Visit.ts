@@ -1,3 +1,6 @@
+import type { MachineToDisplay, MachineToPrintRegVisit } from './Machine'
+import type { TechnicianToPrintRegVisit } from './Technician'
+
 export const VISIT_CONCEPTS = {
 	inst: { label: 'Instalación' },
 	mantec: { label: 'Mantenimiento preventivo' },
@@ -13,12 +16,6 @@ export const CONCEPT_VALUES = Object.keys(VISIT_CONCEPTS) as unknown as [
 	...VisitConcepts[]
 ]
 
-export interface MachineToDisplay {
-	id: string
-	model: string
-	serial_number: string
-}
-
 export interface Visit {
 	id: string
 	date: string
@@ -26,10 +23,14 @@ export interface Visit {
 	id_technicians: string[]
 	id_machine: string[]
 	concept: VisitConcepts
-	description: string
+	register_description: string
+	task_description: string | undefined
 	future: string | undefined
 	hours: number
 	sector: string | undefined
+	technician_signature: string
+	client_signature: string
+	client_signer: string
 }
 
 export interface VisitToDisplay {
@@ -38,11 +39,25 @@ export interface VisitToDisplay {
 	concept: VisitConcepts
 	client: string
 	machines: MachineToDisplay[]
-	description: string
+	register_description: string
+	task_description: string | undefined
 	technicians: string[]
 	future: string | undefined
 	hours: number
 	sector: string | undefined
+}
+
+export interface VisitToPrint {
+	technicians: TechnicianToPrintRegVisit[]
+	date: string
+	client: string
+	sector: string
+	contact_client: string
+	machines: MachineToPrintRegVisit[]
+	register_description: string
+	client_signer: string
+	technician_signature: string
+	client_signature: string
 }
 
 export interface EditVisitRequest {

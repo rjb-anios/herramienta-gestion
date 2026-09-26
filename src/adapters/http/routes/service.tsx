@@ -168,7 +168,7 @@ service.post(
 			description,
 			future: future ?? undefined,
 			id,
-			prevDescription: visit.description,
+			prevDescription: visit.register_description,
 			prevFuture: visit.future ?? '',
 			prevSector: visit.sector ?? '',
 			sector: sector ?? undefined
@@ -314,6 +314,18 @@ service.get('/visits/register', async c => {
 	}
 })
 
+/// Generar PDF de visita para imprimir
+
+service.post('/visits/gen-pdf', async c => {
+	const v = await c.req.json()
+
+	console.log(v)
+
+	if (!v) return c.text('Mal ahí lidel')
+
+	return c.text('Bien ahí mi lidel')
+})
+
 /// Registra la visita
 
 service.post('/visits/register', regVisitValidator, async c => {
@@ -323,26 +335,50 @@ service.post('/visits/register', regVisitValidator, async c => {
 		machine,
 		technician,
 		concept,
-		description,
+		register_description,
+		task_description,
 		future,
 		hours,
-		sector
+		sector,
+		clientSignature,
+		clientSigner,
+		technicianSignature
 	} = c.req.valid('form')
 
 	const {
 		commands: { addVisit }
 	} = c.get('visitCases')
 
-	const res = await addVisit.execute({
+	console.log({
+		client,
+		clientSignature,
+		clientSigner,
 		concept,
 		date,
-		description,
+		future,
+		hours,
+		machine,
+		register_description,
+		sector,
+		task_description,
+		technician,
+		technicianSignature
+	})
+
+	const res = await addVisit.execute({
+		client_signature: clientSignature,
+		client_signer: clientSigner,
+		concept,
+		date,
 		future,
 		hours: Number(hours),
 		id_client: client,
 		id_machine: machine,
 		id_technicians: technician,
-		sector
+		register_description,
+		sector,
+		task_description,
+		technician_signature: technicianSignature
 	})
 
 	if (res.type === 'Error') {
