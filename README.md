@@ -57,6 +57,7 @@ Stack: Cloudflare Workers + Hono + Vite, D1 (SQLite) con Drizzle ORM, KV, Tailwi
 | `pnpm run deploy` | Build + `wrangler deploy` (usar `run`: pnpm reserva `deploy`) |
 | `pnpm check` | `typecheck` + `lint` (ejecutar antes de commitear) |
 | `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm test` / `pnpm test:watch` | Vitest (merges, casos de uso y generación de PDF) |
 | `pnpm lint` / `pnpm lint:fix` | Biome check / autofix |
 | `pnpm migrate:local` / `pnpm migrate:remote` | Aplicar migraciones D1 |
 | `pnpm clean` | Elimina `dist/` (ver Seguridad) |
@@ -85,6 +86,11 @@ pnpm kv:seed:remote   # KV de producción
 | `u` | 10 | Usuario: solo lectura |
 
 La autorización se valida en el Worker (`src/server.tsx`); ocultar botones en la UI es solo cosmético.
+
+## Calidad y CI
+
+- `pnpm check` ejecuta typecheck y Biome; `pnpm test` corre Vitest con pruebas de merges, casos de uso (visitas, usuarios, clientes, equipos, técnicos) y generación del PDF.
+- El workflow `.github/workflows/ci.yml` corre install, `cf-typegen`, `check`, `test` y `build` en cada push a `main` y en pull requests.
 
 ## Seguridad
 

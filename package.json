@@ -21,6 +21,7 @@
 		"typescript": "^7.0.2",
 		"vite": "8.3.0",
 		"vite-ssr-components": "0.8.0",
+		"vitest": "^5.0.2",
 		"wrangler": "4.135.0"
 	},
 	"name": "herramienta",
@@ -34,11 +35,13 @@
 		"dev": "vite",
 		"kv:seed:local": "wrangler kv key put reg07.pdf --binding=KV --local --path=public/reg07.pdf",
 		"kv:seed:remote": "wrangler kv key put reg07.pdf --binding=KV --remote --path=public/reg07.pdf",
-		"lint": "biome check src",
-		"lint:fix": "biome check --write src",
+		"lint": "biome check src tests",
+		"lint:fix": "biome check --write src tests",
 		"migrate:local": "wrangler d1 migrations apply herramienta-db --local",
 		"migrate:remote": "wrangler d1 migrations apply herramienta-db --remote",
 		"preview": "$npm_execpath run build && vite preview",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"typecheck": "tsc --noEmit"
 	},
 	"type": "module"
