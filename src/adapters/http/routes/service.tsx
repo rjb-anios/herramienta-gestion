@@ -2,6 +2,7 @@ import {
 	isValidUUID,
 	isValidYear
 } from '@adapters/external/optionalValidationTool'
+import { fillVisitPDFTemplate } from '@adapters/external/pdfTool'
 import {
 	editTechValidator,
 	regTechValidator
@@ -138,6 +139,45 @@ service.get('/visits/all/:year/edit/:id', async c => {
 
 		return await c.render(<EditVisitForm visit={visit} />)
 	}
+})
+
+/// Genera el PDF de una visita registrada
+
+service.get('/visits/print/:id', async c => {
+	const id = c.req.param('id')
+
+	if (!isValidUUID(id)) {
+		return c.redirect('/dashboard/service/visits/all', 303)
+	}
+
+	const {
+		queries: { findVisitToPrint }
+	} = c.get('visitCases')
+
+	const visit = await findVisitToPrint.execute(id)
+
+	if (!visit) {
+		return c.text('La visita no existe', 404)
+	}
+
+	const template = await c.env.KV.get('reg07.pdf', 'arrayBuffer')
+
+	if (!template) {
+		return c.text('La plantilla de PDF no está disponible', 500)
+	}
+
+	const pdf = await fillVisitPDFTemplate(visit, template)
+
+	if (!pdf) {
+		return c.text('No se pudo generar el PDF', 500)
+	}
+
+	return new Response(pdf as BodyInit, {
+		headers: {
+			'Content-Disposition': `inline; filename="visita-${visit.date}.pdf"`,
+			'Content-Type': 'application/pdf'
+		}
+	})
 })
 
 /// Edita la visita

@@ -4,7 +4,8 @@ import type {
 	EditVisitResponse,
 	FindVisitsResponse,
 	GetAvailableYearsResponse,
-	Visit
+	Visit,
+	VisitToPrint
 } from '@core/entities/Visit'
 
 export interface VisitRepo {
@@ -17,4 +18,6 @@ export interface VisitRepo {
 	findVisits: (year: string) => Promise<FindVisitsResponse>
 
 	findVisitById: (id: string) => Promise<FindVisitsResponse>
+
+	findVisitToPrint: (id: string) => Promise<VisitToPrint | null>
 }

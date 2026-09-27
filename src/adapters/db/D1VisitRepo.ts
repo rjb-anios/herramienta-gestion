@@ -7,7 +7,8 @@ import type {
 	FindVisitsResponse,
 	GetAvailableYearsResponse,
 	Visit,
-	VisitToDisplay
+	VisitToDisplay,
+	VisitToPrint
 } from '@core/entities/Visit'
 import type { VisitRepo } from '@core/ports/VisitRepo'
 import { and, desc, eq, gte, lte, sql } from 'drizzle-orm'
@@ -242,6 +243,71 @@ es la que se imprime en el PDF de la visita.
 				message: 'Buscar visita: error desconocido',
 				type: 'Error'
 			}
+		}
+	}
+
+	/// Obtener los datos completos de una visita para generar el PDF
+
+	async findVisitToPrint(id: string): Promise<VisitToPrint | null> {
+		try {
+			const res = await this.db.query.visitsTable.findMany({
+				where: eq(schema.visitsTable.id, id),
+				with: {
+					client: {
+						columns: { contact: true, name: true }
+					},
+					machines: {
+						with: {
+							machine: {
+								columns: {
+									manufacturer: true,
+									model: true,
+									serial_number: true
+								}
+							}
+						}
+					},
+					technicians: {
+						with: {
+							technician: {
+								columns: { email: true, name: true, phone: true }
+							}
+						}
+					}
+				}
+			})
+
+			if (res.length === 0) return null
+
+			const visit = res[0]
+
+			return {
+				client: visit.client.name,
+				client_signature: visit.client_signature,
+				client_signer: visit.client_signer,
+				contact_client: visit.client.contact,
+				date: visit.date,
+				machines: visit.machines.map(m => ({
+					manufacturer: m.machine.manufacturer,
+					model: m.machine.model,
+					serial_number: m.machine.serial_number
+				})),
+				register_description: visit.register_description,
+				sector: visit.sector,
+				technician_signature: visit.technician_signature,
+				technicians: visit.technicians.map(t => ({
+					email: t.technician.email,
+					name: t.technician.name,
+					phone: t.technician.phone
+				}))
+			}
+		} catch (error) {
+			console.error(
+				'Error al obtener visita para PDF: ',
+				getErrorMessage(error)
+			)
+
+			return null
 		}
 	}
 }

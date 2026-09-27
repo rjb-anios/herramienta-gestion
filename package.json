@@ -32,6 +32,8 @@
 		"clean": "rm -rf dist",
 		"deploy": "$npm_execpath run build && wrangler deploy",
 		"dev": "vite",
+		"kv:seed:local": "wrangler kv key put reg07.pdf --binding=KV --local --path=public/reg07.pdf",
+		"kv:seed:remote": "wrangler kv key put reg07.pdf --binding=KV --remote --path=public/reg07.pdf",
 		"lint": "biome check src",
 		"lint:fix": "biome check --write src",
 		"migrate:local": "wrangler d1 migrations apply herramienta-db --local",

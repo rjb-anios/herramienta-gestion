@@ -108,11 +108,18 @@ const VisitDetail = ({
 						</div>
 					)}
 					{canEdit && (
-						<div>
+						<div class='flex gap-6'>
 							<a
 								href={`/dashboard/service/visits/all/${dayjs(visit.date).format('YYYY')}/edit/${visit.id}`}
 							>
 								Editar
+							</a>
+							<a
+								href={`/dashboard/service/visits/print/${visit.id}`}
+								rel='noopener'
+								target='_blank'
+							>
+								Imprimir
 							</a>
 						</div>
 					)}

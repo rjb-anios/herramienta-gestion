@@ -45,6 +45,7 @@ app.on('GET', '/dashboard/*', async (c, next) => {
 
 	const isTechAllowedGet =
 		path === '/dashboard/service/visits/register' ||
+		path.startsWith('/dashboard/service/visits/print/') ||
 		path.startsWith('/dashboard/clients/equipment/assign') ||
 		/^\/dashboard\/service\/visits\/all\/\d{4}\/edit\//.test(path)
 

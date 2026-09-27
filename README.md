@@ -60,6 +60,7 @@ Stack: Cloudflare Workers + Hono + Vite, D1 (SQLite) con Drizzle ORM, KV, Tailwi
 | `pnpm lint` / `pnpm lint:fix` | Biome check / autofix |
 | `pnpm migrate:local` / `pnpm migrate:remote` | Aplicar migraciones D1 |
 | `pnpm clean` | Elimina `dist/` (ver Seguridad) |
+| `pnpm kv:seed:local` / `pnpm kv:seed:remote` | Sube `public/reg07.pdf` a KV (plantilla de visitas) |
 | `pnpm cf-typegen` | Regenera `worker-configuration.d.ts` (generado, no versionado; reejecutar al cambiar bindings) |
 
 ## Base de datos y KV
@@ -68,14 +69,11 @@ Stack: Cloudflare Workers + Hono + Vite, D1 (SQLite) con Drizzle ORM, KV, Tailwi
 - Migraciones versionadas: `drizzle/migrations` (aplicadas con `wrangler d1 migrations apply`). El `schema.sql` es la referencia manual del esquema.
 - Bindings: `DB` → D1 `herramienta-db`; `KV` → caché de listados y plantillas.
 
-Plantilla de visita para la generación de PDF (feature en backlog). Sembrar en KV:
+Plantilla de visita para la generación de PDF. Debe estar en KV con la clave `reg07.pdf`:
 
 ```sh
-# local
-pnpm exec wrangler kv key put reg07.pdf --binding=KV --local --path=public/reg07.pdf
-
-# remoto
-pnpm exec wrangler kv key put reg07.pdf --binding=KV --remote --path=public/reg07.pdf
+pnpm kv:seed:local    # KV local
+pnpm kv:seed:remote   # KV de producción
 ```
 
 ## Roles
@@ -99,4 +97,4 @@ La autorización se valida en el Worker (`src/server.tsx`); ocultar botones en l
 ## Estado
 
 - Migraciones D1 versionadas (`0001_baseline.sql`) aplicadas en local y remoto.
-- Feature de firmas digitales y PDF de visita en backlog: las firmas se capturan y guardan, pero la impresión (`/visits/gen-pdf`) aún no está implementada.
+- Impresión de visitas: desde el detalle de una visita, técnico o admin pueden abrir el PDF generado a partir de `reg07.pdf` (texto, hasta 6 equipos y firmas vectoriales). Requiere la plantilla sembrada en KV (`pnpm kv:seed:local` / `kv:seed:remote`).

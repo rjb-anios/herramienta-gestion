@@ -43,7 +43,8 @@ import type {
 	EditVisitResponse,
 	FindVisitsResponse,
 	GetAvailableYearsResponse,
-	Visit
+	Visit,
+	VisitToPrint
 } from '@core/entities/Visit'
 
 import type { CookieService } from '@core/ports/CookieService'
@@ -172,6 +173,9 @@ export interface Env {
 				getAvailableYears: { execute(): Promise<GetAvailableYearsResponse> }
 				findVisits: { execute(year: string): Promise<FindVisitsResponse> }
 				findVisitById: { execute(id: string): Promise<FindVisitsResponse> }
+				findVisitToPrint: {
+					execute(id: string): Promise<VisitToPrint | null>
+				}
 			}
 		}
 

@@ -44,6 +44,7 @@ import { AddVisitCommand } from '@core/use-cases/visits/commands/AddVisit.comman
 import { EditVisitCommand } from '@core/use-cases/visits/commands/EditVisit.command'
 import { FindVisitByIdQuery } from '@core/use-cases/visits/queries/FindVisitById.query'
 import { FindVisitsQuery } from '@core/use-cases/visits/queries/FindVisits.query'
+import { FindVisitToPrintQuery } from '@core/use-cases/visits/queries/FindVisitToPrint.query'
 import { GetAvailableYearsQuery } from '@core/use-cases/visits/queries/GetAvailableYears.query'
 import { drizzle } from 'drizzle-orm/d1'
 import { createMiddleware } from 'hono/factory'
@@ -138,6 +139,7 @@ const injectServices = createMiddleware<Env>(async (c, next) => {
 		queries: {
 			findVisitById: new FindVisitByIdQuery(visitRepo),
 			findVisits: new FindVisitsQuery(visitRepo),
+			findVisitToPrint: new FindVisitToPrintQuery(visitRepo),
 			getAvailableYears: new GetAvailableYearsQuery(visitRepo)
 		}
 	})
