@@ -54,7 +54,7 @@ Stack: Cloudflare Workers + Hono + Vite, D1 (SQLite) con Drizzle ORM, KV, Tailwi
 | `pnpm dev` | Servidor de desarrollo (Vite + Workers) |
 | `pnpm build` | Build de producción en `dist/` |
 | `pnpm preview` | Build + preview local del Worker compilado |
-| `pnpm deploy` | Build + `wrangler deploy` |
+| `pnpm run deploy` | Build + `wrangler deploy` (usar `run`: pnpm reserva `deploy`) |
 | `pnpm check` | `typecheck` + `lint` (ejecutar antes de commitear) |
 | `pnpm typecheck` | `tsc --noEmit` |
 | `pnpm lint` / `pnpm lint:fix` | Biome check / autofix |
